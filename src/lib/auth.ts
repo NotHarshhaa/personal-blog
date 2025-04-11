@@ -1,5 +1,4 @@
-import type { InferSelectModel } from 'drizzle-orm'
-import type { DefaultSession, NextAuthConfig } from 'next-auth'
+import type { NextAuthConfig } from 'next-auth'
 
 import { DrizzleAdapter } from '@auth/drizzle-adapter'
 import NextAuth from 'next-auth'
@@ -11,14 +10,7 @@ import { accounts, sessions, users, verificationTokens } from '@/db/schema'
 import { env } from '@/env'
 import { getDefaultImage } from '@/utils/get-default-image'
 
-declare module 'next-auth' {
-  interface Session extends Omit<DefaultSession, 'user'> {
-    user: InferSelectModel<typeof users>
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-empty-object-type -- extend interface
-  interface User extends InferSelectModel<typeof users> {}
-}
+// If you want to extend types, put them in types/next-auth.d.ts — not here.
 
 const config: NextAuthConfig = {
   secret: env.AUTH_SECRET,
@@ -40,8 +32,14 @@ const config: NextAuthConfig = {
         ...session,
         user: {
           ...session.user,
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          image: user.image,
+          role: user.role,
           bio: user.bio,
-          role: user.role
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt
         }
       }
     }
