@@ -43,7 +43,18 @@ const ClientHeader = ({ user }: Props) => {
           <div className='flex items-center gap-2 sm:gap-4'>
             {user?.role === 'admin' && <NewPostButton />}
             <ThemeToggle />
-            <Menu user={user} />
+            <Menu
+              user={
+                user
+                  ? {
+                      ...user,
+                      emailVerified: null,
+                      createdAt: new Date(user.createdAt),
+                      updatedAt: new Date(user.updatedAt)
+                    }
+                  : null
+              }
+            />
           </div>
         </div>
       </div>
