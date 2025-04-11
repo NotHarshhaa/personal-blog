@@ -63,6 +63,7 @@ export const getCurrentUser = cache(async () => {
   return {
     ...session.user,
     name: session.user.name,
-    image: session.user.image ?? defaultImage
+    image: session.user.image ?? defaultImage,
+    emailVerified: session.user.emailVerified ?? null
   }
 })

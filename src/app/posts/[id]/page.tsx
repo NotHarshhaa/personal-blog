@@ -94,7 +94,19 @@ const PostPage = async (props: PostPageProps) => {
       <article className='py-6'>
         <Editor options={{ content, editable: false }} />
       </article>
-      <LikeButton likes={likes} user={user} postId={id} />
+      <LikeButton
+        likes={likes}
+        user={
+          user
+            ? {
+                ...user,
+                createdAt: new Date(user.createdAt),
+                updatedAt: new Date(user.updatedAt)
+              }
+            : null
+        }
+        postId={id}
+      />
     </>
   )
 }

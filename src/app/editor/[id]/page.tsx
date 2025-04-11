@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+
 import { and, eq } from 'drizzle-orm'
 import { notFound, redirect } from 'next/navigation'
 

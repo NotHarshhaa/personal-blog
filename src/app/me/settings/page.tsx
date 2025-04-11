@@ -27,7 +27,13 @@ const SettingsPage = async () => {
     <>
       <PageHeader title={title} description={description} />
       <div className='my-8 space-y-12'>
-        <SettingsForm user={user} />
+        <SettingsForm
+          user={{
+            ...user,
+            createdAt: new Date(user.createdAt),
+            updatedAt: new Date(user.updatedAt)
+          }}
+        />
         <Danger />
       </div>
     </>

@@ -1,8 +1,9 @@
 'use client'
 
 import { Badge } from '@tszhong0411/ui'
-import { ShieldCheckIcon, UserIcon } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { ShieldCheckIcon, UserIcon } from 'lucide-react'
+
 import { cn } from '@/lib/utils'
 
 type UserRoleBadgeProps = {

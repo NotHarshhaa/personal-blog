@@ -40,6 +40,13 @@ export const generateMetadata = async (props: UserPageProps): Promise<Metadata> 
 const UserPage = async (props: UserPageProps) => {
   const { id } = await props.params
   const currentUser = await getCurrentUser()
+  const formattedCurrentUser = currentUser
+    ? {
+        ...currentUser,
+        createdAt: new Date(currentUser.createdAt),
+        updatedAt: new Date(currentUser.updatedAt)
+      }
+    : null
   const { user } = await getUserById(id)
 
   if (!user) {
@@ -64,25 +71,25 @@ const UserPage = async (props: UserPageProps) => {
 
       <Separator className='my-4' />
 
-      {user.posts.length > 0 ? (
-        <div className='mt-4'>
-          {user.posts.map((post) => (
+      <div className='mt-4'>
+        {user.posts.length > 0 ? (
+          user.posts.map((post) => (
             <PostCard
               key={post.id}
               post={{ ...post, user: { ...user, id } }}
               showAuthor={false}
-              user={currentUser}
+              user={formattedCurrentUser}
             />
-          ))}
-        </div>
-      ) : (
-        <div className='my-24 flex flex-col items-center justify-center gap-3'>
-          <div className='bg-muted flex size-24 items-center justify-center rounded-full'>
-            <FileIcon className='size-14' />
+          ))
+        ) : (
+          <div className='my-24 flex flex-col items-center justify-center gap-3'>
+            <div className='bg-muted flex size-24 items-center justify-center rounded-full'>
+              <FileIcon className='size-14' />
+            </div>
+            <div className='text-2xl font-semibold'>No posts yet</div>
           </div>
-          <div className='text-2xl font-semibold'>No posts yet</div>
-        </div>
-      )}
+        )}
+      </div>
     </>
   )
 }

@@ -13,7 +13,19 @@ const Posts = async () => {
   return (
     <div>
       {posts.map((post) => (
-        <PostCard key={post.id} post={post} user={user} />
+        <PostCard
+          key={post.id}
+          post={post}
+          user={
+            user
+              ? {
+                  ...user,
+                  createdAt: new Date(user.createdAt),
+                  updatedAt: new Date(user.updatedAt)
+                }
+              : null
+          }
+        />
       ))}
     </div>
   )

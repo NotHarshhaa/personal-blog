@@ -13,7 +13,7 @@ declare module 'next-auth' {
       bio: string | null
       createdAt: string
       updatedAt: string
-      emailVerified?: Date | null
+      emailVerified: Date | null
     }
   }
 
@@ -26,6 +26,6 @@ declare module 'next-auth' {
     bio: string | null
     createdAt: string
     updatedAt: string
-    emailVerified?: Date | null
+    emailVerified: Date | null
   }
 }

@@ -21,10 +21,16 @@ const PostsPage = async () => {
 
   const { posts } = await getPostsByUserId(user.id)
 
+  const formattedUser = {
+    ...user,
+    createdAt: new Date(user.createdAt),
+    updatedAt: new Date(user.updatedAt)
+  }
+
   return (
     <>
       <PageHeader title='Your posts' className='mb-8' />
-      <PostsClient posts={posts} user={user} />
+      <PostsClient posts={posts} user={formattedUser} />
     </>
   )
 }

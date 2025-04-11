@@ -18,8 +18,8 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { signOut } from 'next-auth/react'
 
-import { getDefaultImage } from '@/utils/get-default-image'
 import { cn } from '@/lib/utils'
+import { getDefaultImage } from '@/utils/get-default-image'
 
 type MenuProps = {
   user: User | null
@@ -39,18 +39,21 @@ const Menu = ({ user }: MenuProps) => {
     )
   }
 
-  const { name, image, email, id, role } = user
-  const defaultImage = getDefaultImage(id)
+  const { id, email = '', role, name: rawName, image: rawImage } = user
+
+  const name = rawName || 'User'
+  const image = rawImage ?? getDefaultImage(id)
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
+          type='button'
           aria-label='User menu'
           className='focus-visible:ring-ring rounded-full transition-all outline-none focus-visible:ring-2'
         >
           <Avatar className='size-8'>
-            <AvatarImage src={image ?? defaultImage} alt={name ?? 'User'} />
+            <AvatarImage src={image} alt={name} />
             <AvatarFallback>
               <UserIcon className='size-4' />
             </AvatarFallback>
