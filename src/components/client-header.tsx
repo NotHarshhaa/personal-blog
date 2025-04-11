@@ -1,17 +1,17 @@
 'use client'
 
-import Link from 'next/link'
-import Image from 'next/image'
+import type { Session } from 'next-auth'
+
 import { motion } from 'framer-motion'
+import Image from 'next/image'
+import Link from 'next/link'
 
 import Menu from './menu'
 import NewPostButton from './new-post-button.lazy'
 import ThemeToggle from './theme-toggle'
 
 type Props = {
-  user: {
-    role: string | null
-  } | null
+  user: Session['user'] | null
 }
 
 const ClientHeader = ({ user }: Props) => {
@@ -23,9 +23,7 @@ const ClientHeader = ({ user }: Props) => {
       className='fixed inset-x-0 top-4 z-50 flex justify-center px-4'
     >
       <div className='flex h-auto w-full max-w-4xl flex-col gap-3 rounded-2xl border bg-white/10 px-4 py-2 shadow-md backdrop-blur-md transition-all duration-300 ease-in-out sm:flex-row sm:items-center sm:justify-between sm:px-6 dark:bg-white/5'>
-        {/* Top row: Logo + Actions */}
         <div className='flex w-full items-center justify-between'>
-          {/* Logo + Title */}
           <Link
             href='/'
             className='flex items-center gap-2 text-base font-semibold transition hover:opacity-90 sm:text-xl'
@@ -42,7 +40,6 @@ const ClientHeader = ({ user }: Props) => {
             </span>
           </Link>
 
-          {/* Right Side Actions */}
           <div className='flex items-center gap-2 sm:gap-4'>
             {user?.role === 'admin' && <NewPostButton />}
             <ThemeToggle />

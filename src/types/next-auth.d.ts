@@ -13,15 +13,4 @@ declare module 'next-auth' {
       updatedAt: string
     }
   }
-
-  interface User {
-    id: string
-    name: string
-    email: string
-    image: string | null
-    role: string
-    bio: string | null
-    createdAt: Date
-    updatedAt: Date
-  }
 }
