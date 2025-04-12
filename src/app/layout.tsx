@@ -38,11 +38,11 @@ export const metadata: Metadata = {
   twitter: {
     title: SITE_NAME,
     card: 'summary_large_image',
-    site: '@tszhong0411',
-    creator: '@tszhong0411',
+    site: '@NotHarshhaa',
+    creator: '@NotHarshhaa',
     images: [
       {
-        url: 'https://honghong.me/images/projects/one-blog/cover.png',
+        url: '/images/cover.png',
         width: 1280,
         height: 832,
         alt: SITE_DESCRIPTION
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     canonical: SITE_URL
   },
   keywords: ['blog', 'one-blog', 'full-stack blog', 'nextjs blog'],
-  creator: 'tszhong0411',
+  creator: 'NotHarshhaa',
   openGraph: {
     url: SITE_URL,
     type: 'website',
@@ -63,7 +63,7 @@ export const metadata: Metadata = {
     locale: 'en-US',
     images: [
       {
-        url: 'https://honghong.me/images/projects/one-blog/cover.png',
+        url: '/images/cover.png',
         width: 1280,
         height: 832,
         alt: SITE_DESCRIPTION,
