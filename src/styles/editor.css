@@ -1,7 +1,166 @@
+/* Placeholder styling */
 .ProseMirror p.is-editor-empty:first-child::before {
   color: #adb5bd;
   content: attr(data-placeholder);
   float: left;
   height: 0;
   pointer-events: none;
+  font-style: italic;
+  opacity: 0.7;
+  font-size: 1.05em;
+}
+
+/* General editor area */
+.ProseMirror {
+  min-height: 350px;
+  padding: 0;
+  outline: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 1.08em;
+  line-height: 1.7;
+  color: var(--foreground, #222);
+  transition: background 0.2s;
+}
+
+/* Focused state */
+.ProseMirror-focused {
+  background: var(--background, #f8fafc);
+  box-shadow: 0 0 0 2px var(--primary, #6366f1) 33;
+  border-radius: 0.75rem;
+}
+
+/* Selection highlight */
+.ProseMirror ::selection {
+  background: var(--primary, #6366f1) 22;
+}
+
+/* Headings */
+.ProseMirror h1 {
+  font-size: 2.1em;
+  font-weight: 700;
+  margin: 1.2em 0 0.6em 0;
+}
+.ProseMirror h2 {
+  font-size: 1.5em;
+  font-weight: 600;
+  margin: 1em 0 0.5em 0;
+}
+.ProseMirror h3 {
+  font-size: 1.2em;
+  font-weight: 600;
+  margin: 0.8em 0 0.4em 0;
+}
+
+/* Blockquote */
+.ProseMirror blockquote {
+  border-left: 4px solid var(--primary, #6366f1);
+  background: var(--primary, #6366f1) 08;
+  color: var(--muted-foreground, #6b7280);
+  padding: 0.7em 1.2em;
+  margin: 1.2em 0;
+  border-radius: 0.5em;
+  font-style: italic;
+}
+
+/* Code block */
+.ProseMirror pre {
+  background: #18181b;
+  color: #f1f5f9;
+  border-radius: 0.5em;
+  padding: 1em;
+  font-size: 0.98em;
+  overflow-x: auto;
+  margin: 1.2em 0;
+  font-family: 'Fira Mono', 'Menlo', 'Monaco', 'Consolas', monospace;
+}
+.ProseMirror code {
+  background: #f3f4f6;
+  color: #d97706;
+  border-radius: 0.3em;
+  padding: 0.15em 0.4em;
+  font-size: 0.97em;
+  font-family: 'Fira Mono', 'Menlo', 'Monaco', 'Consolas', monospace;
+}
+.ProseMirror pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+
+/* Image */
+.ProseMirror img {
+  max-width: 100%;
+  border-radius: 0.7em;
+  box-shadow: 0 2px 16px 0 #0001;
+  margin: 1.2em auto;
+  display: block;
+}
+
+/* Table */
+.ProseMirror table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+  background: #f9fafb;
+  border-radius: 0.5em;
+  overflow: hidden;
+  box-shadow: 0 1px 4px 0 #0001;
+}
+.ProseMirror th,
+.ProseMirror td {
+  border: 1px solid #e5e7eb;
+  padding: 0.6em 1em;
+  text-align: left;
+}
+.ProseMirror th {
+  background: #f3f4f6;
+  font-weight: 600;
+}
+
+/* Task list */
+.ProseMirror .task-list-item {
+  list-style: none;
+  margin-left: 0;
+  padding-left: 0.5em;
+}
+.ProseMirror .task-list-item input[type='checkbox'] {
+  margin-right: 0.5em;
+  accent-color: var(--primary, #6366f1);
+}
+
+/* Horizontal rule */
+.ProseMirror hr {
+  border: none;
+  border-top: 2px dashed var(--muted, #e5e7eb);
+  margin: 2em 0;
+}
+
+/* Dark mode support */
+html.dark .ProseMirror {
+  color: #f3f4f6;
+  background: transparent;
+}
+html.dark .ProseMirror-focused {
+  background: #18181b;
+  box-shadow: 0 0 0 2px #6366f155;
+}
+html.dark .ProseMirror blockquote {
+  background: #232334;
+  color: #a1a1aa;
+  border-left-color: #6366f1;
+}
+html.dark .ProseMirror pre {
+  background: #232334;
+  color: #f1f5f9;
+}
+html.dark .ProseMirror code {
+  background: #232334;
+  color: #fbbf24;
+}
+html.dark .ProseMirror th {
+  background: #232334;
+}
+html.dark .ProseMirror table {
+  background: #18181b;
 }
