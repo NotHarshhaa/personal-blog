@@ -13,13 +13,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@tszhong0411/ui'
-import { UserIcon } from 'lucide-react'
+import { UserIcon, LogOut, Settings, FileText, BadgeCheck } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { signOut } from 'next-auth/react'
 
 import { cn } from '@/lib/utils'
 import { getDefaultImage } from '@/utils/get-default-image'
+
+const roleColors: Record<string, string> = {
+  admin: 'bg-green-500 text-white',
+  moderator: 'bg-blue-500 text-white',
+  user: 'bg-muted text-foreground',
+  guest: 'bg-gray-200 text-gray-700',
+}
 
 type MenuProps = {
   user: User | null
@@ -61,43 +68,64 @@ const Menu = ({ user }: MenuProps) => {
         </button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align='end' className='w-56'>
-        <DropdownMenuItem className='flex cursor-pointer flex-col items-start px-3 py-2' asChild>
-          <Link href={`/users/${id}`}>
-            <div className='max-w-[180px] truncate text-sm font-medium'>{name}</div>
-            <div className='text-muted-foreground max-w-[180px] truncate text-xs'>{email}</div>
+      <DropdownMenuContent
+        align='end'
+        className='w-72 animate-fade-in rounded-xl border border-border/30 bg-white/95 p-0 shadow-2xl dark:bg-zinc-900/95'
+      >
+        {/* User Info Card */}
+        <div className='flex flex-col items-center gap-2 px-5 py-4 border-b border-border/20 bg-gradient-to-b from-gray-50/80 to-white/80 dark:from-zinc-900/80 dark:to-zinc-900/90'>
+          <Avatar className='size-14 shadow-md'>
+            <AvatarImage src={image} alt={name} />
+            <AvatarFallback>
+              <UserIcon className='size-7' />
+            </AvatarFallback>
+          </Avatar>
+          <div className='text-center'>
+            <div className='truncate text-lg font-semibold'>{name}</div>
+            <div className='text-muted-foreground truncate text-xs'>{email}</div>
             {role && (
               <span
                 className={cn(
-                  'bg-primary/10 text-primary mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-medium tracking-wide uppercase'
+                  'mt-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium',
+                  roleColors[role] || roleColors.user
                 )}
               >
-                {role}
+                <BadgeCheck className='size-3.5' />
+                {role.charAt(0).toUpperCase() + role.slice(1)}
               </span>
             )}
-          </Link>
-        </DropdownMenuItem>
+          </div>
+        </div>
 
-        <DropdownMenuSeparator />
-
-        <DropdownMenuItem asChild>
-          <Link href='/me/posts' className='w-full'>
-            Posts
-          </Link>
-        </DropdownMenuItem>
-        <DropdownMenuItem asChild>
-          <Link href='/me/settings' className='w-full'>
-            Settings
-          </Link>
-        </DropdownMenuItem>
+        <div className='py-2'>
+          <DropdownMenuItem asChild>
+            <Link href={`/users/${id}`} className='flex items-center gap-2 px-4 py-2 transition-colors hover:bg-gray-100 dark:hover:bg-zinc-800 focus:bg-gray-100 dark:focus:bg-zinc-800 rounded-md'>
+              <UserIcon className='size-4 opacity-70' />
+              <span>Profile</span>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href='/me/posts' className='flex items-center gap-2 px-4 py-2 transition-colors hover:bg-gray-100 dark:hover:bg-zinc-800 focus:bg-gray-100 dark:focus:bg-zinc-800 rounded-md'>
+              <FileText className='size-4 opacity-70' />
+              <span>Posts</span>
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href='/me/settings' className='flex items-center gap-2 px-4 py-2 transition-colors hover:bg-gray-100 dark:hover:bg-zinc-800 focus:bg-gray-100 dark:focus:bg-zinc-800 rounded-md'>
+              <Settings className='size-4 opacity-70' />
+              <span>Settings</span>
+            </Link>
+          </DropdownMenuItem>
+        </div>
 
         <DropdownMenuSeparator />
 
         <DropdownMenuItem
           onClick={() => signOut()}
-          className='text-destructive focus:text-destructive w-full'
+          className='flex items-center gap-2 px-4 py-2 text-destructive focus:text-destructive rounded-md transition-colors hover:bg-red-50 dark:hover:bg-red-900/30 focus:bg-red-50 dark:focus:bg-red-900/30 w-full cursor-pointer'
         >
-          Log out
+          <LogOut className='size-4 opacity-70' />
+          <span>Log out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
