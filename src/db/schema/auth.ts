@@ -1,5 +1,5 @@
 import { createId } from '@paralleldrive/cuid2'
-import { type InferSelectModel, relations } from 'drizzle-orm'
+import { relations } from 'drizzle-orm'
 import { integer, pgTable, primaryKey, text, timestamp } from 'drizzle-orm/pg-core'
 import { humanId } from 'human-id'
 
