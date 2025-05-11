@@ -186,7 +186,7 @@ const Form = (props: FormProps) => {
             }}
           />
         ) : (
-          <LivePreview content={content} />
+          <LivePreview content={content ?? ''} />
         )}
         <Separator className='my-6' />
         <div className={cn('flex flex-col-reverse gap-2 sm:flex-row', post.published ? 'justify-end' : 'justify-between') + ' sticky bottom-0 bg-white/80 dark:bg-zinc-900/80 p-4 rounded-b-2xl z-10 shadow-sm'}>
