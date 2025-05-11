@@ -37,6 +37,34 @@ const ClientHeader = ({ user }: Props) => {
   const [results, setResults] = useState<SearchPost[]>([])
   const [loading, setLoading] = useState(false)
   const [showDropdown, setShowDropdown] = useState(false)
+  const [showNotifications, setShowNotifications] = useState(false)
+  const [notifications, setNotifications] = useState([
+    {
+      id: '1',
+      postId: 'abc123',
+      title: 'New Post: Learn DevOps by Playing Games 🎮',
+      description: 'Check out the latest post on gamified DevOps learning!',
+      read: false,
+      createdAt: new Date().toISOString(),
+    },
+    {
+      id: '2',
+      postId: 'def456',
+      title: 'Post Updated: End-to-End DevOps with Azure',
+      description: 'The Azure CI/CD guide has been updated with new tips.',
+      read: false,
+      createdAt: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
+    },
+    {
+      id: '3',
+      postId: 'ghi789',
+      title: 'New Post: Streamline Your CI/CD with AWS CodePipeline',
+      description: 'Learn how to automate your CI/CD workflow with AWS.',
+      read: true,
+      createdAt: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
+    },
+  ])
+  const unreadCount = notifications.filter((n) => !n.read).length
   const searchRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
 
@@ -90,6 +118,27 @@ const ClientHeader = ({ user }: Props) => {
     return () => document.removeEventListener('mousedown', handleClick)
   }, [showDropdown])
 
+  // Close notifications dropdown on click outside
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      const notifBtn = document.getElementById('notif-bell-btn')
+      const notifDropdown = document.getElementById('notif-dropdown')
+      if (
+        notifBtn && notifDropdown &&
+        !notifBtn.contains(e.target as Node) &&
+        !notifDropdown.contains(e.target as Node)
+      ) {
+        setShowNotifications(false)
+      }
+    }
+    if (showNotifications) {
+      document.addEventListener('mousedown', handleClick)
+      // Mark all notifications as read when dropdown is opened
+      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })))
+    }
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [showNotifications])
+
   return (
     <motion.header
       initial={{ y: -30, opacity: 0 }}
@@ -140,17 +189,53 @@ const ClientHeader = ({ user }: Props) => {
 
             {/* Notifications */}
             {user && (
-              <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                className='relative flex items-center justify-center rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-800'
-                aria-label='Notifications'
-              >
-                <Bell className='h-5 w-5' />
-                <span className='absolute top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] text-white'>
-                  3
-                </span>
-              </motion.button>
+              <div className='relative'>
+                <motion.button
+                  id='notif-bell-btn'
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className='relative flex items-center justify-center rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-800'
+                  aria-label='Notifications'
+                  onClick={() => setShowNotifications((v) => !v)}
+                >
+                  <Bell className='h-5 w-5' />
+                  {unreadCount > 0 && (
+                    <span className='absolute top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] text-white'>
+                      {unreadCount}
+                    </span>
+                  )}
+                </motion.button>
+                {/* Notifications Dropdown */}
+                {showNotifications && (
+                  <div
+                    id='notif-dropdown'
+                    className='absolute right-0 z-50 mt-2 w-80 max-w-xs rounded-lg border bg-white shadow-lg dark:bg-gray-900'
+                  >
+                    <div className='p-4 border-b text-base font-semibold'>Notifications</div>
+                    <div className='max-h-72 overflow-auto'>
+                      {notifications.length === 0 && (
+                        <div className='p-4 text-center text-sm text-gray-500'>No notifications.</div>
+                      )}
+                      {notifications.map((notif) => (
+                        <div
+                          key={notif.id}
+                          className={`w-full px-4 py-3 text-left transition-colors border-b last:border-b-0 ${
+                            notif.read
+                              ? 'bg-transparent'
+                              : 'bg-gray-50 dark:bg-gray-800/60 border-l-4 border-primary'
+                          }`}
+                        >
+                          <div className='font-medium'>{notif.title}</div>
+                          <div className='text-xs text-gray-500'>{notif.description}</div>
+                          <div className='text-[10px] text-gray-400 mt-1'>
+                            {new Date(notif.createdAt).toLocaleString()}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
             )}
 
             {user?.role === 'admin' && (
