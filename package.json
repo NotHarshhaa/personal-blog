@@ -28,7 +28,6 @@
     "preinstall": "npx only-allow pnpm",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint --fix .",
-    "prepare": "simple-git-hooks",
     "start": "next start",
     "type-check": "tsc --noEmit",
     "with-env": "dotenv -e .env.local --"
