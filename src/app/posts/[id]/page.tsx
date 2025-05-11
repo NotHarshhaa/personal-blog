@@ -69,45 +69,55 @@ const PostPage = async (props: PostPageProps) => {
   })
 
   return (
-    <>
-      <div className='space-y-4'>
-        <div className='text-muted-foreground flex gap-2'>
+    <div className="mx-auto w-full max-w-xl sm:max-w-2xl md:max-w-3xl lg:max-w-4xl rounded-2xl border border-border/40 bg-white/90 p-4 md:p-8 shadow-lg dark:bg-zinc-900/90 my-8">
+      {/* Meta info bar */}
+      <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground mb-4">
+        <span className="inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1 font-medium">
           <time dateTime={dateTime}>{formatPostDate(createdAt, { relative: true })}</time>
-          <span>·</span>
-          <span>{readingTime(content ?? '').text}</span>
-        </div>
-        <h1 className='text-2xl font-semibold tracking-tight md:text-3xl lg:text-4xl'>{title}</h1>
-        <p className='text-muted-foreground text-lg md:text-xl'>{description}</p>
-        <Link href={`/users/${author.id}`} className='flex items-center gap-2'>
-          <UserAvatar
-            width={32}
-            height={32}
-            src={author.image}
-            alt={author.name}
-            userId={author.id}
-          />
-          <div className='text-sm'>
-            <div>{author.name}</div>
-          </div>
-        </Link>
+        </span>
+        <span>·</span>
+        <span className="inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1 font-medium">
+          {readingTime(content ?? '').text}
+        </span>
       </div>
-      <article className='py-6'>
+      {/* Title & Description */}
+      <h1 className="mb-2 text-2xl font-bold tracking-tight md:text-3xl lg:text-4xl">{title}</h1>
+      <p className="mb-6 text-muted-foreground text-lg md:text-xl">{description}</p>
+      {/* Author card */}
+      <Link href={`/users/${author.id}`} className="mb-8 flex items-center gap-3 rounded-lg bg-muted/40 px-4 py-3 transition-colors hover:bg-muted/70 focus-visible:ring-2 focus-visible:ring-primary">
+        <UserAvatar
+          width={40}
+          height={40}
+          src={author.image}
+          alt={author.name}
+          userId={author.id}
+        />
+        <div className="flex flex-col">
+          <span className="font-semibold text-base text-foreground">{author.name}</span>
+          <span className="text-xs text-muted-foreground">Author</span>
+        </div>
+      </Link>
+      {/* Content */}
+      <article className="prose dark:prose-invert mx-auto max-w-none py-6">
         <Editor options={{ content, editable: false }} />
       </article>
-      <LikeButton
-        likes={likes}
-        user={
-          user
-            ? {
-                ...user,
-                createdAt: new Date(user.createdAt),
-                updatedAt: new Date(user.updatedAt)
-              }
-            : null
-        }
-        postId={id}
-      />
-    </>
+      {/* Like button centered */}
+      <div className="flex justify-center mt-8">
+        <LikeButton
+          likes={likes}
+          user={
+            user
+              ? {
+                  ...user,
+                  createdAt: new Date(user.createdAt),
+                  updatedAt: new Date(user.updatedAt)
+                }
+              : null
+          }
+          postId={id}
+        />
+      </div>
+    </div>
   )
 }
 
