@@ -55,19 +55,18 @@ const UserPage = async (props: UserPageProps) => {
 
   return (
     <>
-      <div className='flex items-center gap-4'>
-        <div className='relative size-14 md:size-20'>
+      <div className='flex flex-col items-center gap-2 py-4 sm:flex-row sm:items-center sm:gap-4'>
+        <div className='relative size-20'>
           <UserAvatar fill src={user.image} alt={user.name} userId={id} />
         </div>
-        <div>
-          <div className='flex items-center gap-2 text-xl font-semibold lg:text-3xl'>
-            {user.name}
+        <div className='flex flex-col items-center sm:items-start'>
+          <div className='flex flex-col items-center sm:flex-row sm:items-center sm:gap-2'>
+            <span className='text-xl font-semibold lg:text-3xl'>{user.name}</span>
             <UserRoleBadge role={user.role} />
           </div>
+          {user.bio && <p className='text-muted-foreground mt-2 text-center sm:text-left'>{user.bio}</p>}
         </div>
       </div>
-
-      {user.bio && <p className='text-muted-foreground mt-4'>{user.bio}</p>}
 
       <Separator className='my-4' />
 

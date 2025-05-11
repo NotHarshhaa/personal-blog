@@ -144,16 +144,16 @@ const ClientHeader = ({ user }: Props) => {
       initial={{ y: -30, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
-      className={`fixed inset-x-0 top-0 z-50 flex justify-center px-4 transition-all duration-300 ${
+      className={`fixed inset-x-0 top-0 z-50 flex justify-center px-2 sm:px-4 transition-all duration-300 ${
         isScrolled ? 'py-2' : 'py-4'
       }`}
     >
       <div
-        className={`w-full max-w-5xl mx-auto rounded-2xl border border-border/40 bg-white/80 dark:bg-zinc-900/80 shadow-lg px-4 py-2 sm:px-6 backdrop-blur-md transition-all duration-300 ease-in-out ${
+        className={`w-full max-w-5xl mx-auto rounded-2xl border border-border/40 bg-white/80 dark:bg-zinc-900/80 shadow-lg px-2 py-2 sm:px-6 backdrop-blur-md transition-all duration-300 ease-in-out ${
           isScrolled ? 'shadow-xl' : ''
         }`}
       >
-        <div className='flex w-full items-center justify-between gap-3 sm:gap-4'>
+        <div className='flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4'>
           <Link
             href='/'
             className='group flex items-center gap-2 text-base font-semibold transition hover:opacity-90 sm:text-xl'
@@ -172,7 +172,7 @@ const ClientHeader = ({ user }: Props) => {
             </span>
           </Link>
 
-          <div className='flex items-center gap-3 sm:gap-4'>
+          <div className='flex flex-wrap items-center justify-end gap-2 sm:gap-4 min-w-0'>
             {/* Search Button */}
             <motion.button
               whileHover={{ scale: 1.05 }}
