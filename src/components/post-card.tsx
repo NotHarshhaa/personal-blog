@@ -25,41 +25,41 @@ const PostCard = (props: PostCardProps) => {
   const { id, title, description, published, createdAt, likes, user: author } = post
 
   return (
-    <article className='flex items-start justify-between border-b px-1 py-4'>
-      <div className='flex flex-col gap-2'>
-        <div className='flex items-center gap-1'>
-          {showAuthor && (
-            <>
-              <Link href={`/users/${author.id}`} className='flex items-center gap-1.5 text-sm'>
-                <UserAvatar
-                  width={24}
-                  height={24}
-                  userId={author.id}
-                  src={author.image}
-                  alt={author.name}
-                />
-                <span>{author.name}</span>
-              </Link>
-              <span>·</span>
-            </>
-          )}
-          <span className='text-xs'>
-            {formatPostDate(createdAt, {
-              relative: true
-            })}
+    <div className='group relative my-4 rounded-xl border border-border/40 bg-white/90 p-0 shadow-sm transition-all duration-200 hover:shadow-lg dark:bg-zinc-900/90'>
+      <div className='flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-4 pt-4'>
+        {showAuthor && (
+          <Link href={`/users/${author.id}`} className='flex items-center gap-2 text-sm font-medium hover:underline'>
+            <UserAvatar
+              width={32}
+              height={32}
+              userId={author.id}
+              src={author.image}
+              alt={author.name}
+              className='border border-border/30 shadow-sm'
+            />
+            <span>{author.name}</span>
+            <span className='mx-1 text-xs text-muted-foreground'>·</span>
+            <span className='text-xs text-muted-foreground'>{formatPostDate(createdAt, { relative: true })}</span>
+          </Link>
+        )}
+        <Controls user={user} id={id} authorId={author.id} postTitle={title} />
+      </div>
+      <Link
+        href={`/${published ? 'posts' : 'editor'}/${id}`}
+        className='block px-4 py-3 transition-colors duration-150 group-hover:bg-gray-50 dark:group-hover:bg-zinc-800/60 rounded-b-xl'
+        tabIndex={0}
+        aria-label={`Read post: ${title}`}
+      >
+        <h2 className='mb-1 text-lg font-semibold leading-tight line-clamp-2'>{title}</h2>
+        <p className='text-muted-foreground mb-2 line-clamp-3 text-sm'>{description}</p>
+        <div className='flex items-center gap-3 pt-2'>
+          <span className='flex items-center gap-1 text-sm text-muted-foreground'>
+            <HeartIcon className='size-4 text-pink-500' />
+            {likes.length}
           </span>
         </div>
-        <Link href={`/${published ? 'posts' : 'editor'}/${id}`} className='block space-y-2'>
-          <h2 className='text-lg font-semibold'>{title}</h2>
-          <p className='text-muted-foreground line-clamp-3'>{description}</p>
-        </Link>
-        <div className='mt-4 flex items-center gap-2 text-sm'>
-          <HeartIcon className='size-4' />
-          {likes.length}
-        </div>
-      </div>
-      <Controls user={user} id={id} authorId={author.id} postTitle={title} />
-    </article>
+      </Link>
+    </div>
   )
 }
 
