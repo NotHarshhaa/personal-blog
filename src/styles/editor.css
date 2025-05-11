@@ -5,3 +5,65 @@
   height: 0;
   pointer-events: none;
 }
+
+.prose pre {
+  overflow-x: auto;
+  border-radius: 1rem;
+  background: #f5f7fa;
+  padding: 1.25rem 1rem;
+  margin: 1.25rem 0;
+  font-size: 1em;
+  color: #23272f;
+  font-family: 'Fira Mono', 'Menlo', 'Monaco', 'Consolas', monospace;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  transition:
+    background 0.2s,
+    color 0.2s;
+}
+
+html[class~='dark'] .prose pre {
+  background: #18181b;
+  color: #f3f4f6;
+}
+
+@media (max-width: 640px) {
+  .prose pre {
+    font-size: 0.98em;
+    padding: 1rem 0.5rem;
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+    border-radius: 0.75rem;
+  }
+}
+
+.prose code {
+  border-radius: 0.3em;
+  padding: 0.2em 0.4em;
+  font-size: 0.98em;
+  word-break: break-word;
+  color: #23272f;
+  font-family: 'Fira Mono', 'Menlo', 'Monaco', 'Consolas', monospace;
+}
+
+html[class~='dark'] .prose code {
+  color: #f3f4f6;
+}
+
+.prose pre code.language-shell,
+.prose pre code.language-bash,
+.prose pre code.language-zsh,
+.prose pre code.language-terminal {
+  background: transparent !important;
+  color: #16f534 !important;
+  display: block;
+  font-family: 'Fira Mono', 'Menlo', 'Monaco', 'Consolas', monospace;
+}
+
+.prose pre code.language-shell::before,
+.prose pre code.language-bash::before,
+.prose pre code.language-zsh::before,
+.prose pre code.language-terminal::before {
+  content: '$ ';
+  color: #8b949e;
+  user-select: none;
+}
