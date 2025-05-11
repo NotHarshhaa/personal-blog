@@ -16,7 +16,11 @@ export const users = pgTable('user', {
   updatedAt: timestamp('updated_at', { precision: 3 }).notNull().defaultNow(),
   // Custom column
   bio: text('bio'),
-  role: text('role').notNull().default('user')
+  role: text('role').notNull().default('user'),
+  github: text('github'),
+  twitter: text('twitter'),
+  linkedin: text('linkedin'),
+  theme: text('theme'),
 })
 
 export const accounts = pgTable(
@@ -90,4 +94,18 @@ export const sessionsRelations = relations(sessions, ({ one }) => ({
   })
 }))
 
-export type User = InferSelectModel<typeof users>
+export type User = {
+  id: string;
+  name: string;
+  email: string;
+  emailVerified: Date | null;
+  image: string | null;
+  createdAt: Date;
+  updatedAt: Date;
+  bio: string | null;
+  role: string;
+  github?: string | null;
+  twitter?: string | null;
+  linkedin?: string | null;
+  theme?: string | null;
+}

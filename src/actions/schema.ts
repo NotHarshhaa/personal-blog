@@ -26,5 +26,9 @@ export const updatePostSchema = z.object({
 export const updateUserSchema = z.object({
   name: z.string().min(1).max(100),
   image: z.string(),
-  bio: z.string()
+  bio: z.string(),
+  github: z.string().url().optional().or(z.literal('')),
+  twitter: z.string().url().optional().or(z.literal('')),
+  linkedin: z.string().url().optional().or(z.literal('')),
+  theme: z.enum(['system', 'light', 'dark']).optional().or(z.literal('')),
 })

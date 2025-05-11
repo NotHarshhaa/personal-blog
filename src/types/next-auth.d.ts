@@ -5,6 +5,10 @@ import type { DefaultSession } from 'next-auth'
 declare module 'next-auth' {
   interface Session extends DefaultSession {
     user: {
+      github: string
+      twitter: string
+      linkedin: string
+      theme: string
       id: string
       name: string
       email: string

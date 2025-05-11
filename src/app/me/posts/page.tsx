@@ -28,10 +28,25 @@ const PostsPage = async () => {
   }
 
   return (
-    <>
-      <PageHeader title='Your posts' className='mb-8' />
+    <div className="mx-auto w-full max-w-3xl rounded-2xl border border-border/40 bg-white/90 p-4 md:p-8 shadow-lg dark:bg-zinc-900/90 my-8">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+        <PageHeader
+          title="Your posts"
+          description="Manage your drafts and published posts. Start a new post anytime!"
+          className="mb-0"
+        />
+        <div className="flex justify-end">
+          {/* Write New Post button (client-side) */}
+          <div suppressHydrationWarning>
+            {/* This will be hydrated by the client, see NewPostButton in header */}
+            <div id="new-post-btn-placeholder" />
+          </div>
+        </div>
+      </div>
+      {/* Summary bar placeholder, to be filled in client */}
+      <div id="posts-summary-bar" className="mb-4" />
       <PostsClient posts={posts} user={formattedUser} />
-    </>
+    </div>
   )
 }
 
