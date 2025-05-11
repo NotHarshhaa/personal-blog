@@ -10,7 +10,11 @@ export const getUserById = async (id: string) => {
       name: true,
       image: true,
       bio: true,
-      role: true
+      role: true,
+      github: true,
+      twitter: true,
+      linkedin: true,
+      createdAt: true,
     },
     with: {
       posts: {
