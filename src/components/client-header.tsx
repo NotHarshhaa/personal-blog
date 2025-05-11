@@ -100,8 +100,8 @@ const ClientHeader = ({ user }: Props) => {
       }`}
     >
       <div
-        className={`flex h-auto w-full max-w-4xl flex-col rounded-2xl border bg-white/10 px-4 py-2 shadow-md backdrop-blur-md transition-all duration-300 ease-in-out sm:px-6 dark:bg-white/5 ${
-          isScrolled ? 'shadow-lg' : ''
+        className={`w-full max-w-5xl mx-auto rounded-2xl border border-border/40 bg-white/80 dark:bg-zinc-900/80 shadow-lg px-4 py-2 sm:px-6 backdrop-blur-md transition-all duration-300 ease-in-out ${
+          isScrolled ? 'shadow-xl' : ''
         }`}
       >
         <div className='flex w-full items-center justify-between gap-3 sm:gap-4'>
