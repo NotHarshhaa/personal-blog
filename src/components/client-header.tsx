@@ -149,7 +149,7 @@ const ClientHeader = ({ user }: Props) => {
       }`}
     >
       <div
-        className={`w-full max-w-5xl mx-auto rounded-2xl border border-border/40 bg-white/80 dark:bg-zinc-900/80 shadow-lg px-2 py-2 sm:px-6 backdrop-blur-md transition-all duration-300 ease-in-out ${
+        className={`w-full max-w-6xl mx-auto rounded-2xl border border-border/40 bg-white/80 dark:bg-zinc-900/80 shadow-lg px-2 py-2 sm:px-6 backdrop-blur-md transition-all duration-300 ease-in-out ${
           isScrolled ? 'shadow-xl' : ''
         }`}
       >

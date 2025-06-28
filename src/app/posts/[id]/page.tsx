@@ -69,7 +69,7 @@ const PostPage = async (props: PostPageProps) => {
   })
 
   return (
-    <div className="mx-auto w-full max-w-xl sm:max-w-2xl md:max-w-3xl lg:max-w-4xl rounded-2xl border border-border/40 bg-white/90 p-4 md:p-8 shadow-lg dark:bg-zinc-900/90 my-8">
+    <div className="mx-auto w-full max-w-2xl sm:max-w-3xl md:max-w-4xl lg:max-w-5xl rounded-2xl border border-border/40 bg-white/90 p-4 md:p-8 shadow-lg dark:bg-zinc-900/90 my-8">
       {/* Meta info bar */}
       <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground mb-4">
         <span className="inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1 font-medium">

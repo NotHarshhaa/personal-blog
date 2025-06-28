@@ -53,7 +53,7 @@ const Footer = () => {
       className='w-full pt-12'
     >
       <div className='w-full border-t border-border/30 mb-0' />
-      <div className='mx-auto w-full max-w-5xl px-4 md:px-8'>
+      <div className='mx-auto w-full max-w-6xl px-4 md:px-8'>
         <div className='rounded-2xl border border-border/40 bg-white/80 dark:bg-zinc-900/80 shadow-lg px-6 py-8 mt-6 mb-4 backdrop-blur-md'>
           <div className='flex flex-col md:flex-row md:items-start md:justify-between gap-8'>
             {/* About Section */}

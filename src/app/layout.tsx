@@ -112,7 +112,7 @@ const RootLayout = (props: RootLayoutProps) => {
       <body>
         <Providers>
           <Header />
-          <main className='min-h-page mx-auto max-w-4xl px-6 pt-32 pb-16'>{children}</main>
+          <main className='min-h-page mx-auto max-w-6xl px-6 pt-32 pb-16'>{children}</main>
           <Toaster />
           <Footer />
         </Providers>
