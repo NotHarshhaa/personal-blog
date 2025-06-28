@@ -63,8 +63,9 @@ const Editor = (props: EditorProps) => {
     <div
       ref={editorRef}
       className={cn(
-        'w-full rounded-xl border bg-background/80 shadow-lg transition-all',
-        isFocused ? 'ring-2 ring-primary border-primary' : 'border-border',
+        'w-full transition-all',
+        editor.isEditable && 'rounded-xl border bg-background/80 shadow-lg',
+        isFocused && editor.isEditable ? 'ring-2 ring-primary border-primary' : 'border-border',
         'flex flex-col'
       )}
     >
@@ -77,18 +78,20 @@ const Editor = (props: EditorProps) => {
       <EditorContent
         editor={editor}
         className={cn(
-          'bg-background flex min-h-[350px] rounded-b-xl px-3 py-4 focus:outline-none',
-          editor.isEditable && 'border-none'
+          'bg-background flex min-h-[350px] px-0 py-4 focus:outline-none',
+          editor.isEditable && 'rounded-b-xl px-3'
         )}
         aria-label='Post editor'
         onFocus={() => setIsFocused(true)}
         onBlur={() => setIsFocused(false)}
       />
       {/* Word/char count */}
-      <div className='flex items-center justify-end gap-4 px-4 pb-2 text-xs text-muted-foreground'>
-        <span>{wordCount} words</span>
-        <span>{charCount} chars</span>
-      </div>
+      {editor.isEditable && (
+        <div className='flex items-center justify-end gap-4 px-4 pb-2 text-xs text-muted-foreground'>
+          <span>{wordCount} words</span>
+          <span>{charCount} chars</span>
+        </div>
+      )}
     </div>
   )
 }

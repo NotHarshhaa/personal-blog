@@ -69,53 +69,71 @@ const PostPage = async (props: PostPageProps) => {
   })
 
   return (
-    <div className="mx-auto w-full max-w-2xl sm:max-w-3xl md:max-w-4xl lg:max-w-5xl rounded-2xl border border-border/40 bg-white/90 p-4 md:p-8 shadow-lg dark:bg-zinc-900/90 my-8">
-      {/* Meta info bar */}
-      <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground mb-4">
-        <span className="inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1 font-medium">
-          <time dateTime={dateTime}>{formatPostDate(createdAt, { relative: true })}</time>
-        </span>
-        <span>·</span>
-        <span className="inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1 font-medium">
-          {readingTime(content ?? '').text}
-        </span>
-      </div>
-      {/* Title & Description */}
-      <h1 className="mb-2 text-2xl font-bold tracking-tight md:text-3xl lg:text-4xl">{title}</h1>
-      <p className="mb-6 text-muted-foreground text-lg md:text-xl">{description}</p>
-      {/* Author card */}
-      <Link href={`/users/${author.id}`} className="mb-8 flex items-center gap-3 rounded-lg bg-muted/40 px-4 py-3 transition-colors hover:bg-muted/70 focus-visible:ring-2 focus-visible:ring-primary">
-        <UserAvatar
-          width={40}
-          height={40}
-          src={author.image}
-          alt={author.name}
-          userId={author.id}
-        />
-        <div className="flex flex-col">
-          <span className="font-semibold text-base text-foreground">{author.name}</span>
-          <span className="text-xs text-muted-foreground">Author</span>
+    <div className="min-h-screen w-full">
+      {/* Hero section */}
+      <div className="w-full from-primary/5 via-background to-background">
+        <div className="mx-auto w-full max-w-screen-xl px-4 pt-12 pb-8 sm:pt-20 sm:pb-12">
+          {/* Meta info */}
+          <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mb-6">
+            <Link
+              href={`/users/${author.id}`}
+              className="inline-flex items-center gap-2 hover:text-foreground transition-colors"
+            >
+              <UserAvatar
+                width={24}
+                height={24}
+                src={author.image}
+                alt={author.name}
+                userId={author.id}
+                className="border border-border/30"
+              />
+              <span className="font-medium">{author.name}</span>
+            </Link>
+            <span className="text-border/60">•</span>
+            <time dateTime={dateTime} className="text-sm">
+              {formatPostDate(createdAt, { relative: true })}
+            </time>
+            <span className="text-border/60">•</span>
+            <span>{readingTime(content ?? '').text}</span>
+          </div>
+
+          {/* Title & Description */}
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4 sm:mb-6 max-w-4xl">
+            {title}
+          </h1>
+          <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl">
+            {description}
+          </p>
         </div>
-      </Link>
-      {/* Content */}
-      <article className="prose dark:prose-invert mx-auto max-w-none py-6">
-        <Editor options={{ content, editable: false }} />
-      </article>
-      {/* Like button centered */}
-      <div className="flex justify-center mt-8">
-        <LikeButton
-          likes={likes}
-          user={
-            user
-              ? {
-                  ...user,
-                  createdAt: new Date(user.createdAt),
-                  updatedAt: new Date(user.updatedAt)
+      </div>
+
+      {/* Content section */}
+      <div className="w-full border-t border-border/10">
+        <div className="mx-auto max-w-screen-xl px-4">
+          <div className="py-8">
+            {/* Main content */}
+            <article className="prose prose-sm sm:prose lg:prose-lg dark:prose-invert max-w-none">
+              <Editor options={{ content, editable: false }} />
+            </article>
+
+            {/* Like button */}
+            <div className="mt-12 flex justify-start border-t border-border/10 pt-6">
+              <LikeButton
+                likes={likes}
+                user={
+                  user
+                    ? {
+                        ...user,
+                        createdAt: new Date(user.createdAt),
+                        updatedAt: new Date(user.updatedAt)
+                      }
+                    : null
                 }
-              : null
-          }
-          postId={id}
-        />
+                postId={id}
+              />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )
