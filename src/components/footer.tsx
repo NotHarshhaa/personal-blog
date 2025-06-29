@@ -50,14 +50,14 @@ const Footer = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
-      className='w-full pt-12'
+      className='w-full pt-12 motion-reduce:transform-none'
     >
       <div className='w-full border-t border-border/30 mb-0' />
       <div className='mx-auto w-full max-w-6xl px-4 md:px-8'>
-        <div className='rounded-2xl border border-border/40 bg-white/80 dark:bg-zinc-900/80 shadow-lg px-6 py-8 mt-6 mb-4 backdrop-blur-md'>
+        <div className='rounded-2xl border border-border/40 bg-white/80 dark:bg-zinc-900/80 shadow-lg px-6 py-8 mt-6 mb-4 backdrop-blur-md transition-all duration-300 motion-safe:hover:shadow-xl motion-safe:hover:scale-[1.01] motion-safe:md:transform motion-reduce:transform-none'>
           <div className='flex flex-col md:flex-row md:items-start md:justify-between gap-8'>
             {/* About Section */}
-            <div className='flex-1 min-w-[180px]'>
+            <div className='flex-1 min-w-[180px] transition-all duration-300 motion-safe:md:hover:translate-x-2 motion-reduce:transform-none'>
               <h3 className='text-lg font-semibold mb-2'>About</h3>
               <p className='text-sm text-muted-foreground'>
                 A passionate developer sharing thoughts, experiences, and insights about technology and life.
@@ -67,7 +67,7 @@ const Footer = () => {
             {/* Newsletter + Social Section (stacked on mobile, row on desktop) */}
             <div className='flex-1 flex flex-col gap-6'>
               {/* Newsletter Section */}
-              <div>
+              <div className='transition-all duration-300 motion-safe:md:hover:-translate-y-1 motion-reduce:transform-none'>
                 <h3 className='text-lg font-semibold mb-2'>Stay Updated</h3>
                 <form onSubmit={handleSubscribe} className='flex gap-2 items-center flex-nowrap'>
                   <input
@@ -88,7 +88,7 @@ const Footer = () => {
               </div>
 
               {/* Social Links Section */}
-              <div>
+              <div className='transition-all duration-300 motion-safe:md:hover:-translate-y-1 motion-reduce:transform-none'>
                 <h3 className='text-lg font-semibold mb-2'>Connect</h3>
                 <div className='flex flex-row flex-wrap gap-4 items-center'>
                   {links.map((link) => (
@@ -97,7 +97,7 @@ const Footer = () => {
                       href={link.href}
                       target='_blank'
                       rel='noopener noreferrer'
-                      className='group flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors hover:bg-white/30 dark:hover:bg-zinc-800/40'
+                      className='group flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-all duration-300 hover:bg-white/30 dark:hover:bg-zinc-800/40 motion-safe:md:hover:scale-105 motion-reduce:transform-none'
                       title={link.label}
                     >
                       {link.icon}

@@ -144,21 +144,25 @@ const ClientHeader = ({ user }: Props) => {
       initial={{ y: -30, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
-      className={`fixed inset-x-0 top-0 z-50 flex justify-center px-2 sm:px-4 transition-all duration-300 ${
+      className={`fixed inset-x-0 top-0 z-50 flex justify-center px-2 sm:px-4 transition-all duration-300 motion-reduce:transform-none ${
         isScrolled ? 'py-2' : 'py-4'
       }`}
     >
       <div
-        className={`w-full max-w-6xl mx-auto rounded-2xl border border-border/40 bg-white/80 dark:bg-zinc-900/80 shadow-lg px-2 py-2 sm:px-6 backdrop-blur-md transition-all duration-300 ease-in-out ${
+        className={`w-full max-w-6xl mx-auto rounded-2xl border border-border/40 bg-white/80 dark:bg-zinc-900/80 shadow-lg px-2 py-2 sm:px-6 backdrop-blur-md transition-all duration-300 ease-in-out motion-safe:md:hover:shadow-xl motion-safe:md:hover:bg-white/90 dark:motion-safe:md:hover:bg-zinc-900/90 ${
           isScrolled ? 'shadow-xl' : ''
         }`}
       >
         <div className='flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4'>
           <Link
             href='/'
-            className='group flex items-center gap-2 text-base font-semibold transition hover:opacity-90 sm:text-xl'
+            className='group flex items-center gap-2 text-base font-semibold transition-all duration-300 hover:opacity-90 sm:text-xl motion-safe:md:hover:-translate-y-0.5 motion-reduce:transform-none'
           >
-            <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.5 }}>
+            <motion.div
+              whileHover={{ rotate: 360 }}
+              transition={{ duration: 0.5 }}
+              className="motion-reduce:transform-none"
+            >
               <Image
                 src='/logo.svg'
                 alt='Logo'
@@ -172,44 +176,31 @@ const ClientHeader = ({ user }: Props) => {
             </span>
           </Link>
 
-          <div className='flex flex-wrap items-center justify-end gap-2 sm:gap-4 min-w-0'>
-            {/* Search Button */}
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => {
-                setIsSearchOpen(!isSearchOpen)
-                setTimeout(() => searchRef.current?.focus(), 100)
-              }}
-              className='flex items-center justify-center rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-800'
-              aria-label='Search'
+          <div className='flex items-center gap-2'>
+            <button
+              type='button'
+              onClick={() => setIsSearchOpen(!isSearchOpen)}
+              className='rounded-lg p-2 transition-all duration-300 hover:bg-white/50 dark:hover:bg-zinc-800/50 motion-safe:md:hover:scale-105 motion-reduce:transform-none'
+              aria-label='Toggle search'
             >
               <Search className='h-5 w-5' />
-            </motion.button>
+            </button>
 
-            {/* Notifications */}
             {user && (
               <div className='relative'>
-                <motion.button
-                  id='notif-bell-btn'
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className='relative flex items-center justify-center rounded-full p-2 hover:bg-gray-100 dark:hover:bg-gray-800'
-                  aria-label='Notifications'
-                  onClick={() => setShowNotifications((v) => !v)}
+                <button
+                  type='button'
+                  onClick={() => setShowNotifications(!showNotifications)}
+                  className='rounded-lg p-2 transition-all duration-300 hover:bg-white/50 dark:hover:bg-zinc-800/50 motion-safe:md:hover:scale-105 motion-reduce:transform-none'
+                  aria-label='Show notifications'
                 >
                   <Bell className='h-5 w-5' />
-                  {unreadCount > 0 && (
-                    <span className='absolute top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] text-white'>
-                      {unreadCount}
-                    </span>
-                  )}
-                </motion.button>
-                {/* Notifications Dropdown */}
+                </button>
+
                 {showNotifications && (
                   <div
                     id='notif-dropdown'
-                    className='absolute right-0 z-50 mt-2 w-80 max-w-xs rounded-lg border bg-white shadow-lg dark:bg-gray-900'
+                    className='absolute right-0 z-50 mt-2 w-80 max-w-xs rounded-lg border bg-white shadow-lg dark:bg-gray-900 transition-all duration-300 motion-safe:md:hover:shadow-xl motion-reduce:transform-none'
                   >
                     <div className='p-4 border-b text-base font-semibold'>Notifications</div>
                     <div className='max-h-72 overflow-auto'>
@@ -219,7 +210,7 @@ const ClientHeader = ({ user }: Props) => {
                       {notifications.map((notif) => (
                         <div
                           key={notif.id}
-                          className={`w-full px-4 py-3 text-left transition-colors border-b last:border-b-0 ${
+                          className={`w-full px-4 py-3 text-left transition-all duration-300 border-b last:border-b-0 motion-safe:md:hover:bg-gray-50 dark:motion-safe:md:hover:bg-gray-800/60 ${
                             notif.read
                               ? 'bg-transparent'
                               : 'bg-gray-50 dark:bg-gray-800/60 border-l-4 border-primary'
@@ -239,7 +230,11 @@ const ClientHeader = ({ user }: Props) => {
             )}
 
             {user?.role === 'admin' && (
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="motion-reduce:transform-none"
+              >
                 <NewPostButton />
               </motion.div>
             )}
@@ -247,7 +242,7 @@ const ClientHeader = ({ user }: Props) => {
             <motion.div
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className='flex items-center'
+              className='flex items-center motion-reduce:transform-none'
             >
               <ThemeToggle />
             </motion.div>
@@ -275,9 +270,9 @@ const ClientHeader = ({ user }: Props) => {
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className='relative w-full overflow-visible'
+              className='relative w-full overflow-visible motion-reduce:transform-none'
             >
-              <div className='mt-2 flex items-center gap-2 rounded-lg bg-gray-100 px-4 py-2 dark:bg-gray-800'>
+              <div className='mt-2 flex items-center gap-2 rounded-lg bg-gray-100 px-4 py-2 dark:bg-gray-800 transition-all duration-300 motion-safe:md:hover:bg-gray-200 dark:motion-safe:md:hover:bg-gray-700'>
                 <Search className='h-4 w-4 text-gray-500' />
                 <input
                   ref={searchRef}
