@@ -71,15 +71,15 @@ const Editor = (props: EditorProps) => {
     >
       {/* Sticky toolbar */}
       {editor.isEditable && (
-        <div className='sticky top-0 z-10 rounded-t-xl border-b bg-background/90 px-3 py-2 shadow-sm'>
+        <div className='sticky top-0 z-10 rounded-t-xl border-b bg-background/90 px-1 sm:px-3 py-1 sm:py-2 shadow-sm'>
           <Toolbar editor={editor} />
         </div>
       )}
       <EditorContent
         editor={editor}
         className={cn(
-          'bg-background flex min-h-[350px] px-0 py-4 focus:outline-none',
-          editor.isEditable && 'rounded-b-xl px-3'
+          'bg-background flex min-h-[300px] sm:min-h-[350px] px-0 py-2 sm:py-4 focus:outline-none',
+          editor.isEditable && 'rounded-b-xl px-2 sm:px-3'
         )}
         aria-label='Post editor'
         onFocus={() => setIsFocused(true)}
@@ -87,10 +87,10 @@ const Editor = (props: EditorProps) => {
       />
       {/* Word/char count */}
       {editor.isEditable && (
-        <div className='flex items-center justify-end gap-4 px-4 pb-2 text-xs text-muted-foreground'>
-          <span>{wordCount} words</span>
-          <span>{charCount} chars</span>
-        </div>
+      <div className='flex items-center justify-end gap-2 sm:gap-4 px-2 sm:px-4 pb-1 sm:pb-2 text-xs text-muted-foreground'>
+        <span>{wordCount} words</span>
+        <span>{charCount} chars</span>
+      </div>
       )}
     </div>
   )

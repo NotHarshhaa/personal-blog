@@ -1,5 +1,5 @@
 import { type Editor } from '@tiptap/react'
-import { cn } from '@tszhong0411/utils'
+import { cn } from '@/lib/utils'
 import {
   BoldIcon,
   CodeIcon,
@@ -20,7 +20,14 @@ import {
   StrikethroughIcon,
   TerminalSquareIcon,
   TextQuoteIcon,
-  SmileIcon
+  SmileIcon,
+  AlignLeftIcon,
+  AlignCenterIcon,
+  AlignRightIcon,
+  AlignJustifyIcon,
+  TypeIcon,
+  PaletteIcon,
+  YoutubeIcon
 } from 'lucide-react'
 import { useCallback } from 'react'
 
@@ -38,7 +45,10 @@ type ToolbarProps = {
   editor: Editor
 }
 
-const Divider = () => <div className='bg-muted mx-2 h-6 w-[2px]' />
+const Divider = () => <div className='bg-muted mx-2 h-6 w-[2px] md:block hidden' />
+
+// Mobile toolbar row breakpoint helper
+const MobileBreak = () => <div className='w-full h-0 md:hidden block order-3' />
 
 const Toolbar = (props: ToolbarProps) => {
   const { editor } = props
@@ -54,36 +64,64 @@ const Toolbar = (props: ToolbarProps) => {
     editor.chain().focus().extendMarkRange('link').setLink({ href: url }).run()
   }, [editor])
 
-  // Placeholder for emoji picker
   const addEmoji = () => {
     const emoji = globalThis.prompt('Enter emoji')
-    if (emoji) editor.chain().focus().insertContent(emoji).run()
+    if (emoji) {
+      editor.chain().focus().insertContent(emoji).run()
+    }
+  }
+
+  const setYoutubeVideo = () => {
+    const url = globalThis.prompt('Enter YouTube URL')
+    if (url) {
+      editor.chain().focus().setYoutubeVideo({ src: url }).run()
+    }
+  }
+
+  const setTextColor = () => {
+    const color = globalThis.prompt('Enter color (hex, rgb, or name)', editor.getAttributes('textStyle').color)
+    if (color === null) return
+    if (color === '') {
+      editor.chain().focus().unsetColor().run()
+      return
+    }
+    editor.chain().focus().setColor(color).run()
+  }
+
+  const setFontFamily = () => {
+    const font = globalThis.prompt('Enter font family', editor.getAttributes('textStyle').fontFamily)
+    if (font === null) return
+    if (font === '') {
+      editor.chain().focus().unsetFontFamily().run()
+      return
+    }
+    editor.chain().focus().setFontFamily(font).run()
   }
 
   return (
     <nav
       className={cn(
-        'backdrop-blur supports-[backdrop-filter]:bg-white/70 dark:supports-[backdrop-filter]:bg-zinc-900/70',
-        'sticky top-[60px] z-10 flex flex-wrap items-center rounded-xl border border-border/30 p-2 shadow-lg',
-        'gap-1'
+        'backdrop-blur supports-[backdrop-filter]:bg-white/70 dark:supports-[backdrop-filter]:bg-black/70',
+        'sticky top-[60px] z-10 flex flex-wrap items-center justify-center md:justify-start rounded-xl border border-border/30 shadow-lg',
+        'p-1 md:p-2 gap-0.5 md:gap-1'
       )}
       aria-label='Editor toolbar'
     >
       {/* Text formatting group */}
-      <div className='flex items-center gap-1'>
+      <div className='flex items-center gap-0.5 md:gap-1'>
         <Tooltip label='Bold (Ctrl+B)'>
           <button
             type='button'
             onClick={() => editor.chain().focus().toggleBold().run()}
             disabled={!editor.can().chain().focus().toggleBold().run()}
             className={cn(
-              'rounded-lg p-2 transition-all focus-visible:ring-2',
+              'rounded-lg p-1 md:p-2 transition-all focus-visible:ring-2',
               editor.isActive('bold') ? 'bg-muted' : 'hover:bg-muted',
               'outline-none'
             )}
             aria-label='Bold'
           >
-            <BoldIcon className='size-5' />
+            <BoldIcon className='size-4 md:size-5' />
           </button>
         </Tooltip>
         <Tooltip label='Italic (Ctrl+I)'>
@@ -92,13 +130,13 @@ const Toolbar = (props: ToolbarProps) => {
             onClick={() => editor.chain().focus().toggleItalic().run()}
             disabled={!editor.can().chain().focus().toggleItalic().run()}
             className={cn(
-              'rounded-lg p-2 transition-all focus-visible:ring-2',
+              'rounded-lg p-1 md:p-2 transition-all focus-visible:ring-2',
               editor.isActive('italic') ? 'bg-muted' : 'hover:bg-muted',
               'outline-none'
             )}
             aria-label='Italic'
           >
-            <ItalicIcon className='size-5' />
+            <ItalicIcon className='size-4 md:size-5' />
           </button>
         </Tooltip>
         <Tooltip label='Strikethrough (Ctrl+Shift+S)'>
@@ -107,13 +145,13 @@ const Toolbar = (props: ToolbarProps) => {
             onClick={() => editor.chain().focus().toggleStrike().run()}
             disabled={!editor.can().chain().focus().toggleStrike().run()}
             className={cn(
-              'rounded-lg p-2 transition-all focus-visible:ring-2',
+              'rounded-lg p-1 md:p-2 transition-all focus-visible:ring-2',
               editor.isActive('strike') ? 'bg-muted' : 'hover:bg-muted',
               'outline-none'
             )}
             aria-label='Strikethrough'
           >
-            <StrikethroughIcon className='size-5' />
+            <StrikethroughIcon className='size-4 md:size-5' />
           </button>
         </Tooltip>
         <Tooltip label='Code (Ctrl+E)'>
@@ -122,13 +160,13 @@ const Toolbar = (props: ToolbarProps) => {
             onClick={() => editor.chain().focus().toggleCode().run()}
             disabled={!editor.can().chain().focus().toggleCode().run()}
             className={cn(
-              'rounded-lg p-2 transition-all focus-visible:ring-2',
+              'rounded-lg p-1 md:p-2 transition-all focus-visible:ring-2',
               editor.isActive('code') ? 'bg-muted' : 'hover:bg-muted',
               'outline-none'
             )}
             aria-label='Code'
           >
-            <CodeIcon className='size-5' />
+            <CodeIcon className='size-4 md:size-5' />
           </button>
         </Tooltip>
         <Tooltip label='Highlight'>
@@ -137,29 +175,135 @@ const Toolbar = (props: ToolbarProps) => {
             onClick={() => editor.chain().focus().toggleHighlight().run()}
             disabled={!editor.can().chain().focus().toggleHighlight().run()}
             className={cn(
-              'rounded-lg p-2 transition-all focus-visible:ring-2',
+              'rounded-lg p-1 md:p-2 transition-all focus-visible:ring-2',
               editor.isActive('highlight') ? 'bg-muted' : 'hover:bg-muted',
               'outline-none'
             )}
             aria-label='Highlight'
           >
-            <HighlighterIcon className='size-5' />
+            <HighlighterIcon className='size-4 md:size-5' />
           </button>
         </Tooltip>
         <Tooltip label='Emoji'>
           <button
             type='button'
             onClick={addEmoji}
-            className='rounded-lg p-2 transition-all hover:bg-muted focus-visible:ring-2 outline-none'
+            className='rounded-lg p-1 md:p-2 transition-all hover:bg-muted focus-visible:ring-2 outline-none md:block hidden'
             aria-label='Add Emoji'
           >
-            <SmileIcon className='size-5' />
+            <SmileIcon className='size-4 md:size-5' />
+          </button>
+        </Tooltip>
+      </div>
+      <Divider />
+      {/* Text alignment group */}
+      <div className='flex items-center gap-0.5 md:gap-1'>
+        <Tooltip label='Align Left'>
+          <button
+            type='button'
+            onClick={() => editor.chain().focus().setTextAlign('left').run()}
+            className={cn(
+              'rounded-lg p-2 transition-all focus-visible:ring-2',
+              editor.isActive({ textAlign: 'left' }) ? 'bg-muted' : 'hover:bg-muted',
+              'outline-none'
+            )}
+            aria-label='Align Left'
+          >
+            <AlignLeftIcon className='size-5' />
+          </button>
+        </Tooltip>
+        <Tooltip label='Align Center'>
+          <button
+            type='button'
+            onClick={() => editor.chain().focus().setTextAlign('center').run()}
+            className={cn(
+              'rounded-lg p-2 transition-all focus-visible:ring-2',
+              editor.isActive({ textAlign: 'center' }) ? 'bg-muted' : 'hover:bg-muted',
+              'outline-none'
+            )}
+            aria-label='Align Center'
+          >
+            <AlignCenterIcon className='size-5' />
+          </button>
+        </Tooltip>
+        <Tooltip label='Align Right'>
+          <button
+            type='button'
+            onClick={() => editor.chain().focus().setTextAlign('right').run()}
+            className={cn(
+              'rounded-lg p-2 transition-all focus-visible:ring-2',
+              editor.isActive({ textAlign: 'right' }) ? 'bg-muted' : 'hover:bg-muted',
+              'outline-none'
+            )}
+            aria-label='Align Right'
+          >
+            <AlignRightIcon className='size-5' />
+          </button>
+        </Tooltip>
+        <Tooltip label='Justify'>
+          <button
+            type='button'
+            onClick={() => editor.chain().focus().setTextAlign('justify').run()}
+            className={cn(
+              'rounded-lg p-2 transition-all focus-visible:ring-2',
+              editor.isActive({ textAlign: 'justify' }) ? 'bg-muted' : 'hover:bg-muted',
+              'outline-none'
+            )}
+            aria-label='Justify'
+          >
+            <AlignJustifyIcon className='size-5' />
+          </button>
+        </Tooltip>
+      </div>
+      <Divider />
+      {/* Text styling group */}
+      <div className='flex items-center gap-0.5 md:gap-1'>
+        <Tooltip label='Font Family'>
+          <button
+            type='button'
+            onClick={setFontFamily}
+            className={cn(
+              'rounded-lg p-2 transition-all focus-visible:ring-2',
+              editor.isActive('textStyle') ? 'bg-muted' : 'hover:bg-muted',
+              'outline-none'
+            )}
+            aria-label='Font Family'
+          >
+            <TypeIcon className='size-5' />
+          </button>
+        </Tooltip>
+        <Tooltip label='Text Color'>
+          <button
+            type='button'
+            onClick={setTextColor}
+            className={cn(
+              'rounded-lg p-2 transition-all focus-visible:ring-2',
+              editor.isActive('textStyle') ? 'bg-muted' : 'hover:bg-muted',
+              'outline-none'
+            )}
+            aria-label='Text Color'
+          >
+            <PaletteIcon className='size-5' />
+          </button>
+        </Tooltip>
+      </div>
+      <Divider />
+      {/* Media group */}
+      <div className='flex items-center gap-0.5 md:gap-1'>
+        <Tooltip label='YouTube Video'>
+          <button
+            type='button'
+            onClick={setYoutubeVideo}
+            className='rounded-lg p-2 transition-all hover:bg-muted focus-visible:ring-2 outline-none'
+            aria-label='Add YouTube Video'
+          >
+            <YoutubeIcon className='size-5' />
           </button>
         </Tooltip>
       </div>
       <Divider />
       {/* Headings and paragraph */}
-      <div className='flex items-center gap-1'>
+      <div className='flex items-center gap-0.5 md:gap-1 order-first md:order-none w-full md:w-auto mb-1 md:mb-0'>
         <Tooltip label='Heading 1'>
           <button
             type='button'
@@ -219,7 +363,7 @@ const Toolbar = (props: ToolbarProps) => {
       </div>
       <Divider />
       {/* Lists and code block */}
-      <div className='flex items-center gap-1'>
+      <div className='flex items-center gap-0.5 md:gap-1 order-2 md:order-none'>
         <Tooltip label='Bullet List'>
           <button
             type='button'
@@ -277,9 +421,10 @@ const Toolbar = (props: ToolbarProps) => {
           </button>
         </Tooltip>
       </div>
+      <MobileBreak />
       <Divider />
       {/* Links, quotes, rules, clear formatting */}
-      <div className='flex items-center gap-1'>
+      <div className='flex items-center gap-0.5 md:gap-1'>
         <Tooltip label='Link'>
           <button
             type='button'
@@ -331,7 +476,7 @@ const Toolbar = (props: ToolbarProps) => {
       </div>
       <Divider />
       {/* Undo/Redo */}
-      <div className='flex items-center gap-1'>
+      <div className='flex items-center gap-0.5 md:gap-1 order-last'>
         <Tooltip label='Undo (Ctrl+Z)'>
           <button
             type='button'
