@@ -35,7 +35,7 @@ const config: NextAuthConfig = {
           id: user.id,
           name: user.name,
           email: user.email,
-          image: user.image,
+          image: user.image || session.user.image,
           role: user.role,
           bio: user.bio,
           createdAt: user.createdAt ?? null,
@@ -67,7 +67,7 @@ export const getCurrentUser = cache(async () => {
   return {
     ...session.user,
     name: session.user.name,
-    image: session.user.image ?? defaultImage,
+    image: session.user.image || defaultImage,
     emailVerified: session.user.emailVerified ?? null,
     github: session.user.github ?? '',
     twitter: session.user.twitter ?? '',

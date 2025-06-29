@@ -19,7 +19,6 @@ import { usePathname } from 'next/navigation'
 import { signOut } from 'next-auth/react'
 
 import { cn } from '@/lib/utils'
-import { getDefaultImage } from '@/utils/get-default-image'
 
 const roleColors: Record<string, string> = {
   admin: 'bg-green-500 text-white',
@@ -52,7 +51,7 @@ const Menu = ({ user }: MenuProps) => {
   const { id, email = '', role, name: rawName, image: rawImage } = user
 
   const name = rawName || 'User'
-  const image = rawImage ?? getDefaultImage(id)
+  const image = rawImage || ''
 
   return (
     <DropdownMenu>

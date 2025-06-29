@@ -8,6 +8,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
+import { cn } from '@/lib/utils'
 
 import Menu from './menu'
 import NewPostButton from './new-post-button.lazy'
@@ -64,9 +65,10 @@ const ClientHeader = ({ user }: Props) => {
       createdAt: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
     },
   ])
-  const unreadCount = notifications.filter((n) => !n.read).length
   const searchRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
+  const notificationsRef = useRef<HTMLDivElement>(null)
+  const notificationButtonRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -118,26 +120,48 @@ const ClientHeader = ({ user }: Props) => {
     return () => document.removeEventListener('mousedown', handleClick)
   }, [showDropdown])
 
-  // Close notifications dropdown on click outside
+  // Update the click outside handler for notifications
   useEffect(() => {
-    function handleClick(e: MouseEvent) {
-      const notifBtn = document.getElementById('notif-bell-btn')
-      const notifDropdown = document.getElementById('notif-dropdown')
+    const handleClickOutside = (e: MouseEvent) => {
       if (
-        notifBtn && notifDropdown &&
-        !notifBtn.contains(e.target as Node) &&
-        !notifDropdown.contains(e.target as Node)
+        notificationsRef.current &&
+        notificationButtonRef.current &&
+        !notificationsRef.current.contains(e.target as Node) &&
+        !notificationButtonRef.current.contains(e.target as Node)
       ) {
         setShowNotifications(false)
       }
     }
+
     if (showNotifications) {
-      document.addEventListener('mousedown', handleClick)
-      // Mark all notifications as read when dropdown is opened
-      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })))
+      document.addEventListener('mousedown', handleClickOutside)
     }
-    return () => document.removeEventListener('mousedown', handleClick)
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
   }, [showNotifications])
+
+  // Add these new functions to handle notifications
+  const handleToggleRead = (notifId: string) => {
+    setNotifications(prev =>
+      prev.map(n =>
+        n.id === notifId
+          ? { ...n, read: !n.read }
+          : n
+      )
+    )
+  }
+
+  const handleClearAll = () => {
+    setNotifications([])
+  }
+
+  const handleNotificationClick = (notifId: string, postId: string) => {
+    handleToggleRead(notifId)
+    router.push(`/posts/${postId}`)
+    setShowNotifications(false)
+  }
 
   return (
     <motion.header
@@ -189,43 +213,111 @@ const ClientHeader = ({ user }: Props) => {
             {user && (
               <div className='relative'>
                 <button
+                  ref={notificationButtonRef}
                   type='button'
                   onClick={() => setShowNotifications(!showNotifications)}
-                  className='rounded-lg p-2 transition-all duration-300 hover:bg-white/50 dark:hover:bg-zinc-800/50 motion-safe:md:hover:scale-105 motion-reduce:transform-none'
+                  className='relative rounded-lg p-2 transition-all duration-300 hover:bg-white/50 dark:hover:bg-zinc-800/50 motion-safe:md:hover:scale-105 motion-reduce:transform-none'
                   aria-label='Show notifications'
                 >
                   <Bell className='h-5 w-5' />
+                  {notifications.filter(n => !n.read).length > 0 && (
+                    <span className='absolute top-1 right-1 size-2 rounded-full bg-red-500 ring-2 ring-white dark:ring-zinc-900' />
+                  )}
                 </button>
 
-                {showNotifications && (
-                  <div
-                    id='notif-dropdown'
-                    className='absolute right-0 z-50 mt-2 w-80 max-w-xs rounded-lg border bg-white shadow-lg dark:bg-gray-900 transition-all duration-300 motion-safe:md:hover:shadow-xl motion-reduce:transform-none'
-                  >
-                    <div className='p-4 border-b text-base font-semibold'>Notifications</div>
-                    <div className='max-h-72 overflow-auto'>
-                      {notifications.length === 0 && (
-                        <div className='p-4 text-center text-sm text-gray-500'>No notifications.</div>
-                      )}
-                      {notifications.map((notif) => (
-                        <div
-                          key={notif.id}
-                          className={`w-full px-4 py-3 text-left transition-all duration-300 border-b last:border-b-0 motion-safe:md:hover:bg-gray-50 dark:motion-safe:md:hover:bg-gray-800/60 ${
-                            notif.read
-                              ? 'bg-transparent'
-                              : 'bg-gray-50 dark:bg-gray-800/60 border-l-4 border-primary'
-                          }`}
-                        >
-                          <div className='font-medium'>{notif.title}</div>
-                          <div className='text-xs text-gray-500'>{notif.description}</div>
-                          <div className='text-[10px] text-gray-400 mt-1'>
-                            {new Date(notif.createdAt).toLocaleString()}
+                <AnimatePresence>
+                  {showNotifications && (
+                    <motion.div
+                      ref={notificationsRef}
+                      initial={{ opacity: 0, scale: 0.95, y: -20 }}
+                      animate={{ opacity: 1, scale: 1, y: 0 }}
+                      exit={{ opacity: 0, scale: 0.95, y: -20 }}
+                      transition={{ duration: 0.2 }}
+                      className='absolute right-0 z-50 mt-2 w-96 max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border border-border/40 bg-white/95 shadow-lg backdrop-blur-sm dark:bg-zinc-900/95 dark:shadow-2xl'
+                    >
+                      <div className='flex items-center justify-between border-b border-border/10 px-4 py-3'>
+                        <h2 className='text-base font-semibold'>Notifications</h2>
+                        {notifications.filter(n => !n.read).length > 0 && (
+                          <span className='rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-600 dark:bg-red-900/30 dark:text-red-400'>
+                            {notifications.filter(n => !n.read).length} new
+                          </span>
+                        )}
+                      </div>
+
+                      <div className='max-h-[calc(100vh-16rem)] overflow-y-auto overscroll-contain'>
+                        {notifications.length === 0 ? (
+                          <div className='flex flex-col items-center justify-center gap-2 py-8 text-center'>
+                            <div className='rounded-full bg-muted/30 p-3'>
+                              <Bell className='h-6 w-6 text-muted-foreground' />
+                            </div>
+                            <p className='text-sm font-medium'>No notifications yet</p>
+                            <p className='text-xs text-muted-foreground'>
+                              We'll notify you when something important happens
+                            </p>
                           </div>
+                        ) : (
+                          <div className='divide-y divide-border/5'>
+                            {notifications.map((notif) => (
+                              <motion.div
+                                key={notif.id}
+                                initial={{ opacity: 0, x: -20 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: 20 }}
+                                onClick={() => handleNotificationClick(notif.id, notif.postId)}
+                                className={cn(
+                                  'group relative flex cursor-pointer flex-col gap-1 px-4 py-3 transition-colors',
+                                  'hover:bg-muted/30',
+                                  !notif.read && 'bg-blue-50/50 dark:bg-blue-900/10',
+                                  !notif.read && 'before:absolute before:left-0 before:top-0 before:h-full before:w-1 before:bg-blue-500 dark:before:bg-blue-400'
+                                )}
+                              >
+                                <div className='flex items-start justify-between gap-2'>
+                                  <span className='line-clamp-2 flex-1 font-medium leading-tight'>
+                                    {notif.title}
+                                  </span>
+                                  {!notif.read && (
+                                    <span className='mt-1 h-2 w-2 shrink-0 rounded-full bg-blue-500 dark:bg-blue-400' />
+                                  )}
+                                </div>
+                                <p className='line-clamp-2 text-sm text-muted-foreground'>
+                                  {notif.description}
+                                </p>
+                                <div className='flex items-center justify-between'>
+                                  <time className='text-[10px] tabular-nums text-muted-foreground'>
+                                    {new Date(notif.createdAt).toLocaleString()}
+                                  </time>
+                                  <motion.button
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={(e) => {
+                                      e.stopPropagation() // Prevent triggering the parent onClick
+                                      handleToggleRead(notif.id)
+                                    }}
+                                    className='invisible rounded-md bg-muted/50 px-2 py-1 text-[10px] font-medium text-muted-foreground opacity-0 transition-all group-hover:visible group-hover:opacity-100'
+                                  >
+                                    Mark as {notif.read ? 'unread' : 'read'}
+                                  </motion.button>
+                                </div>
+                              </motion.div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+
+                      {notifications.length > 0 && (
+                        <div className='border-t border-border/10 p-2'>
+                          <button
+                            type='button'
+                            onClick={handleClearAll}
+                            className='w-full rounded-md bg-muted/30 px-3 py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted/50'
+                          >
+                            Clear all notifications
+                          </button>
                         </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
+                      )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             )}
 
