@@ -71,6 +71,101 @@ img {
   top: 6px;
 }
 
+/* Fix prose spacing for better readability */
+.prose {
+  line-height: 1.6 !important;
+}
+
+.prose p {
+  margin-top: 0.75rem !important;
+  margin-bottom: 0.75rem !important;
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  margin-top: 1.5rem !important;
+  margin-bottom: 0.75rem !important;
+}
+
+.prose ul,
+.prose ol {
+  margin-top: 0.75rem !important;
+  margin-bottom: 0.75rem !important;
+}
+
+.prose li {
+  margin-top: 0.125rem !important;
+  margin-bottom: 0.125rem !important;
+}
+
+.prose blockquote {
+  margin-top: 1rem !important;
+  margin-bottom: 1rem !important;
+}
+
+.prose code {
+  padding: 0.125rem 0.25rem !important;
+  margin: 0 !important;
+}
+
+.prose pre {
+  margin-top: 1rem !important;
+  margin-bottom: 1rem !important;
+}
+
+/* Mobile font size improvements - only affects mobile */
+@media (max-width: 768px) {
+  .prose {
+    font-size: 1rem !important; /* 16px - standard readable size */
+  }
+  
+  .prose p {
+    font-size: 1rem !important;
+  }
+  
+  .prose h1 {
+    font-size: 1.75rem !important; /* 28px */
+  }
+  
+  .prose h2 {
+    font-size: 1.5rem !important; /* 24px */
+  }
+  
+  .prose h3 {
+    font-size: 1.25rem !important; /* 20px */
+  }
+  
+  .prose h4 {
+    font-size: 1.125rem !important; /* 18px */
+  }
+  
+  .prose h5,
+  .prose h6 {
+    font-size: 1rem !important; /* 16px */
+  }
+  
+  .prose ul,
+  .prose ol {
+    font-size: 1rem !important;
+  }
+  
+  .prose li {
+    font-size: 1rem !important;
+  }
+  
+  .prose blockquote {
+    font-size: 1rem !important;
+  }
+  
+  .prose code {
+    font-size: 0.875rem !important; /* 14px - slightly smaller for code */
+  }
+}
+
 .hljs {
   display: block;
   overflow-x: auto;
