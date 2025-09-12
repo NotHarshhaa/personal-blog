@@ -52,8 +52,10 @@ export const metadata: Metadata = {
   alternates: {
     canonical: SITE_URL
   },
-  keywords: ['blog', 'one-blog', 'full-stack blog', 'nextjs blog'],
+  keywords: ['blog', 'devops', 'cloud computing', 'kubernetes', 'terraform', 'docker', 'aws', 'azure', 'infrastructure', 'automation', 'ci/cd', 'nextjs blog', 'tech blog'],
   creator: 'NotHarshhaa',
+  authors: [{ name: 'NotHarshhaa', url: SITE_URL }],
+  category: 'Technology',
   openGraph: {
     url: SITE_URL,
     type: 'website',
@@ -95,6 +97,11 @@ export const metadata: Metadata = {
         url: '/favicon/favicon-32x32.png'
       }
     ]
+  },
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION,
+    yandex: process.env.YANDEX_VERIFICATION,
+    yahoo: process.env.YAHOO_VERIFICATION
   }
 }
 
@@ -107,12 +114,41 @@ export const viewport: Viewport = {
 const RootLayout = (props: RootLayoutProps) => {
   const { children } = props
 
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'Blog',
+    name: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    url: SITE_URL,
+    author: {
+      '@type': 'Person',
+      name: 'NotHarshhaa',
+      url: SITE_URL
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: SITE_TITLE,
+      url: SITE_URL
+    },
+    inLanguage: 'en-US',
+    isAccessibleForFree: true
+  }
+
   return (
     <html lang='en-US' className={cn(GeistSans.variable)} suppressHydrationWarning>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+      </head>
       <body>
+        <a href="#main-content" className="skip-link">
+          Skip to main content
+        </a>
         <Providers>
           <Header />
-          <main className='min-h-page mx-auto max-w-6xl px-6 pt-32 pb-16'>{children}</main>
+          <main id="main-content" className='min-h-page mx-auto max-w-6xl px-6 pt-32 pb-16'>{children}</main>
           <Toaster />
           <Footer />
         </Providers>

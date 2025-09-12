@@ -92,19 +92,24 @@ const ClientHeader = ({ user }: Props) => {
       setShowDropdown(false)
       return
     }
-    setLoading(true)
-    fetch('/api/posts/search')
-      .then((res) => res.json())
-      .then((data: { posts: SearchPost[] }) => {
-        const filtered = data.posts.filter(
-          (post) =>
-            post.title.toLowerCase().includes(search.toLowerCase()) ||
-            post.description.toLowerCase().includes(search.toLowerCase())
-        )
-        setResults(filtered)
-        setShowDropdown(true)
-      })
-      .finally(() => setLoading(false))
+
+    const timeoutId = setTimeout(() => {
+      setLoading(true)
+      fetch('/api/posts/search')
+        .then((res) => res.json())
+        .then((data: { posts: SearchPost[] }) => {
+          const filtered = data.posts.filter(
+            (post) =>
+              post.title.toLowerCase().includes(search.toLowerCase()) ||
+              post.description.toLowerCase().includes(search.toLowerCase())
+          )
+          setResults(filtered)
+          setShowDropdown(true)
+        })
+        .finally(() => setLoading(false))
+    }, 300) // 300ms debounce
+
+    return () => clearTimeout(timeoutId)
   }, [search])
 
   // Close dropdown on click outside
@@ -168,14 +173,12 @@ const ClientHeader = ({ user }: Props) => {
       initial={{ y: -30, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, ease: 'easeOut' }}
-      className={`fixed inset-x-0 top-0 z-50 flex justify-center px-2 sm:px-4 transition-all duration-300 motion-reduce:transform-none ${
-        isScrolled ? 'py-2' : 'py-4'
-      }`}
+      className={`fixed inset-x-0 top-0 z-50 flex justify-center px-2 sm:px-4 transition-all duration-300 motion-reduce:transform-none ${isScrolled ? 'py-2' : 'py-4'
+        }`}
     >
       <div
-        className={`w-full max-w-6xl mx-auto rounded-2xl border border-border/40 bg-white/80 dark:bg-zinc-900/80 shadow-lg px-2 py-2 sm:px-6 backdrop-blur-md transition-all duration-300 ease-in-out motion-safe:md:hover:shadow-xl motion-safe:md:hover:bg-white/90 dark:motion-safe:md:hover:bg-zinc-900/90 ${
-          isScrolled ? 'shadow-xl' : ''
-        }`}
+        className={`w-full max-w-6xl mx-auto rounded-2xl border border-border/40 bg-white/80 dark:bg-zinc-900/80 shadow-lg px-2 py-2 sm:px-6 backdrop-blur-md transition-all duration-300 ease-in-out motion-safe:md:hover:shadow-xl motion-safe:md:hover:bg-white/90 dark:motion-safe:md:hover:bg-zinc-900/90 ${isScrolled ? 'shadow-xl' : ''
+          }`}
       >
         <div className='flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4'>
           <Link
@@ -343,11 +346,11 @@ const ClientHeader = ({ user }: Props) => {
               user={
                 user
                   ? {
-                      ...user,
-                      emailVerified: null,
-                      createdAt: new Date(user.createdAt),
-                      updatedAt: new Date(user.updatedAt)
-                    }
+                    ...user,
+                    emailVerified: null,
+                    createdAt: new Date(user.createdAt),
+                    updatedAt: new Date(user.updatedAt)
+                  }
                   : null
               }
             />

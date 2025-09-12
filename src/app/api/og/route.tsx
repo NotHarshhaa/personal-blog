@@ -21,16 +21,16 @@ export const GET = (req: Request) => {
   return new ImageResponse(
     (
       /* eslint-disable @eslint-react/dom/no-unknown-property -- custom attribute */
-      <div tw='bg-black flex w-full h-full justify-between flex-col text-white p-24'>
+      <div tw='bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 flex w-full h-full justify-between flex-col text-white p-24'>
         <div tw='flex flex-col'>
-          <div tw='flex items-center'>
+          <div tw='flex items-center mb-8'>
             <svg
               width='120'
               height='120'
               viewBox='0 0 120 120'
               fill='none'
               xmlns='http://www.w3.org/2000/svg'
-              aria-label='Book'
+              aria-label='DevOps'
             >
               <g clipPath='url(#clip0_54_56)'>
                 <path
@@ -65,11 +65,11 @@ export const GET = (req: Request) => {
                 </clipPath>
               </defs>
             </svg>
-            <div tw='ml-8 text-6xl font-bold'>One Blog</div>
+            <div tw='ml-8 text-6xl font-bold'>DevOps & Cloud Space</div>
           </div>
-          <div tw='mt-20 text-5xl font-semibold'>{title}</div>
+          <div tw='mt-20 text-5xl font-semibold leading-tight'>{title}</div>
         </div>
-        <div tw='flex justify-end text-3xl font-bold'>one-blog.honghong.me</div>
+        <div tw='flex justify-end text-3xl font-bold'>blog.notharshhaa.site</div>
       </div>
     ),
     /* eslint-enable @eslint-react/dom/no-unknown-property -- custom attribute */

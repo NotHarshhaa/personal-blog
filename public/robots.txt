@@ -1,0 +1,19 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://blog.notharshhaa.site/sitemap.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1
+
+# Disallow admin and editor pages
+Disallow: /admin/
+Disallow: /editor/
+Disallow: /api/
+Disallow: /me/
+
+# Allow important pages
+Allow: /posts/
+Allow: /users/
+Allow: /privacy/
