@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from '@tszhong0411/ui'
+import { Button } from '@/components/ui'
 import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
 import { signIn } from 'next-auth/react'

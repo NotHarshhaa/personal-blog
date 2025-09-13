@@ -1,6 +1,6 @@
 'use client'
 
-import { Button, toast } from '@tszhong0411/ui'
+import { Button, toast } from '@/components/ui'
 import { Loader2Icon, PenSquareIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useAction } from 'next-safe-action/hooks'

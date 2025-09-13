@@ -1,4 +1,4 @@
-declare module '@tszhong0411/ui' {
+declare module '@/components/ui' {
   import type { ComponentProps } from 'react'
 
   interface ButtonProps extends ComponentProps<'button'> {
@@ -154,7 +154,7 @@ declare module '@tszhong0411/ui' {
   export const Badge: React.FC<BadgeProps>
 }
 
-declare module '@tszhong0411/utils' {
+declare module '@/utils' {
   export function cn(...inputs: (string | undefined | null | false)[]): string
   export function range(count: number): number[]
 }

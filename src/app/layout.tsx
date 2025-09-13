@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from 'next'
 
 import '@/styles/globals.css'
 
-import { Toaster } from '@tszhong0411/ui'
-import { cn } from '@tszhong0411/utils'
+import { Toaster } from '@/components/ui/toaster'
+import { cn } from '@/utils'
 import { GeistSans } from 'geist/font/sans'
 
 import Footer from '@/components/footer'
@@ -139,7 +139,8 @@ const RootLayout = (props: RootLayoutProps) => {
       <head>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+          // @ts-ignore: JSON is available in the browser environment
+          dangerouslySetInnerHTML={{ __html: globalThis.JSON.stringify(structuredData) }}
         />
       </head>
       <body>

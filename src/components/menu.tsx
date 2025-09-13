@@ -12,7 +12,7 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger
-} from '@tszhong0411/ui'
+} from '@/components/ui'
 import { UserIcon, LogOut, Settings, FileText, BadgeCheck } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'

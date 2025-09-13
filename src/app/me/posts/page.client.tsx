@@ -2,7 +2,7 @@
 
 import type { User } from '@/db/schema'
 
-import { Tabs, TabsContent, TabsList, TabsTrigger, Input } from '@tszhong0411/ui'
+import { Tabs, TabsContent, TabsList, TabsTrigger, Input } from '@/components/ui'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useState, useEffect, useMemo, useRef } from 'react'
 import { FileText, FileCheck2, Heart, Search, Inbox } from 'lucide-react'

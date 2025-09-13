@@ -15,7 +15,7 @@ import {
   Input,
   Label,
   toast
-} from '@tszhong0411/ui'
+} from '@/components/ui'
 import { Loader2Icon, AlertTriangle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useAction } from 'next-safe-action/hooks'

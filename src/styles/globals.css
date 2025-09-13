@@ -1,8 +1,7 @@
 @import 'tailwindcss';
-@import '@tszhong0411/ui/styles/preset.css';
-@import '@tszhong0411/ui/styles/shiki.css';
-@import '@tszhong0411/ui/styles/typography.css';
-@source '../../node_modules/@tszhong0411/ui/dist/**/*.js';
+@import './preset.css';
+@import './shiki.css';
+@import './typography.css';
 
 @theme {
   --height-footer: 64px;

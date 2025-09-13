@@ -3,7 +3,7 @@
 import '@/styles/editor.css'
 
 import { EditorContent, type EditorEvents, type EditorOptions, useEditor } from '@tiptap/react'
-import { cn } from '@tszhong0411/utils'
+import { cn } from '@/utils'
 import { Loader2Icon } from 'lucide-react'
 import { useRef, useState } from 'react'
 
@@ -87,10 +87,10 @@ const Editor = (props: EditorProps) => {
       />
       {/* Word/char count */}
       {editor.isEditable && (
-      <div className='flex items-center justify-end gap-2 sm:gap-4 px-2 sm:px-4 pb-1 sm:pb-2 text-xs text-muted-foreground'>
-        <span>{wordCount} words</span>
-        <span>{charCount} chars</span>
-      </div>
+        <div className='flex items-center justify-end gap-2 sm:gap-4 px-2 sm:px-4 pb-1 sm:pb-2 text-xs text-muted-foreground'>
+          <span>{wordCount} words</span>
+          <span>{charCount} chars</span>
+        </div>
       )}
     </div>
   )

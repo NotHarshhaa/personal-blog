@@ -1,4 +1,4 @@
-import { Separator } from '@tszhong0411/ui'
+import { Separator } from '@/components/ui'
 import { FileIcon, Github, Twitter, Linkedin, Calendar } from 'lucide-react'
 import { type Metadata } from 'next'
 import { notFound } from 'next/navigation'
@@ -42,10 +42,10 @@ const UserPage = async (props: UserPageProps) => {
   const currentUser = await getCurrentUser()
   const formattedCurrentUser = currentUser
     ? {
-        ...currentUser,
-        createdAt: new Date(currentUser.createdAt),
-        updatedAt: new Date(currentUser.updatedAt)
-      }
+      ...currentUser,
+      createdAt: new Date(currentUser.createdAt),
+      updatedAt: new Date(currentUser.updatedAt)
+    }
     : null
   const { user } = await getUserById(id)
 

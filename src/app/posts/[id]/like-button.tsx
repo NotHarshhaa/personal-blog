@@ -3,8 +3,8 @@
 import type { Like, User } from '@/db/schema'
 
 import { createId } from '@paralleldrive/cuid2'
-import { Button, toast } from '@tszhong0411/ui'
-import { cn } from '@tszhong0411/utils'
+import { Button, toast } from '@/components/ui'
+import { cn } from '@/utils'
 import { Heart } from 'lucide-react'
 import { useOptimisticAction } from 'next-safe-action/hooks'
 import { useState } from 'react'

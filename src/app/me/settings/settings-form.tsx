@@ -17,7 +17,7 @@ import {
   FormMessage,
   Input,
   toast
-} from '@tszhong0411/ui'
+} from '@/components/ui'
 import { Loader2Icon, UserIcon, SunIcon, MoonIcon, MonitorIcon, Github, Twitter, Linkedin } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useAction } from 'next-safe-action/hooks'
@@ -51,9 +51,9 @@ const SettingsForm = (props: SettingsFormProps) => {
     onError: ({ error }) => {
       toast.error(
         error.serverError ??
-          error.validationErrors?.name?.[0] ??
-          error.validationErrors?.image?.[0] ??
-          error.validationErrors?.bio?.[0]
+        error.validationErrors?.name?.[0] ??
+        error.validationErrors?.image?.[0] ??
+        error.validationErrors?.bio?.[0]
       )
     }
   })

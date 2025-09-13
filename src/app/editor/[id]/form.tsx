@@ -20,8 +20,8 @@ import {
   toast,
   Separator,
   Switch
-} from '@tszhong0411/ui'
-import { cn } from '@tszhong0411/utils'
+} from '@/components/ui'
+import { cn } from '@/utils'
 import { GlobeIcon, Loader2Icon, LockIcon, EyeIcon, EyeOffIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useAction } from 'next-safe-action/hooks'

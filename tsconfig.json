@@ -4,11 +4,15 @@
     "baseUrl": ".",
     "jsx": "preserve",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": [
+        "src/*"
+      ]
     }
   },
-  "exclude": ["node_modules"],
-  "extends": "@tszhong0411/tsconfig/nextjs.json",
+  "exclude": [
+    "node_modules"
+  ],
+  "extends": "@nelsonlaidev/typescript-config/nextjs.json",
   "include": [
     "next-env.d.ts",
     "**/*.ts",

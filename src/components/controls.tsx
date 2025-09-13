@@ -18,7 +18,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
   toast
-} from '@tszhong0411/ui'
+} from '@/components/ui'
 import { Loader2Icon, MoreVerticalIcon, PencilIcon, Share2Icon, Trash2Icon } from 'lucide-react'
 import Link from 'next/link'
 import { useAction } from 'next-safe-action/hooks'

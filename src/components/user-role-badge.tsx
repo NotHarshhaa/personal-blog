@@ -1,6 +1,6 @@
 'use client'
 
-import { Badge } from '@tszhong0411/ui'
+import { Badge } from '@/components/ui'
 import { motion } from 'framer-motion'
 import { ShieldCheckIcon, UserIcon, StarIcon, GlobeIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'

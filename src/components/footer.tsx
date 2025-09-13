@@ -3,7 +3,7 @@
 import { SiGithub, SiInstagram, SiTelegram, SiX } from '@icons-pack/react-simple-icons'
 import { motion } from 'framer-motion'
 import { useState } from 'react'
-import { Button } from '@tszhong0411/ui'
+import { Button } from '@/components/ui'
 
 type Links = Array<{
   href: string

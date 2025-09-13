@@ -16,8 +16,9 @@ const nextConfig: NextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
   },
   experimental: {
-    optimizePackageImports: ['@tszhong0411/ui', 'lucide-react', 'framer-motion']
+    optimizePackageImports: ['lucide-react', 'framer-motion']
   },
+  transpilePackages: ['../lib/ui'],
   compress: true,
   poweredByHeader: false,
   generateEtags: false,
