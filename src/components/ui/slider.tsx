@@ -1,5 +1,6 @@
 import * as SliderPrimitive from '@radix-ui/react-slider'
-import { cn, range } from '@/utils'
+import { cn } from '@/utils/cn'
+import { range } from '@/utils/range'
 import { useMemo } from 'react'
 
 type SliderProps = React.ComponentProps<typeof SliderPrimitive.Root>

@@ -42,7 +42,7 @@ import {
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { Slot } from '@radix-ui/react-slot'
-import { cn } from '@/utils'
+import { cn } from '@/utils/cn'
 import { createContext, use, useCallback, useEffect, useId, useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
 
