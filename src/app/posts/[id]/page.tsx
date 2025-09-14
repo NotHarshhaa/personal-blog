@@ -109,7 +109,7 @@ const PostPage = async (props: PostPageProps) => {
             <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mb-6">
               <Link
                 href={`/users/${author.id}`}
-                className="inline-flex items-center gap-2 hover:text-foreground transition-colors"
+                className="inline-flex items-center gap-2 hover:text-foreground transition-colors duration-200 group"
                 aria-label={`View posts by ${author.name}`}
               >
                 <UserAvatar
@@ -118,7 +118,7 @@ const PostPage = async (props: PostPageProps) => {
                   src={author.image}
                   alt={author.name}
                   userId={author.id}
-                  className="border border-border/30"
+                  className="border border-border/30 transition-transform duration-200 group-hover:scale-105"
                 />
                 <span className="font-medium">{author.name}</span>
               </Link>
@@ -127,16 +127,21 @@ const PostPage = async (props: PostPageProps) => {
                 {formatPostDate(createdAt, { relative: true })}
               </time>
               <span className="text-border/60" aria-hidden="true">•</span>
-              <span>{readingTime(content ?? '').text}</span>
+              <span className="flex items-center gap-1">
+                <span>{readingTime(content ?? '').text}</span>
+                <span className="text-xs opacity-75">read</span>
+              </span>
             </div>
 
             {/* Title & Description */}
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4 sm:mb-6 max-w-4xl">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4 sm:mb-6 max-w-4xl leading-tight text-shadow-none">
               {title}
             </h1>
-            <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl">
-              {description}
-            </p>
+            {description && (
+              <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl leading-relaxed">
+                {description}
+              </p>
+            )}
           </div>
         </div>
 

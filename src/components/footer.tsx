@@ -54,7 +54,7 @@ const Footer = () => {
     >
       <div className='w-full border-t border-border/30 mb-0' />
       <div className='mx-auto w-full max-w-6xl px-4 md:px-8'>
-        <div className='rounded-2xl border border-border/40 bg-white/80 dark:bg-zinc-900/80 shadow-lg px-6 py-8 mt-6 mb-4 backdrop-blur-md transition-all duration-300 motion-safe:hover:shadow-xl motion-safe:hover:scale-[1.01] motion-safe:md:transform motion-reduce:transform-none'>
+        <div className='rounded-2xl border border-border/40 bg-white/90 dark:bg-zinc-900/90 shadow-lg px-4 py-6 sm:px-6 sm:py-8 mt-6 mb-4 backdrop-blur-md transition-all duration-300 motion-safe:hover:shadow-xl motion-safe:hover:scale-[1.01] motion-safe:md:transform motion-reduce:transform-none'>
           <div className='flex flex-col md:flex-row md:items-start md:justify-between gap-8'>
             {/* About Section */}
             <div className='flex-1 min-w-[180px] transition-all duration-300 motion-safe:md:hover:translate-x-2 motion-reduce:transform-none'>
@@ -69,16 +69,16 @@ const Footer = () => {
               {/* Newsletter Section */}
               <div className='transition-all duration-300 motion-safe:md:hover:-translate-y-1 motion-reduce:transform-none'>
                 <h3 className='text-lg font-semibold mb-2'>Stay Updated</h3>
-                <form onSubmit={handleSubscribe} className='flex gap-2 items-center flex-nowrap'>
+                <form onSubmit={handleSubscribe} className='flex flex-col sm:flex-row gap-2 items-stretch sm:items-center'>
                   <input
                     type='email'
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder='Enter your email'
-                    className='min-w-[160px] flex-1 rounded-lg border border-border/40 bg-white/60 dark:bg-zinc-800/60 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition'
+                    className='min-w-0 flex-1 rounded-lg border border-border/40 bg-white/60 dark:bg-zinc-800/60 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all duration-200'
                     required
                   />
-                  <Button type='submit' variant='default' className='h-9 px-4 whitespace-nowrap flex-shrink-0'>
+                  <Button type='submit' variant='default' className='h-12 sm:h-9 px-4 whitespace-nowrap flex-shrink-0'>
                     Subscribe
                   </Button>
                 </form>
