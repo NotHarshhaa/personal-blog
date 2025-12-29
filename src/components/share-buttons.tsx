@@ -16,7 +16,6 @@ type ShareButtonsProps = {
 const ShareButtons = ({ title, description, postId, className }: ShareButtonsProps) => {
   const postUrl = `${SITE_URL}/posts/${postId}`
   const encodedTitle = encodeURIComponent(title)
-  const encodedDescription = encodeURIComponent(description || '')
   const encodedUrl = encodeURIComponent(postUrl)
 
   const shareLinks = {
