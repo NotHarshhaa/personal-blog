@@ -49,29 +49,33 @@ const PostsFilter = ({ posts, user }: PostsFilterProps) => {
   return (
     <div className="w-full">
       {/* Filter Bar */}
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">
-            {sortedPosts.length} {sortedPosts.length === 1 ? 'post' : 'posts'}
-          </span>
+      <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="h-8 w-1 rounded-full bg-gradient-to-b from-primary to-primary/50" />
+          <div>
+            <h2 className="text-xl sm:text-2xl font-bold">Latest Posts</h2>
+            <p className="text-sm text-muted-foreground">
+              {sortedPosts.length} {sortedPosts.length === 1 ? 'article' : 'articles'} available
+            </p>
+          </div>
         </div>
         
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
           <Button
             variant="outline"
             size="sm"
             onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 w-full sm:w-auto"
           >
             <ArrowUpDown className="size-4" />
-            <span className="hidden sm:inline">Sort</span>
+            <span>Sort</span>
           </Button>
         </div>
       </div>
 
       {/* Sort Options */}
       {showFilters && (
-        <div className="mb-6 flex flex-wrap gap-2 rounded-lg border border-border/40 bg-white/90 dark:bg-zinc-900/90 p-4">
+        <div className="mb-6 sm:mb-8 flex flex-wrap gap-2 rounded-xl border border-border/40 bg-white/90 dark:bg-zinc-900/90 p-4 shadow-sm">
           {sortOptions.map((option) => (
             <Button
               key={option.value}
@@ -91,7 +95,7 @@ const PostsFilter = ({ posts, user }: PostsFilterProps) => {
       )}
 
       {/* Posts List */}
-      <div className="space-y-4">
+      <div className="space-y-5 sm:space-y-6">
         {sortedPosts.map((post) => (
           <PostCard
             key={post.id}
