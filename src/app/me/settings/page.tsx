@@ -27,7 +27,7 @@ const SettingsPage = async () => {
   return (
     <>
       <PageHeader title={title} description={description} />
-      <div className='my-8 space-y-12'>
+      <div className='my-8 sm:my-12 space-y-8 sm:space-y-12'>
         <SettingsForm
           user={{
             ...user,
@@ -39,23 +39,6 @@ const SettingsPage = async () => {
             theme: user.theme ?? 'system',
           }}
         />
-        <div className="flex gap-3 mt-2">
-          {user.github && (
-            <a href={user.github} target="_blank" rel="noopener noreferrer" title="GitHub">
-              <Github className="w-5 h-5 hover:text-primary" />
-            </a>
-          )}
-          {user.twitter && (
-            <a href={user.twitter} target="_blank" rel="noopener noreferrer" title="Twitter">
-              <Twitter className="w-5 h-5 hover:text-primary" />
-            </a>
-          )}
-          {user.linkedin && (
-            <a href={user.linkedin} target="_blank" rel="noopener noreferrer" title="LinkedIn">
-              <Linkedin className="w-5 h-5 hover:text-primary" />
-            </a>
-          )}
-        </div>
         <Danger />
       </div>
     </>

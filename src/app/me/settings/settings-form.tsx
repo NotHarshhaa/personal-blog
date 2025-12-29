@@ -16,6 +16,7 @@ import {
   FormLabel,
   FormMessage,
   Input,
+  Textarea,
   toast
 } from '@/components/ui'
 import { Loader2Icon, UserIcon, SunIcon, MoonIcon, MonitorIcon, Github, Twitter, Linkedin } from 'lucide-react'
@@ -85,29 +86,34 @@ const SettingsForm = (props: SettingsFormProps) => {
 
   return (
     <Form {...form}>
-      <form className='space-y-8 rounded-2xl border border-border/40 bg-white/90 dark:bg-zinc-900/90 p-6 shadow-lg' onSubmit={form.handleSubmit(onSubmit)}>
+      <form className='space-y-8 rounded-2xl border border-border/40 bg-white/90 dark:bg-zinc-900/90 p-5 sm:p-8 shadow-lg relative overflow-hidden' onSubmit={form.handleSubmit(onSubmit)}>
+        {/* Decorative accent */}
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-primary/60 to-transparent" />
+        
         {/* Live Profile Preview */}
-        <div className='flex flex-col md:flex-row gap-8 items-center md:items-start mb-6'>
-          <div className='flex flex-col items-center gap-2'>
-            <Avatar className='size-24 shadow-md'>
+        <div className='flex flex-col md:flex-row gap-6 sm:gap-8 items-center md:items-start mb-6 sm:mb-8'>
+          <div className='flex flex-col items-center gap-3'>
+            <Avatar className='size-20 sm:size-24 border-2 border-primary/20 shadow-lg ring-2 ring-primary/10'>
               <AvatarImage src={preview.image || image || ''} width={96} height={96} alt={preview.name || name} />
-              <AvatarFallback>
-                <UserIcon className='size-10' />
+              <AvatarFallback className='bg-gradient-to-br from-primary/20 to-primary/10'>
+                <UserIcon className='size-8 sm:size-10 text-primary' />
               </AvatarFallback>
             </Avatar>
-            <div className='text-lg font-semibold'>{preview.name || name}</div>
-            <div className='text-muted-foreground text-sm'>{preview.bio || bio || 'No bio yet.'}</div>
+            <div className='text-center'>
+              <div className='text-base sm:text-lg font-bold'>{preview.name || name}</div>
+              <div className='text-muted-foreground text-xs sm:text-sm mt-1 max-w-xs'>{preview.bio || bio || 'No bio yet.'}</div>
+            </div>
           </div>
-          <div className='flex-1 grid grid-cols-1 md:grid-cols-2 gap-6'>
+          <div className='flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 w-full'>
             {/* Name */}
             <FormField
               control={form.control}
               name='name'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel className='text-sm font-semibold'>Name</FormLabel>
                   <FormControl>
-                    <Input type='text' id='name' placeholder='Name' {...field} />
+                    <Input type='text' id='name' placeholder='Your name' className='rounded-xl' {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -119,9 +125,9 @@ const SettingsForm = (props: SettingsFormProps) => {
               name='image'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Avatar Image URL</FormLabel>
+                  <FormLabel className='text-sm font-semibold'>Avatar Image URL</FormLabel>
                   <FormControl>
-                    <Input type='url' id='image' placeholder='Image URL' {...field} />
+                    <Input type='url' id='image' placeholder='https://example.com/avatar.jpg' className='rounded-xl' {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -133,9 +139,14 @@ const SettingsForm = (props: SettingsFormProps) => {
               name='bio'
               render={({ field }) => (
                 <FormItem className='md:col-span-2'>
-                  <FormLabel>Bio</FormLabel>
+                  <FormLabel className='text-sm font-semibold'>Bio</FormLabel>
                   <FormControl>
-                    <Input type='text' id='bio' placeholder='Bio' {...field} />
+                    <Textarea 
+                      id='bio' 
+                      placeholder='Tell us about yourself...' 
+                      className='rounded-xl min-h-[100px] resize-y border-border/40' 
+                      {...field} 
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -143,16 +154,27 @@ const SettingsForm = (props: SettingsFormProps) => {
             />
           </div>
         </div>
+        
+        {/* Divider */}
+        <div className="flex items-center gap-4 my-6">
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-border" />
+          <div className="text-xs font-medium text-muted-foreground">Social Links</div>
+          <div className="flex-1 h-px bg-gradient-to-l from-transparent via-border to-border" />
+        </div>
+        
         {/* Social Links */}
-        <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+        <div className='grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6'>
           <FormField
             control={form.control}
             name='github'
             render={({ field }) => (
               <FormItem>
-                <FormLabel><Github className='inline w-4 h-4 mr-1' /> GitHub</FormLabel>
+                <FormLabel className='text-sm font-semibold flex items-center gap-2'>
+                  <Github className='w-4 h-4' />
+                  GitHub
+                </FormLabel>
                 <FormControl>
-                  <Input type='url' id='github' placeholder='GitHub profile URL' {...field} />
+                  <Input type='url' id='github' placeholder='https://github.com/username' className='rounded-xl' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -163,9 +185,12 @@ const SettingsForm = (props: SettingsFormProps) => {
             name='twitter'
             render={({ field }) => (
               <FormItem>
-                <FormLabel><Twitter className='inline w-4 h-4 mr-1' /> Twitter</FormLabel>
+                <FormLabel className='text-sm font-semibold flex items-center gap-2'>
+                  <Twitter className='w-4 h-4' />
+                  Twitter
+                </FormLabel>
                 <FormControl>
-                  <Input type='url' id='twitter' placeholder='Twitter profile URL' {...field} />
+                  <Input type='url' id='twitter' placeholder='https://twitter.com/username' className='rounded-xl' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -176,23 +201,34 @@ const SettingsForm = (props: SettingsFormProps) => {
             name='linkedin'
             render={({ field }) => (
               <FormItem>
-                <FormLabel><Linkedin className='inline w-4 h-4 mr-1' /> LinkedIn</FormLabel>
+                <FormLabel className='text-sm font-semibold flex items-center gap-2'>
+                  <Linkedin className='w-4 h-4' />
+                  LinkedIn
+                </FormLabel>
                 <FormControl>
-                  <Input type='url' id='linkedin' placeholder='LinkedIn profile URL' {...field} />
+                  <Input type='url' id='linkedin' placeholder='https://linkedin.com/in/username' className='rounded-xl' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
+        
+        {/* Divider */}
+        <div className="flex items-center gap-4 my-6">
+          <div className="flex-1 h-px bg-gradient-to-r from-transparent via-border to-border" />
+          <div className="text-xs font-medium text-muted-foreground">Appearance</div>
+          <div className="flex-1 h-px bg-gradient-to-l from-transparent via-border to-border" />
+        </div>
+        
         {/* Theme Preference */}
         <FormField
           control={form.control}
           name='theme'
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Theme Preference</FormLabel>
-              <div className='flex gap-3 mt-2'>
+              <FormLabel className='text-sm font-semibold'>Theme Preference</FormLabel>
+              <div className='flex flex-wrap gap-3 mt-3'>
                 {themeOptions.map((opt) => (
                   <Button
                     key={opt.value}
@@ -202,9 +238,14 @@ const SettingsForm = (props: SettingsFormProps) => {
                       field.onChange(opt.value)
                       setTheme(opt.value)
                     }}
-                    className={cn('flex items-center gap-2 px-4 py-2 rounded-lg', field.value === opt.value && 'ring-2 ring-primary')}
+                    className={cn(
+                      'flex items-center gap-2 px-4 py-2.5 rounded-xl transition-all',
+                      field.value === opt.value && 'ring-2 ring-primary shadow-md',
+                      'hover:scale-105 motion-reduce:transform-none'
+                    )}
                   >
-                    {opt.icon} {opt.label}
+                    {opt.icon}
+                    <span>{opt.label}</span>
                   </Button>
                 ))}
               </div>
@@ -212,9 +253,15 @@ const SettingsForm = (props: SettingsFormProps) => {
             </FormItem>
           )}
         />
+        
         {/* Save Button */}
-        <div className='flex justify-end'>
-          <Button type='submit' disabled={action.isExecuting} size='lg' className='px-8 py-2 text-base font-semibold shadow-md'>
+        <div className='flex justify-end pt-4 border-t border-border/20'>
+          <Button 
+            type='submit' 
+            disabled={action.isExecuting} 
+            size='lg' 
+            className='px-8 py-2.5 text-base font-semibold shadow-md hover:shadow-lg transition-all rounded-xl'
+          >
             {action.isExecuting && <Loader2Icon className='mr-2 size-4 animate-spin' />}
             Save Changes
           </Button>
