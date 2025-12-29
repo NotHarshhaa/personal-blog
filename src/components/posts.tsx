@@ -1,5 +1,5 @@
-import PostCard from '@/components/post-card'
 import EmptyState from '@/components/empty-state'
+import PostsFilter from '@/components/posts-filter'
 import { getCurrentUser } from '@/lib/auth'
 import { getPosts } from '@/queries/get-posts'
 
@@ -17,24 +17,25 @@ const Posts = async () => {
     )
   }
 
+  // Convert dates for client component
+  const postsWithDates = posts.map((post) => ({
+    ...post,
+    createdAt: new Date(post.createdAt)
+  }))
+
   return (
-    <div className="space-y-4">
-      {posts.map((post) => (
-        <PostCard
-          key={post.id}
-          post={post}
-          user={
-            user
-              ? {
-                  ...user,
-                  createdAt: new Date(user.createdAt),
-                  updatedAt: new Date(user.updatedAt)
-                }
-              : null
-          }
-        />
-      ))}
-    </div>
+    <PostsFilter
+      posts={postsWithDates}
+      user={
+        user
+          ? {
+              ...user,
+              createdAt: new Date(user.createdAt),
+              updatedAt: new Date(user.updatedAt)
+            }
+          : null
+      }
+    />
   )
 }
 

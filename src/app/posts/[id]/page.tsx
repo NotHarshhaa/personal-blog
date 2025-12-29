@@ -8,6 +8,9 @@ import Editor from '@/components/editor'
 import UserAvatar from '@/components/user-avatar'
 import ReadingProgress from '@/components/reading-progress'
 import ShareButtons from '@/components/share-buttons'
+import TableOfContents from '@/components/table-of-contents'
+import RelatedPosts from '@/components/related-posts'
+import PostViews from '@/components/post-views'
 import { getCurrentUser } from '@/lib/auth'
 import { SITE_URL, SITE_TITLE } from '@/lib/constants'
 import { getPostById } from '@/queries/get-post-by-id'
@@ -134,6 +137,8 @@ const PostPage = async (props: PostPageProps) => {
                 <span>{readingTime(content ?? '').text}</span>
                 <span className="text-xs opacity-75">read</span>
               </span>
+              <span className="text-border/60" aria-hidden="true">•</span>
+              <PostViews postId={id} />
             </div>
 
             {/* Title & Description */}
@@ -152,10 +157,15 @@ const PostPage = async (props: PostPageProps) => {
         <div className="w-full border-t border-border/10">
           <div className="mx-auto max-w-screen-xl px-4 sm:px-6">
             <div className="py-6 sm:py-8">
-              {/* Main content */}
-              <article className="prose prose-sm sm:prose lg:prose-lg dark:prose-invert max-w-none">
-                <Editor options={{ content, editable: false }} />
-              </article>
+              <div className="flex gap-8">
+                {/* Main content */}
+                <article className="prose prose-sm sm:prose lg:prose-lg dark:prose-invert max-w-none flex-1">
+                  <Editor options={{ content, editable: false }} />
+                </article>
+
+                {/* Table of Contents */}
+                <TableOfContents content={content ?? ''} />
+              </div>
 
               {/* Like button and Share buttons */}
               <div className="mt-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-t border-border/10 pt-6">
@@ -178,6 +188,13 @@ const PostPage = async (props: PostPageProps) => {
                   postId={id}
                 />
               </div>
+
+              {/* Related Posts */}
+              <RelatedPosts
+                currentPostId={id}
+                currentPostTitle={title}
+                currentPostDescription={description}
+              />
             </div>
           </div>
         </div>

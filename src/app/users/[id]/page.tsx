@@ -58,35 +58,75 @@ const UserPage = async (props: UserPageProps) => {
       {/* Profile Card */}
       <div className="relative rounded-xl border border-border/40 bg-white/90 dark:bg-zinc-900/90 shadow-lg overflow-hidden mb-6">
         {/* Avatar and Info */}
-        <div className="flex flex-col sm:flex-row items-center gap-3 px-4 mt-2 pb-4 pt-6 sm:pt-8">
-          <div className="relative size-16 border-2 border-white dark:border-zinc-900 rounded-full shadow bg-white dark:bg-zinc-900">
+        <div className="flex flex-col sm:flex-row items-center gap-4 px-4 mt-2 pb-6 pt-6 sm:pt-8">
+          <div className="relative size-20 sm:size-24 border-2 border-white dark:border-zinc-900 rounded-full shadow-lg bg-white dark:bg-zinc-900 transition-transform hover:scale-105">
             <UserAvatar fill src={user.image} alt={user.name} userId={id} />
           </div>
-          <div className="flex-1 flex flex-col items-center sm:items-start gap-1 mt-1">
+          <div className="flex-1 flex flex-col items-center sm:items-start gap-2 mt-1">
             <div className="flex flex-col items-center sm:flex-row sm:items-center sm:gap-2">
               <span className="text-xl font-bold lg:text-2xl">{user.name}</span>
               <UserRoleBadge role={user.role} />
             </div>
-            {user.bio && <p className="text-muted-foreground text-center sm:text-left max-w-xl text-sm">{user.bio}</p>}
-            <div className="flex flex-wrap gap-2 items-center mt-1">
+            {user.bio && (
+              <p className="text-muted-foreground text-center sm:text-left max-w-xl text-sm leading-relaxed">
+                {user.bio}
+              </p>
+            )}
+            <div className="flex flex-wrap gap-3 items-center mt-2">
               {user.github && (
-                <a href={user.github} target="_blank" rel="noopener noreferrer" title="GitHub" className="hover:text-primary transition">
+                <a
+                  href={user.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="GitHub"
+                  className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm transition-colors hover:bg-muted/50"
+                >
                   <Github className="w-4 h-4" />
+                  <span className="hidden sm:inline">GitHub</span>
                 </a>
               )}
               {user.twitter && (
-                <a href={user.twitter} target="_blank" rel="noopener noreferrer" title="Twitter" className="hover:text-primary transition">
+                <a
+                  href={user.twitter}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="Twitter"
+                  className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm transition-colors hover:bg-muted/50"
+                >
                   <Twitter className="w-4 h-4" />
+                  <span className="hidden sm:inline">Twitter</span>
                 </a>
               )}
               {user.linkedin && (
-                <a href={user.linkedin} target="_blank" rel="noopener noreferrer" title="LinkedIn" className="hover:text-primary transition">
+                <a
+                  href={user.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title="LinkedIn"
+                  className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm transition-colors hover:bg-muted/50"
+                >
                   <Linkedin className="w-4 h-4" />
+                  <span className="hidden sm:inline">LinkedIn</span>
                 </a>
               )}
-              <span className="flex items-center gap-1 text-xs text-muted-foreground ml-2">
-                <Calendar className="w-3.5 h-3.5" /> Joined {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : '—'}
+              <span className="flex items-center gap-1.5 text-xs text-muted-foreground px-3 py-1.5 rounded-lg bg-muted/30">
+                <Calendar className="w-3.5 h-3.5" />
+                <span>Joined {user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) : '—'}</span>
               </span>
+            </div>
+            {/* Stats */}
+            <div className="flex flex-wrap gap-4 mt-2 text-sm">
+              <div className="flex items-center gap-1.5">
+                <FileIcon className="w-4 h-4 text-muted-foreground" />
+                <span className="font-medium">{user.posts.length}</span>
+                <span className="text-muted-foreground">{user.posts.length === 1 ? 'post' : 'posts'}</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-muted-foreground">Total likes:</span>
+                <span className="font-medium">
+                  {user.posts.reduce((acc, post) => acc + (post.likes?.length || 0), 0)}
+                </span>
+              </div>
             </div>
           </div>
         </div>
