@@ -40,7 +40,7 @@ const Menu = ({ user }: MenuProps) => {
         href={`/login?redirect=${pathname}`}
         className={cn(
           buttonVariants({ variant: 'outline', size: 'sm' }),
-          'transition-all duration-300 hover:bg-white/80 dark:hover:bg-zinc-800/80 motion-safe:md:hover:scale-105 motion-safe:md:hover:shadow-md motion-reduce:transform-none'
+          'rounded-xl transition-all duration-300 hover:bg-primary/10 dark:hover:bg-primary/20 hover:text-primary hover:border-primary/20 motion-safe:md:hover:scale-105 motion-safe:md:hover:shadow-md motion-reduce:transform-none font-medium'
         )}
       >
         Log in
@@ -59,12 +59,12 @@ const Menu = ({ user }: MenuProps) => {
         <button
           type='button'
           aria-label='User menu'
-          className='focus-visible:ring-ring rounded-full transition-all outline-none focus-visible:ring-2'
+          className='focus-visible:ring-ring rounded-full transition-all outline-none focus-visible:ring-2 focus-visible:ring-primary/50 hover:ring-2 hover:ring-primary/20'
         >
-          <Avatar className='size-8'>
+          <Avatar className='size-8 sm:size-9 border-2 border-border/30 shadow-sm transition-transform hover:scale-110'>
             <AvatarImage src={image} alt={name} />
-            <AvatarFallback>
-              <UserIcon className='size-4' />
+            <AvatarFallback className='bg-gradient-to-br from-primary/20 to-primary/10'>
+              <UserIcon className='size-3.5 sm:size-4 text-primary' />
             </AvatarFallback>
           </Avatar>
         </button>
@@ -72,63 +72,93 @@ const Menu = ({ user }: MenuProps) => {
 
       <DropdownMenuContent
         align='end'
-        className='w-72 animate-fade-in rounded-xl border border-border/30 bg-white/95 p-0 shadow-2xl dark:bg-zinc-900/95'
+        className='w-72 sm:w-80 animate-fade-in rounded-2xl border border-border/40 bg-white/95 p-0 shadow-xl backdrop-blur-md dark:bg-zinc-900/95 dark:shadow-2xl overflow-hidden'
       >
         {/* User Info Card */}
-        <div className='flex flex-col items-center gap-2 px-5 py-4 border-b border-border/20 bg-gradient-to-b from-gray-50/80 to-white/80 dark:from-zinc-900/80 dark:to-zinc-900/90'>
-          <Avatar className='size-14 shadow-md'>
-            <AvatarImage src={image} alt={name} />
-            <AvatarFallback>
-              <UserIcon className='size-7' />
-            </AvatarFallback>
-          </Avatar>
-          <div className='text-center'>
-            <div className='truncate text-lg font-semibold'>{name}</div>
-            <div className='text-muted-foreground truncate text-xs'>{email}</div>
-            {role && (
-              <span
-                className={cn(
-                  'mt-2 inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-medium',
-                  roleColors[role] || roleColors.user
+        <div className='relative flex flex-col items-center gap-2 sm:gap-3 px-4 sm:px-6 py-3 sm:py-5 border-b border-border/20 bg-gradient-to-br from-primary/5 via-background to-background overflow-hidden'>
+          {/* Decorative gradient */}
+          <div className="absolute top-0 right-0 w-24 sm:w-32 h-24 sm:h-32 bg-gradient-to-br from-primary/10 to-transparent rounded-full blur-2xl" />
+
+          <div className="relative z-10 flex flex-col items-center gap-2 sm:gap-3 w-full">
+            <Avatar className='size-12 sm:size-16 border-2 border-primary/20 shadow-lg ring-2 ring-primary/10'>
+              <AvatarImage src={image} alt={name} />
+              <AvatarFallback className='bg-gradient-to-br from-primary/20 to-primary/10'>
+                <UserIcon className='size-5 sm:size-7 text-primary' />
+              </AvatarFallback>
+            </Avatar>
+            <div className='text-center w-full'>
+              <div className='flex items-center justify-center gap-2 flex-wrap'>
+                <div className='truncate text-base sm:text-lg font-bold'>{name}</div>
+                {role && (
+                  <span
+                    className={cn(
+                      'inline-flex items-center gap-1 sm:gap-1.5 rounded-full px-2 sm:px-2.5 py-0.5 sm:py-1 text-xs font-semibold shadow-sm border shrink-0',
+                      role === 'admin' && 'bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/20 dark:bg-green-500/20',
+                      role === 'moderator' && 'bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/20 dark:bg-blue-500/20',
+                      role === 'user' && 'bg-muted/50 text-muted-foreground border-border/50',
+                      !roleColors[role] && 'bg-muted/50 text-muted-foreground border-border/50'
+                    )}
+                  >
+                    <BadgeCheck className='size-3 sm:size-3.5' />
+                    <span className="hidden sm:inline">{role.charAt(0).toUpperCase() + role.slice(1)}</span>
+                    <span className="sm:hidden">{role.charAt(0).toUpperCase()}</span>
+                  </span>
                 )}
-              >
-                <BadgeCheck className='size-3.5' />
-                {role.charAt(0).toUpperCase() + role.slice(1)}
-              </span>
-            )}
+              </div>
+              <div className='text-muted-foreground truncate text-xs mt-1'>{email}</div>
+            </div>
           </div>
         </div>
 
-        <div className='py-2'>
+        <div className='py-1.5 sm:py-2 px-1.5 sm:px-2'>
           <DropdownMenuItem asChild>
-            <Link href={`/users/${id}`} className='flex items-center gap-2 px-4 py-2 transition-colors hover:bg-gray-100 dark:hover:bg-zinc-800 focus:bg-gray-100 dark:focus:bg-zinc-800 rounded-md'>
-              <UserIcon className='size-4 opacity-70' />
-              <span>Profile</span>
+            <Link
+              href={`/users/${id}`}
+              className='flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 transition-all rounded-xl hover:bg-primary/10 dark:hover:bg-primary/20 hover:text-primary focus:bg-primary/10 dark:focus:bg-primary/20 focus:text-primary'
+            >
+              <div className="flex items-center justify-center size-7 sm:size-8 rounded-lg bg-primary/10 dark:bg-primary/20 shrink-0">
+                <UserIcon className='size-3.5 sm:size-4 text-primary' />
+              </div>
+              <span className="font-medium text-sm sm:text-base">Profile</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link href='/me/posts' className='flex items-center gap-2 px-4 py-2 transition-colors hover:bg-gray-100 dark:hover:bg-zinc-800 focus:bg-gray-100 dark:focus:bg-zinc-800 rounded-md'>
-              <FileText className='size-4 opacity-70' />
-              <span>Posts</span>
+            <Link
+              href='/me/posts'
+              className='flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 transition-all rounded-xl hover:bg-primary/10 dark:hover:bg-primary/20 hover:text-primary focus:bg-primary/10 dark:focus:bg-primary/20 focus:text-primary'
+            >
+              <div className="flex items-center justify-center size-7 sm:size-8 rounded-lg bg-primary/10 dark:bg-primary/20 shrink-0">
+                <FileText className='size-3.5 sm:size-4 text-primary' />
+              </div>
+              <span className="font-medium text-sm sm:text-base">My Posts</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link href='/me/settings' className='flex items-center gap-2 px-4 py-2 transition-colors hover:bg-gray-100 dark:hover:bg-zinc-800 focus:bg-gray-100 dark:focus:bg-zinc-800 rounded-md'>
-              <Settings className='size-4 opacity-70' />
-              <span>Settings</span>
+            <Link
+              href='/me/settings'
+              className='flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 transition-all rounded-xl hover:bg-primary/10 dark:hover:bg-primary/20 hover:text-primary focus:bg-primary/10 dark:focus:bg-primary/20 focus:text-primary'
+            >
+              <div className="flex items-center justify-center size-7 sm:size-8 rounded-lg bg-primary/10 dark:bg-primary/20 shrink-0">
+                <Settings className='size-3.5 sm:size-4 text-primary' />
+              </div>
+              <span className="font-medium text-sm sm:text-base">Settings</span>
             </Link>
           </DropdownMenuItem>
         </div>
 
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator className="bg-border/40" />
 
-        <DropdownMenuItem
-          onClick={() => signOut()}
-          className='flex items-center gap-2 px-4 py-2 text-destructive focus:text-destructive rounded-md transition-colors hover:bg-red-50 dark:hover:bg-red-900/30 focus:bg-red-50 dark:focus:bg-red-900/30 w-full cursor-pointer'
-        >
-          <LogOut className='size-4 opacity-70' />
-          <span>Log out</span>
-        </DropdownMenuItem>
+        <div className='p-1.5 sm:p-2'>
+          <DropdownMenuItem
+            onClick={() => signOut()}
+            className='flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-3 text-destructive focus:text-destructive rounded-xl transition-all hover:bg-red-50 dark:hover:bg-red-900/30 focus:bg-red-50 dark:focus:bg-red-900/30 w-full cursor-pointer'
+          >
+            <div className="flex items-center justify-center size-7 sm:size-8 rounded-lg bg-red-100 dark:bg-red-900/30 shrink-0">
+              <LogOut className='size-3.5 sm:size-4 text-red-600 dark:text-red-400' />
+            </div>
+            <span className="font-medium text-sm sm:text-base">Log out</span>
+          </DropdownMenuItem>
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   )
