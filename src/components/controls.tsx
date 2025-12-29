@@ -22,7 +22,7 @@ import {
 import { Loader2Icon, MoreVerticalIcon, PencilIcon, Share2Icon, Trash2Icon } from 'lucide-react'
 import Link from 'next/link'
 import { useAction } from 'next-safe-action/hooks'
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 import { deletePostAction } from '@/actions/delete-post-action'
 import { SITE_URL } from '@/lib/constants'
@@ -38,6 +38,10 @@ type ControlsProps = {
 const Controls = (props: ControlsProps) => {
   const { id, user, authorId, postTitle } = props
   const [isOpen, setIsOpen] = useState(false)
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(null)
+  const isScrollingRef = useRef(false)
+
   const action = useAction(deletePostAction, {
     onSuccess: () => {
       toast.success('Post deleted')
@@ -51,15 +55,95 @@ const Controls = (props: ControlsProps) => {
     await action.executeAsync({ postId: id })
   }
 
+  // Prevent dropdown from opening during scroll and close it when scrolling
+  useEffect(() => {
+    let scrollTimeout: NodeJS.Timeout
+
+    const handleScroll = () => {
+      isScrollingRef.current = true
+      // Close dropdown if open during scroll
+      if (isDropdownOpen) {
+        setIsDropdownOpen(false)
+      }
+      clearTimeout(scrollTimeout)
+      scrollTimeout = setTimeout(() => {
+        isScrollingRef.current = false
+      }, 200)
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    window.addEventListener('touchmove', handleScroll, { passive: true })
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      window.removeEventListener('touchmove', handleScroll)
+      clearTimeout(scrollTimeout)
+    }
+  }, [isDropdownOpen])
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    const touch = e.touches[0]
+    touchStartRef.current = {
+      x: touch.clientX,
+      y: touch.clientY,
+      time: Date.now()
+    }
+  }
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (!touchStartRef.current) return
+
+    const touch = e.changedTouches[0]
+    const deltaX = Math.abs(touch.clientX - touchStartRef.current.x)
+    const deltaY = Math.abs(touch.clientY - touchStartRef.current.y)
+    const deltaTime = Date.now() - touchStartRef.current.time
+
+    // If user scrolled (moved finger significantly) or scroll just happened, don't open menu
+    if (isScrollingRef.current || deltaY > 15 || deltaX > 15 || deltaTime > 250) {
+      touchStartRef.current = null
+      e.preventDefault()
+      e.stopPropagation()
+      return
+    }
+
+    // Only open on tap, not scroll
+    touchStartRef.current = null
+  }
+
   return (
     <>
-      <DropdownMenu>
+      <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
         <DropdownMenuTrigger asChild>
-          <Button variant='ghost' size='icon' className='shrink-0'>
+          <Button
+            variant='ghost'
+            size='icon'
+            className='shrink-0'
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
+            onTouchMove={(e) => {
+              // Mark as scrolling if finger moves
+              if (touchStartRef.current) {
+                const touch = e.touches[0]
+                const deltaY = Math.abs(touch.clientY - touchStartRef.current.y)
+                if (deltaY > 5) {
+                  isScrollingRef.current = true
+                }
+              }
+            }}
+            onClick={(e) => {
+              // Prevent opening if we're in a scroll gesture
+              if (isScrollingRef.current) {
+                e.preventDefault()
+                e.stopPropagation()
+                setIsDropdownOpen(false)
+                return
+              }
+            }}
+          >
             <MoreVerticalIcon className='size-4' />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align='end'>
+        <DropdownMenuContent align='end' onCloseAutoFocus={(e) => e.preventDefault()}>
           <DropdownMenuItem onClick={() => copyUrl(`${SITE_URL}/posts/${id}`)}>
             <Share2Icon className='mr-2 size-4' />
             Share
@@ -75,6 +159,7 @@ const Controls = (props: ControlsProps) => {
               <DropdownMenuItem
                 onClick={() => {
                   setIsOpen(true)
+                  setIsDropdownOpen(false)
                 }}
               >
                 <Trash2Icon className='mr-2 size-4' />
