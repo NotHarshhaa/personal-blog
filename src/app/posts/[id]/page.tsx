@@ -110,7 +110,7 @@ const PostPage = async (props: PostPageProps) => {
       <div className="min-h-screen w-full">
         {/* Hero section */}
         <div className="w-full from-primary/5 via-background to-background">
-          <div className="mx-auto w-full max-w-screen-xl px-4 sm:px-6 pt-8 pb-6 sm:pt-20 sm:pb-12">
+          <div className="mx-auto w-full max-w-screen-xl px-4 sm:px-6 pt-20 pb-6 sm:pt-24 md:pt-32 sm:pb-8 md:pb-12">
             {/* Meta info */}
             <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mb-6">
               <Link

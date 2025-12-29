@@ -11,12 +11,12 @@ import { eq } from 'drizzle-orm'
 const viewsStore = new Map<string, number>()
 
 export async function GET(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params
-    
+
     // Verify post exists
     const post = await db.query.posts.findFirst({
       where: eq(posts.id, id),
@@ -36,12 +36,12 @@ export async function GET(
 }
 
 export async function POST(
-  request: NextRequest,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params
-    
+
     // Verify post exists
     const post = await db.query.posts.findFirst({
       where: eq(posts.id, id),
