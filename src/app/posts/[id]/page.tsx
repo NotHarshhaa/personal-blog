@@ -6,6 +6,8 @@ import readingTime from 'reading-time'
 
 import Editor from '@/components/editor'
 import UserAvatar from '@/components/user-avatar'
+import ReadingProgress from '@/components/reading-progress'
+import ShareButtons from '@/components/share-buttons'
 import { getCurrentUser } from '@/lib/auth'
 import { SITE_URL, SITE_TITLE } from '@/lib/constants'
 import { getPostById } from '@/queries/get-post-by-id'
@@ -97,6 +99,7 @@ const PostPage = async (props: PostPageProps) => {
 
   return (
     <>
+      <ReadingProgress />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
@@ -104,7 +107,7 @@ const PostPage = async (props: PostPageProps) => {
       <div className="min-h-screen w-full">
         {/* Hero section */}
         <div className="w-full from-primary/5 via-background to-background">
-          <div className="mx-auto w-full max-w-screen-xl px-4 pt-12 pb-8 sm:pt-20 sm:pb-12">
+          <div className="mx-auto w-full max-w-screen-xl px-4 sm:px-6 pt-8 pb-6 sm:pt-20 sm:pb-12">
             {/* Meta info */}
             <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mb-6">
               <Link
@@ -147,15 +150,15 @@ const PostPage = async (props: PostPageProps) => {
 
         {/* Content section */}
         <div className="w-full border-t border-border/10">
-          <div className="mx-auto max-w-screen-xl px-4">
-            <div className="py-8">
+          <div className="mx-auto max-w-screen-xl px-4 sm:px-6">
+            <div className="py-6 sm:py-8">
               {/* Main content */}
               <article className="prose prose-sm sm:prose lg:prose-lg dark:prose-invert max-w-none">
                 <Editor options={{ content, editable: false }} />
               </article>
 
-              {/* Like button */}
-              <div className="mt-12 flex justify-start border-t border-border/10 pt-6">
+              {/* Like button and Share buttons */}
+              <div className="mt-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-t border-border/10 pt-6">
                 <LikeButton
                   likes={likes}
                   user={
@@ -167,6 +170,11 @@ const PostPage = async (props: PostPageProps) => {
                       }
                       : null
                   }
+                  postId={id}
+                />
+                <ShareButtons
+                  title={title}
+                  description={description || undefined}
                   postId={id}
                 />
               </div>

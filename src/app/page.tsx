@@ -6,13 +6,19 @@ import PostsPlaceholder from '@/components/posts-placeholder'
 
 const HomePage = () => {
   return (
-    <Suspense
-      fallback={(range(10) as number[]).map((i) => (
-        <PostsPlaceholder key={i} />
-      ))}
-    >
-      <Posts />
-    </Suspense>
+    <div className="w-full">
+      <Suspense
+        fallback={
+          <div className="space-y-4">
+            {(range(10) as number[]).map((i) => (
+              <PostsPlaceholder key={i} />
+            ))}
+          </div>
+        }
+      >
+        <Posts />
+      </Suspense>
+    </div>
   )
 }
 

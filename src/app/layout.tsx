@@ -8,6 +8,7 @@ import { GeistSans } from 'geist/font/sans'
 
 import Footer from '@/components/footer'
 import Header from '@/components/header'
+import ScrollToTop from '@/components/scroll-to-top'
 import { SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, SITE_URL } from '@/lib/constants'
 
 import Providers from './providers'
@@ -151,6 +152,7 @@ const RootLayout = (props: RootLayoutProps) => {
           <Header />
           <main id="main-content" className='min-h-page mx-auto max-w-6xl px-6 pt-32 pb-16'>{children}</main>
           <Toaster />
+          <ScrollToTop />
           <Footer />
         </Providers>
       </body>

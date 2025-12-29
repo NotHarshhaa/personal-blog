@@ -1,4 +1,5 @@
 import PostCard from '@/components/post-card'
+import EmptyState from '@/components/empty-state'
 import { getCurrentUser } from '@/lib/auth'
 import { getPosts } from '@/queries/get-posts'
 
@@ -7,11 +8,17 @@ const Posts = async () => {
   const { posts } = await getPosts()
 
   if (posts.length === 0) {
-    return <div className='text-center'>No posts yet.</div>
+    return (
+      <EmptyState
+        title="No posts yet"
+        description="Be the first to share your DevOps and Cloud insights with the community. Start writing and sharing your knowledge!"
+        showAction={false}
+      />
+    )
   }
 
   return (
-    <div>
+    <div className="space-y-4">
       {posts.map((post) => (
         <PostCard
           key={post.id}

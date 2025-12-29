@@ -165,6 +165,44 @@ img {
   }
 }
 
+/* Better touch targets for mobile */
+@media (max-width: 768px) {
+  button,
+  a,
+  [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Smooth scrolling improvements */
+html {
+  scroll-padding-top: 100px;
+}
+
+/* Better focus styles */
+:focus-visible {
+  outline: 2px solid hsl(var(--primary));
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Improve button hover states */
+button:not(:disabled):hover {
+  cursor: pointer;
+}
+
+/* Better link styles */
+a:not([class]) {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: opacity 0.2s;
+}
+
+a:not([class]):hover {
+  opacity: 0.8;
+}
+
 .hljs {
   display: block;
   overflow-x: auto;
