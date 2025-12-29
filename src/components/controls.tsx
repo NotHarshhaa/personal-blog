@@ -83,6 +83,8 @@ const Controls = (props: ControlsProps) => {
 
   const handleTouchStart = (e: React.TouchEvent) => {
     const touch = e.touches[0]
+    if (!touch) return
+
     touchStartRef.current = {
       x: touch.clientX,
       y: touch.clientY,
@@ -94,6 +96,11 @@ const Controls = (props: ControlsProps) => {
     if (!touchStartRef.current) return
 
     const touch = e.changedTouches[0]
+    if (!touch) {
+      touchStartRef.current = null
+      return
+    }
+
     const deltaX = Math.abs(touch.clientX - touchStartRef.current.x)
     const deltaY = Math.abs(touch.clientY - touchStartRef.current.y)
     const deltaTime = Date.now() - touchStartRef.current.time
@@ -124,9 +131,11 @@ const Controls = (props: ControlsProps) => {
               // Mark as scrolling if finger moves
               if (touchStartRef.current) {
                 const touch = e.touches[0]
-                const deltaY = Math.abs(touch.clientY - touchStartRef.current.y)
-                if (deltaY > 5) {
-                  isScrollingRef.current = true
+                if (touch) {
+                  const deltaY = Math.abs(touch.clientY - touchStartRef.current.y)
+                  if (deltaY > 5) {
+                    isScrollingRef.current = true
+                  }
                 }
               }
             }}
@@ -143,7 +152,7 @@ const Controls = (props: ControlsProps) => {
             <MoreVerticalIcon className='size-4' />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align='end' onCloseAutoFocus={(e) => e.preventDefault()}>
+        <DropdownMenuContent align='end'>
           <DropdownMenuItem onClick={() => copyUrl(`${SITE_URL}/posts/${id}`)}>
             <Share2Icon className='mr-2 size-4' />
             Share
