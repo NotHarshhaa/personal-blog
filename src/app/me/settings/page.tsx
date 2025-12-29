@@ -7,7 +7,6 @@ import { getCurrentUser } from '@/lib/auth'
 
 import Danger from './danger'
 import SettingsForm from './settings-form'
-import { Github, Twitter, Linkedin } from 'lucide-react'
 
 const title = 'Settings'
 const description = 'Manage your account settings'
