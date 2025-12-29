@@ -150,7 +150,7 @@ const RootLayout = (props: RootLayoutProps) => {
         </a>
         <Providers>
           <Header />
-          <main id="main-content" className='min-h-page mx-auto max-w-6xl px-6 pt-36 sm:pt-40 md:pt-44 pb-16'>{children}</main>
+          <main id="main-content" className='min-h-page mx-auto max-w-6xl px-6 pt-40 sm:pt-44 md:pt-48 pb-16'>{children}</main>
           <Toaster />
           <ScrollToTop />
           <Footer />

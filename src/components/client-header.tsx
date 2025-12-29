@@ -177,37 +177,44 @@ const ClientHeader = ({ user }: Props) => {
         }`}
     >
       <div
-        className={`w-full max-w-6xl mx-auto rounded-2xl border border-border/40 bg-white/80 dark:bg-zinc-900/80 shadow-lg px-2 py-2 sm:px-6 backdrop-blur-md transition-all duration-300 ease-in-out motion-safe:md:hover:shadow-xl motion-safe:md:hover:bg-white/90 dark:motion-safe:md:hover:bg-zinc-900/90 ${isScrolled ? 'shadow-xl' : ''
+        className={`relative w-full max-w-6xl mx-auto rounded-2xl border border-border/40 bg-white/90 dark:bg-zinc-900/90 shadow-lg px-3 py-2.5 sm:px-6 sm:py-3 backdrop-blur-md transition-all duration-300 ease-in-out motion-safe:md:hover:shadow-xl motion-safe:md:hover:shadow-primary/5 dark:motion-safe:md:hover:shadow-primary/10 ${isScrolled ? 'shadow-xl shadow-primary/5 dark:shadow-primary/10' : ''
           }`}
       >
-        <div className='flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-4'>
+
+        <div className='flex w-full flex-col gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4'>
           <Link
             href='/'
-            className='group flex items-center gap-2 text-base font-semibold transition-all duration-300 hover:opacity-90 sm:text-xl motion-safe:md:hover:-translate-y-0.5 motion-reduce:transform-none'
+            className='group flex items-center gap-3 text-base font-bold transition-all duration-300 hover:opacity-90 sm:text-lg motion-safe:md:hover:-translate-y-0.5 motion-reduce:transform-none'
           >
             <motion.div
               whileHover={{ rotate: 360 }}
               transition={{ duration: 0.5 }}
-              className="motion-reduce:transform-none"
+              className="motion-reduce:transform-none relative"
             >
+              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <Image
                 src='/logo.svg'
                 alt='Logo'
-                width={32}
-                height={32}
-                className='shrink-0 rounded-full transition-transform group-hover:scale-110'
+                width={36}
+                height={36}
+                className='relative shrink-0 rounded-full transition-transform group-hover:scale-110 border-2 border-border/30 shadow-sm'
               />
             </motion.div>
-            <span className='font-medium text-wrap break-words whitespace-normal sm:text-base'>
-              Harshhaa&apos;s DevOps & Cloud Space
-            </span>
+            <div className="flex flex-col">
+              <span className='font-bold text-sm sm:text-base leading-tight'>
+                DevOps & Cloud Space
+              </span>
+              <span className='text-xs text-muted-foreground'>
+                by Harshhaa
+              </span>
+            </div>
           </Link>
 
           <div className='flex items-center gap-2'>
             <button
               type='button'
               onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className='rounded-lg p-2 transition-all duration-300 hover:bg-white/50 dark:hover:bg-zinc-800/50 motion-safe:md:hover:scale-105 motion-reduce:transform-none'
+              className='rounded-xl p-2.5 transition-all duration-300 hover:bg-primary/10 dark:hover:bg-primary/20 hover:text-primary motion-safe:md:hover:scale-105 motion-reduce:transform-none border border-transparent hover:border-primary/20'
               aria-label='Toggle search'
             >
               <Search className='h-5 w-5' />
@@ -219,7 +226,7 @@ const ClientHeader = ({ user }: Props) => {
                   ref={notificationButtonRef}
                   type='button'
                   onClick={() => setShowNotifications(!showNotifications)}
-                  className='relative rounded-lg p-2 transition-all duration-300 hover:bg-white/50 dark:hover:bg-zinc-800/50 motion-safe:md:hover:scale-105 motion-reduce:transform-none'
+                  className='relative rounded-xl p-2.5 transition-all duration-300 hover:bg-primary/10 dark:hover:bg-primary/20 hover:text-primary motion-safe:md:hover:scale-105 motion-reduce:transform-none border border-transparent hover:border-primary/20'
                   aria-label='Show notifications'
                 >
                   <Bell className='h-5 w-5' />
@@ -367,21 +374,21 @@ const ClientHeader = ({ user }: Props) => {
               transition={{ duration: 0.2 }}
               className='relative w-full overflow-visible motion-reduce:transform-none'
             >
-              <div className='mt-2 flex items-center gap-2 rounded-lg bg-gray-100 px-4 py-2 dark:bg-gray-800 transition-all duration-300 motion-safe:md:hover:bg-gray-200 dark:motion-safe:md:hover:bg-gray-700'>
-                <Search className='h-4 w-4 text-gray-500' />
+              <div className='mt-2 flex items-center gap-3 rounded-xl border border-border/40 bg-white/90 dark:bg-zinc-900/90 px-4 py-3 shadow-sm transition-all duration-300 motion-safe:md:hover:border-primary/30 motion-safe:md:hover:shadow-md'>
+                <Search className='h-4 w-4 text-muted-foreground' />
                 <input
                   ref={searchRef}
                   type='text'
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder='Search posts, tags, or categories...'
-                  className='w-full bg-transparent outline-none placeholder:text-sm'
+                  className='w-full bg-transparent outline-none placeholder:text-sm placeholder:text-muted-foreground text-sm'
                   onFocus={() => search && setShowDropdown(true)}
                 />
               </div>
               {/* Results Dropdown */}
               {showDropdown && (
-                <div className='absolute right-0 left-0 z-50 mt-1 max-h-72 overflow-auto rounded-lg border bg-white shadow-lg dark:bg-gray-900'>
+                <div className='absolute right-0 left-0 z-50 mt-2 max-h-72 overflow-auto rounded-xl border border-border/40 bg-white/95 dark:bg-zinc-900/95 shadow-xl backdrop-blur-sm'>
                   {loading && (
                     <div className='p-4 text-center text-sm text-gray-500'>Loading...</div>
                   )}
@@ -394,7 +401,7 @@ const ClientHeader = ({ user }: Props) => {
                       <button
                         key={post.id}
                         type='button'
-                        className='block w-full px-4 py-2 text-left transition-colors hover:bg-gray-100 dark:hover:bg-gray-800'
+                        className='block w-full px-4 py-3 text-left transition-colors hover:bg-primary/5 dark:hover:bg-primary/10 border-b border-border/10 last:border-0'
                         onMouseDown={() => {
                           console.log('Navigating to', `/posts/${post.id}`)
                           setIsSearchOpen(false)
@@ -405,8 +412,8 @@ const ClientHeader = ({ user }: Props) => {
                           }, 50)
                         }}
                       >
-                        <div className='font-medium'>{post.title}</div>
-                        <div className='line-clamp-2 text-xs text-gray-500'>{post.description}</div>
+                        <div className='font-medium text-sm'>{post.title}</div>
+                        <div className='line-clamp-2 text-xs text-muted-foreground mt-1'>{post.description}</div>
                       </button>
                     ))}
                 </div>
