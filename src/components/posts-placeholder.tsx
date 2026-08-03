@@ -1,19 +1,14 @@
 import { Skeleton } from '@/components/ui/skeleton'
-import { MoreVerticalIcon } from 'lucide-react'
 
 const PostsPlaceholder = () => (
-  <div className='flex items-start justify-between border-b px-1 py-4'>
-    <div className='flex w-full flex-col gap-2'>
-      <div className='flex items-center gap-1'>
-        <Skeleton className='h-6 w-40' />
-      </div>
-      <div className='space-y-2'>
-        <Skeleton className='h-7 w-full max-w-[280px]' />
-        <Skeleton className='h-12 w-full max-w-[320px]' />
-      </div>
-      <Skeleton className='mt-4 h-5 w-11' />
+  <div className="space-y-3 px-4 py-5 sm:px-5 sm:py-6">
+    <div className="flex items-center gap-2.5">
+      <Skeleton className="size-7" />
+      <Skeleton className="h-4 w-32" />
     </div>
-    <MoreVerticalIcon />
+    <Skeleton className="h-6 w-3/4 max-w-md" />
+    <Skeleton className="h-12 w-full max-w-lg" />
+    <Skeleton className="mt-2 h-4 w-16" />
   </div>
 )
 

@@ -15,12 +15,18 @@ const NewPostButton = dynamic(() => import('@/components/new-post-button'), { ss
 
 // Illustration for empty state
 const EmptyIllustration = ({ isAdmin }: { isAdmin: boolean }) => (
-  <div className="flex flex-col items-center justify-center py-12 sm:py-16 text-center">
-    <div className="rounded-full bg-muted/50 p-4 mb-4">
-      <Inbox className="w-12 h-12 sm:w-16 sm:h-16 text-muted-foreground" />
+  <div className="flex flex-col items-center justify-center py-12 text-center sm:py-16">
+    <span className="mb-4 flex size-14 items-center justify-center border border-border bg-background">
+      <Inbox className="size-7 text-muted-foreground" />
+    </span>
+    <div className="mb-2 text-lg font-semibold">
+      {isAdmin ? 'No posts found' : 'No liked posts found'}
     </div>
-    <div className="text-lg sm:text-xl font-bold mb-2">{isAdmin ? 'No posts found' : 'No liked posts found'}</div>
-    <div className="text-muted-foreground text-sm sm:text-base mb-6 max-w-md">{isAdmin ? 'Start writing your first post or check your filters.' : 'Start liking posts to see them here.'}</div>
+    <div className="mb-6 max-w-md text-sm text-muted-foreground">
+      {isAdmin
+        ? 'Start writing your first post or check your filters.'
+        : 'Start liking posts to see them here.'}
+    </div>
     {isAdmin && <NewPostButton />}
   </div>
 )
@@ -87,28 +93,24 @@ const PostsClient = (props: ContentProps) => {
       bar.innerHTML = ''
       import('react-dom/client').then(({ createRoot }) => {
         createRoot(bar).render(
-          <div className="flex flex-wrap gap-3 sm:gap-4 items-center justify-between rounded-xl border border-border/40 bg-gradient-to-br from-primary/5 via-background to-background px-4 py-3 text-sm shadow-sm">
-            <div className="flex flex-wrap gap-3 sm:gap-4 items-center">
+          <div className="flex flex-wrap items-center justify-between gap-3 border border-border px-4 py-3 text-sm sm:gap-4">
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4">
               <span className="inline-flex items-center gap-1.5 font-medium">
-                <div className="flex items-center justify-center size-7 rounded-lg bg-primary/10 dark:bg-primary/20">
-                  <FileText className="w-3.5 h-3.5 text-primary" />
-                </div>
+                <FileText className="size-3.5 text-muted-foreground" />
                 <span>{drafts.length} Drafts</span>
               </span>
               <span className="inline-flex items-center gap-1.5 font-medium">
-                <div className="flex items-center justify-center size-7 rounded-lg bg-primary/10 dark:bg-primary/20">
-                  <FileCheck2 className="w-3.5 h-3.5 text-primary" />
-                </div>
+                <FileCheck2 className="size-3.5 text-muted-foreground" />
                 <span>{published.length} Published</span>
               </span>
               <span className="inline-flex items-center gap-1.5 font-medium">
-                <div className="flex items-center justify-center size-7 rounded-lg bg-pink-100 dark:bg-pink-900/30">
-                  <Heart className="w-3.5 h-3.5 text-pink-600 dark:text-pink-400" />
-                </div>
+                <Heart className="size-3.5 text-muted-foreground" />
                 <span>{totalLikes} Likes</span>
               </span>
             </div>
-            <span className="text-muted-foreground text-xs sm:text-sm font-medium">Total: {posts.length}</span>
+            <span className="text-xs font-medium text-muted-foreground sm:text-sm">
+              Total: {posts.length}
+            </span>
           </div>
         )
       })
@@ -133,7 +135,7 @@ const PostsClient = (props: ContentProps) => {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search liked posts..."
-              className="pl-9 pr-3 py-2.5 rounded-xl border-border/40 bg-white/80 dark:bg-zinc-800/80"
+              className="border-border bg-background py-2.5 pr-3 pl-9"
               aria-label="Search liked posts"
             />
           </div>
@@ -164,23 +166,37 @@ const PostsClient = (props: ContentProps) => {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search your posts..."
-            className="pl-9 pr-3 py-2.5 rounded-xl border-border/40 bg-white/80 dark:bg-zinc-800/80"
+            className="border-border bg-background py-2.5 pr-3 pl-9"
             aria-label="Search posts"
           />
         </div>
       </div>
       {/* Tabs */}
       <Tabs defaultValue="drafts" value={activeTab} onValueChange={handleTabChange}>
-        <TabsList className="mb-6 rounded-xl bg-muted/30 p-1">
-          <TabsTrigger value="drafts" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">
-            <FileText className="w-4 h-4 mr-2" /> 
+        <TabsList className="mb-6 border border-border bg-muted/40 p-0">
+          <TabsTrigger
+            value="drafts"
+            className="border-r border-border data-[state=active]:bg-background"
+          >
+            <FileText className="mr-2 size-4" />
             <span>Drafts</span>
-            {drafts.length > 0 && <span className="ml-1.5 rounded-full bg-primary/10 dark:bg-primary/20 px-2 py-0.5 text-xs font-semibold text-primary">{drafts.length}</span>}
+            {drafts.length > 0 && (
+              <span className="ml-1.5 border border-border px-2 py-0.5 text-xs font-semibold">
+                {drafts.length}
+              </span>
+            )}
           </TabsTrigger>
-          <TabsTrigger value="published" className="rounded-lg data-[state=active]:bg-background data-[state=active]:shadow-sm">
-            <FileCheck2 className="w-4 h-4 mr-2" /> 
+          <TabsTrigger
+            value="published"
+            className="data-[state=active]:bg-background"
+          >
+            <FileCheck2 className="mr-2 size-4" />
             <span>Published</span>
-            {published.length > 0 && <span className="ml-1.5 rounded-full bg-primary/10 dark:bg-primary/20 px-2 py-0.5 text-xs font-semibold text-primary">{published.length}</span>}
+            {published.length > 0 && (
+              <span className="ml-1.5 border border-border px-2 py-0.5 text-xs font-semibold">
+                {published.length}
+              </span>
+            )}
           </TabsTrigger>
         </TabsList>
         <TabsContent value="drafts" className="mt-0">

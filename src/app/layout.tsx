@@ -4,7 +4,7 @@ import '@/styles/globals.css'
 
 import { Toaster } from '@/components/ui/toaster'
 import { cn } from '@/utils'
-import { GeistSans } from 'geist/font/sans'
+import { Instrument_Sans } from 'next/font/google'
 
 import Footer from '@/components/footer'
 import Header from '@/components/header'
@@ -12,6 +12,11 @@ import ScrollToTop from '@/components/scroll-to-top'
 import { SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, SITE_URL } from '@/lib/constants'
 
 import Providers from './providers'
+
+const instrumentSans = Instrument_Sans({
+  subsets: ['latin'],
+  variable: '--font-instrument-sans'
+})
 
 type RootLayoutProps = {
   children: React.ReactNode
@@ -53,7 +58,21 @@ export const metadata: Metadata = {
   alternates: {
     canonical: SITE_URL
   },
-  keywords: ['blog', 'devops', 'cloud computing', 'kubernetes', 'terraform', 'docker', 'aws', 'azure', 'infrastructure', 'automation', 'ci/cd', 'nextjs blog', 'tech blog'],
+  keywords: [
+    'blog',
+    'devops',
+    'cloud computing',
+    'kubernetes',
+    'terraform',
+    'docker',
+    'aws',
+    'azure',
+    'infrastructure',
+    'automation',
+    'ci/cd',
+    'nextjs blog',
+    'tech blog'
+  ],
   creator: 'NotHarshhaa',
   authors: [{ name: 'NotHarshhaa', url: SITE_URL }],
   category: 'Technology',
@@ -107,9 +126,10 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: {
-    color: '#000000'
-  }
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#fafaf8' },
+    { media: '(prefers-color-scheme: dark)', color: '#1c1c1a' }
+  ]
 }
 
 const RootLayout = (props: RootLayoutProps) => {
@@ -136,7 +156,11 @@ const RootLayout = (props: RootLayoutProps) => {
   }
 
   return (
-    <html lang='en-US' className={cn(GeistSans.variable)} suppressHydrationWarning>
+    <html
+      lang="en-US"
+      className={cn('min-h-screen font-sans antialiased', instrumentSans.variable)}
+      suppressHydrationWarning
+    >
       <head>
         <script
           type="application/ld+json"
@@ -144,13 +168,18 @@ const RootLayout = (props: RootLayoutProps) => {
           dangerouslySetInnerHTML={{ __html: globalThis.JSON.stringify(structuredData) }}
         />
       </head>
-      <body>
+      <body className="font-sans antialiased">
         <a href="#main-content" className="skip-link">
           Skip to main content
         </a>
         <Providers>
           <Header />
-          <main id="main-content" className='min-h-page mx-auto max-w-6xl px-6 pt-40 sm:pt-44 md:pt-48 pb-16'>{children}</main>
+          <main
+            id="main-content"
+            className="mx-auto min-h-[calc(100vh-14rem)] w-full max-w-6xl px-4 pt-20 pb-16 sm:px-6 sm:pt-24 lg:px-8"
+          >
+            {children}
+          </main>
           <Toaster />
           <ScrollToTop />
           <Footer />

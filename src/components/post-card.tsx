@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { memo } from 'react'
 
 import { formatPostDate } from '@/utils/format-post-date'
+import { HoverMark } from '@/components/hover-mark'
 
 import Controls from './controls'
 import UserAvatar from './user-avatar'
@@ -23,64 +24,86 @@ export type PostCardProps = {
 
 const PostCard = memo((props: PostCardProps) => {
   const { post, user, showAuthor = true } = props
-  const { id, title, description, published, createdAt, likes, user: author } = post
+  const { id, title, description, published, createdAt, likes, user: author } =
+    post
+
+  const href = `/${published ? 'posts' : 'editor'}/${id}`
+  const actionLabel = published ? 'Read article' : 'Edit draft'
 
   return (
-    <article className='group relative rounded-2xl border border-border/40 bg-white/90 dark:bg-zinc-900/90 p-0 shadow-sm transition-all duration-300 hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1 dark:hover:shadow-primary/10 motion-reduce:transform-none overflow-hidden'>
-      {/* Decorative accent */}
-      <div className="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b from-primary via-primary/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-      
-      <div className='flex items-center justify-between px-5 sm:px-6 pt-5 sm:pt-6 pb-3'>
+    <HoverMark
+      as="article"
+      label={actionLabel}
+      className="border-b border-border last:border-b-0"
+    >
+      <div className="flex items-start justify-between gap-3 px-4 pt-5 sm:px-5 sm:pt-6">
         {showAuthor && (
           <Link
             href={`/users/${author.id}`}
-            className='flex items-center gap-2.5 text-sm font-medium hover:underline transition-colors duration-200 flex-1 min-w-0'
+            className="relative z-20 flex min-w-0 flex-1 items-center gap-2.5 text-sm"
             aria-label={`View posts by ${author.name}`}
+            onClick={(e) => e.stopPropagation()}
           >
             <UserAvatar
-              width={36}
-              height={36}
+              width={28}
+              height={28}
               userId={author.id}
               src={author.image}
               alt={author.name}
-              className='border-2 border-border/30 shadow-sm transition-transform duration-200 group-hover:scale-110 shrink-0'
+              className="size-7 shrink-0 border border-border"
             />
-            <div className="flex flex-col sm:flex-row sm:items-center gap-0.5 sm:gap-2 min-w-0">
-              <span className='truncate font-medium'>{author.name}</span>
-              <span className='hidden sm:inline text-xs text-muted-foreground shrink-0' aria-hidden="true">·</span>
-              <time className='text-xs text-muted-foreground shrink-0 whitespace-nowrap' dateTime={createdAt.toISOString()}>
+            <div className="flex min-w-0 flex-col gap-0.5 sm:flex-row sm:items-center sm:gap-2">
+              <span className="truncate font-medium">{author.name}</span>
+              <span
+                className="hidden text-muted-foreground sm:inline"
+                aria-hidden
+              >
+                ·
+              </span>
+              <time
+                className="shrink-0 text-xs text-muted-foreground"
+                dateTime={createdAt.toISOString()}
+              >
                 {formatPostDate(createdAt, { relative: true })}
               </time>
             </div>
           </Link>
         )}
-        <div className="shrink-0 ml-2">
-          <Controls user={user} id={id} authorId={author.id} postTitle={title} />
+        <div className="relative z-20 ml-2 shrink-0">
+          <Controls
+            user={user}
+            id={id}
+            authorId={author.id}
+            postTitle={title}
+          />
         </div>
       </div>
+
       <Link
-        href={`/${published ? 'posts' : 'editor'}/${id}`}
-        className='block px-5 sm:px-6 pb-5 sm:pb-6 transition-all duration-200 group-hover:bg-gradient-to-br group-hover:from-gray-50/50 group-hover:to-transparent dark:group-hover:from-zinc-800/20 dark:group-hover:to-transparent focus:outline-none focus:ring-2 focus:ring-primary/20 rounded-b-2xl'
+        href={href}
+        className="block px-4 pt-3 pb-5 focus-visible:outline-none sm:px-5 sm:pb-6"
         tabIndex={0}
-        aria-label={`Read post: ${title}`}
+        aria-label={`${actionLabel}: ${title}`}
       >
-        <h2 className='mb-3 text-xl sm:text-2xl font-bold leading-tight line-clamp-2 group-hover:text-primary transition-colors duration-200'>{title}</h2>
+        <h2 className="text-lg font-semibold tracking-tight text-balance sm:text-xl">
+          {title}
+        </h2>
         {description && (
-          <p className='text-muted-foreground mb-4 line-clamp-3 text-sm sm:text-base leading-relaxed'>{description}</p>
+          <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground sm:text-base">
+            {description}
+          </p>
         )}
-        <div className='flex items-center justify-between pt-3 border-t border-border/20'>
-          <span className='flex items-center gap-1.5 text-sm text-muted-foreground hover:text-pink-500 transition-colors duration-200' aria-label={`${likes.length} likes`}>
-            <HeartIcon className='size-4 text-pink-500 transition-transform duration-200 group-hover:scale-110' aria-hidden="true" />
-            <span className='font-medium'>{likes.length}</span>
-            <span className="hidden sm:inline text-xs">likes</span>
-          </span>
-          <span className='text-xs sm:text-sm font-medium text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center gap-1'>
-            Read more
-            <span className="hidden sm:inline">→</span>
+        <div className="mt-4 flex items-center text-xs text-muted-foreground">
+          <span
+            className="inline-flex items-center gap-1.5"
+            aria-label={`${likes.length} likes`}
+          >
+            <HeartIcon className="size-3.5" aria-hidden />
+            <span>{likes.length}</span>
           </span>
         </div>
       </Link>
-    </article>
+    </HoverMark>
   )
 })
 

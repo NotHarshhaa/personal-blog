@@ -1,4 +1,5 @@
 import PostCard from '@/components/post-card'
+import { Frame, FrameHeader } from '@/components/frame'
 import { getCurrentUser } from '@/lib/auth'
 import { getPosts } from '@/queries/get-posts'
 
@@ -8,23 +9,31 @@ type RelatedPostsProps = {
   currentPostDescription?: string | null
 }
 
-const RelatedPosts = async ({ currentPostId, currentPostTitle, currentPostDescription }: RelatedPostsProps) => {
+const RelatedPosts = async ({
+  currentPostId,
+  currentPostTitle,
+  currentPostDescription
+}: RelatedPostsProps) => {
   const user = await getCurrentUser()
   const { posts } = await getPosts()
 
-  // Filter out current post and find related posts
   const relatedPosts = posts
     .filter((post) => post.id !== currentPostId)
     .map((post) => {
-      // Simple similarity scoring based on title and description
       const titleWords = currentPostTitle.toLowerCase().split(/\s+/)
       const postTitleWords = post.title.toLowerCase().split(/\s+/)
-      const commonTitleWords = titleWords.filter((word) => postTitleWords.includes(word)).length
+      const commonTitleWords = titleWords.filter((word) =>
+        postTitleWords.includes(word)
+      ).length
 
       const description = currentPostDescription?.toLowerCase() || ''
       const postDescription = post.description?.toLowerCase() || ''
-      const descriptionMatch = description && postDescription ? 
-        (postDescription.includes(description.substring(0, 20)) ? 2 : 0) : 0
+      const descriptionMatch =
+        description && postDescription
+          ? postDescription.includes(description.substring(0, 20))
+            ? 2
+            : 0
+          : 0
 
       return {
         post: {
@@ -42,9 +51,9 @@ const RelatedPosts = async ({ currentPostId, currentPostTitle, currentPostDescri
   if (relatedPosts.length === 0) return null
 
   return (
-    <div className="mt-16 border-t border-border/10 pt-12">
-      <h2 className="text-2xl font-bold mb-6">Related Posts</h2>
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+    <Frame>
+      <FrameHeader label="Related posts" />
+      <div className="divide-y divide-border">
         {relatedPosts.map((post) => (
           <PostCard
             key={post.id}
@@ -61,9 +70,8 @@ const RelatedPosts = async ({ currentPostId, currentPostTitle, currentPostDescri
           />
         ))}
       </div>
-    </div>
+    </Frame>
   )
 }
 
 export default RelatedPosts
-

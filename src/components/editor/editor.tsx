@@ -49,7 +49,7 @@ const Editor = (props: EditorProps) => {
 
   if (!editor) {
     return (
-      <div className='flex min-h-[350px] items-center justify-center rounded-xl border bg-background/70 shadow-inner'>
+      <div className='flex min-h-[350px] items-center justify-center border border-border bg-background'>
         <Loader2Icon className='mx-auto size-8 animate-spin text-muted-foreground' />
       </div>
     )
@@ -64,14 +64,14 @@ const Editor = (props: EditorProps) => {
       ref={editorRef}
       className={cn(
         'w-full transition-all',
-        editor.isEditable && 'rounded-xl border bg-background/80 shadow-lg',
-        isFocused && editor.isEditable ? 'ring-2 ring-primary border-primary' : 'border-border',
+        editor.isEditable && 'border border-border bg-background',
+        isFocused && editor.isEditable ? 'ring-1 ring-foreground/20' : '',
         'flex flex-col'
       )}
     >
       {/* Sticky toolbar */}
       {editor.isEditable && (
-        <div className='sticky top-0 z-10 rounded-t-xl border-b bg-background/90 px-1 sm:px-3 py-1 sm:py-2 shadow-sm'>
+        <div className='sticky top-0 z-10 border-b border-border bg-card/95 px-1 py-1 sm:px-3 sm:py-2'>
           <Toolbar editor={editor} />
         </div>
       )}

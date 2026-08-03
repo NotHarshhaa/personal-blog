@@ -11,6 +11,7 @@ import ShareButtons from '@/components/share-buttons'
 import TableOfContents from '@/components/table-of-contents'
 import RelatedPosts from '@/components/related-posts'
 import PostViews from '@/components/post-views'
+import { Frame, FrameBody, FrameHeader } from '@/components/frame'
 import { getCurrentUser } from '@/lib/auth'
 import { SITE_URL, SITE_TITLE } from '@/lib/constants'
 import { getPostById } from '@/queries/get-post-by-id'
@@ -107,15 +108,14 @@ const PostPage = async (props: PostPageProps) => {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
-      <div className="min-h-screen w-full">
-        {/* Hero section */}
-        <div className="w-full from-primary/5 via-background to-background">
-          <div className="mx-auto w-full max-w-screen-xl px-4 sm:px-6 pt-20 pb-6 sm:pt-24 md:pt-32 sm:pb-8 md:pb-12">
-            {/* Meta info */}
-            <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground mb-6">
+      <article className="relative z-10 w-full space-y-6">
+        <Frame as="header">
+          <FrameHeader label="Article" />
+          <FrameBody className="space-y-5">
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-muted-foreground">
               <Link
                 href={`/users/${author.id}`}
-                className="inline-flex items-center gap-2 hover:text-foreground transition-colors duration-200 group"
+                className="inline-flex items-center gap-2 hover:text-foreground"
                 aria-label={`View posts by ${author.name}`}
               >
                 <UserAvatar
@@ -124,81 +124,70 @@ const PostPage = async (props: PostPageProps) => {
                   src={author.image}
                   alt={author.name}
                   userId={author.id}
-                  className="border border-border/30 transition-transform duration-200 group-hover:scale-105"
+                  className="size-6 border border-border"
                 />
-                <span className="font-medium">{author.name}</span>
+                <span className="font-medium text-foreground">{author.name}</span>
               </Link>
-              <span className="text-border/60" aria-hidden="true">•</span>
-              <time dateTime={dateTime} className="text-sm">
+              <span aria-hidden>·</span>
+              <time dateTime={dateTime}>
                 {formatPostDate(createdAt, { relative: true })}
               </time>
-              <span className="text-border/60" aria-hidden="true">•</span>
-              <span className="flex items-center gap-1">
-                <span>{readingTime(content ?? '').text}</span>
-                <span className="text-xs opacity-75">read</span>
-              </span>
-              <span className="text-border/60" aria-hidden="true">•</span>
+              <span aria-hidden>·</span>
+              <span>{readingTime(content ?? '').text}</span>
+              <span aria-hidden>·</span>
               <PostViews postId={id} />
             </div>
 
-            {/* Title & Description */}
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight mb-4 sm:mb-6 max-w-4xl leading-tight text-shadow-none">
+            <h1 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
               {title}
             </h1>
             {description && (
-              <p className="text-lg sm:text-xl text-muted-foreground max-w-3xl leading-relaxed">
+              <p className="max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
                 {description}
               </p>
             )}
-          </div>
-        </div>
+          </FrameBody>
+        </Frame>
 
-        {/* Content section */}
-        <div className="w-full border-t border-border/10">
-          <div className="mx-auto max-w-screen-xl px-4 sm:px-6">
-            <div className="py-6 sm:py-8">
-              <div className="flex gap-8">
-                {/* Main content */}
-                <article className="prose prose-sm sm:prose lg:prose-lg dark:prose-invert max-w-none flex-1">
-                  <Editor options={{ content, editable: false }} />
-                </article>
-
-                {/* Table of Contents */}
-                <TableOfContents content={content ?? ''} />
+        <Frame>
+          <FrameHeader label="Content" />
+          <FrameBody>
+            <div className="flex gap-10">
+              <div className="prose prose-neutral dark:prose-invert max-w-none min-w-0 flex-1 prose-headings:font-semibold prose-a:underline-offset-2">
+                <Editor options={{ content, editable: false }} />
               </div>
+              <TableOfContents content={content ?? ''} />
+            </div>
 
-              {/* Like button and Share buttons */}
-              <div className="mt-12 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-t border-border/10 pt-6">
-                <LikeButton
-                  likes={likes}
-                  user={
-                    user
-                      ? {
+            <div className="mt-10 flex flex-col items-start justify-between gap-4 border-t border-border pt-6 sm:flex-row sm:items-center">
+              <LikeButton
+                likes={likes}
+                user={
+                  user
+                    ? {
                         ...user,
                         createdAt: new Date(user.createdAt),
                         updatedAt: new Date(user.updatedAt)
                       }
-                      : null
-                  }
-                  postId={id}
-                />
-                <ShareButtons
-                  title={title}
-                  description={description || undefined}
-                  postId={id}
-                />
-              </div>
-
-              {/* Related Posts */}
-              <RelatedPosts
-                currentPostId={id}
-                currentPostTitle={title}
-                currentPostDescription={description}
+                    : null
+                }
+                postId={id}
+              />
+              <ShareButtons
+                title={title}
+                description={description || undefined}
+                postId={id}
               />
             </div>
-          </div>
-        </div>
-      </div>
+          </FrameBody>
+        </Frame>
+
+        <RelatedPosts
+          currentPostId={id}
+          currentPostTitle={title}
+          currentPostDescription={description}
+        />
+      </article>
     </>
   )
 }

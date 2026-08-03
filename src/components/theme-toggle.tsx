@@ -1,72 +1,68 @@
 'use client'
 
-import { Button } from '@/components/ui'
-import { AnimatePresence, motion } from 'framer-motion'
-import { MoonIcon, SunIcon } from 'lucide-react'
 import { useTheme } from 'next-themes'
 import { useEffect, useState } from 'react'
+import { Monitor, Moon, Sun } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
-const ThemeToggle = () => {
-  const { resolvedTheme, setTheme } = useTheme()
+const options = [
+  { value: 'light', label: 'Light', icon: Sun },
+  { value: 'system', label: 'System', icon: Monitor },
+  { value: 'dark', label: 'Dark', icon: Moon }
+] as const
+
+const ThemeToggle = ({ className }: { className?: string }) => {
+  const { theme, setTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  const toggleTheme = () => {
-    setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')
-  }
-
-  // Prevent hydration mismatch by not rendering until mounted
   if (!mounted) {
     return (
-      <Button
-        variant='ghost'
-        size='icon'
-        aria-label='Toggle theme'
-        className='relative'
-        disabled
-      >
-        <div className='size-5' />
-      </Button>
+      <div
+        className={cn(
+          'inline-flex h-9 min-w-[6.75rem] border border-border bg-muted/40',
+          className
+        )}
+        aria-hidden
+      />
     )
   }
 
   return (
-    <Button
-      variant='ghost'
-      size='icon'
-      onClick={toggleTheme}
-      aria-label='Toggle theme'
-      className='relative'
+    <div
+      role="group"
+      aria-label="Theme"
+      className={cn(
+        'inline-flex h-9 items-stretch border border-border bg-background',
+        className
+      )}
     >
-      <AnimatePresence mode='wait' initial={false}>
-        {resolvedTheme === 'dark' ? (
-          <motion.span
-            key='moon'
-            initial={{ opacity: 0, rotate: -90, scale: 0.8 }}
-            animate={{ opacity: 1, rotate: 0, scale: 1 }}
-            exit={{ opacity: 0, rotate: 90, scale: 0.8 }}
-            transition={{ duration: 0.3 }}
-            className='absolute inset-0 flex items-center justify-center'
+      {options.map(({ value, label, icon: Icon }) => {
+        const active = theme === value
+        return (
+          <button
+            key={value}
+            type="button"
+            onClick={() => setTheme(value)}
+            aria-label={`${label} theme`}
+            aria-pressed={active}
+            title={label}
+            className={cn(
+              'flex size-9 items-center justify-center transition-colors',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-inset',
+              active
+                ? 'bg-foreground text-background'
+                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+            )}
           >
-            <MoonIcon className='size-5' />
-          </motion.span>
-        ) : (
-          <motion.span
-            key='sun'
-            initial={{ opacity: 0, rotate: 90, scale: 0.8 }}
-            animate={{ opacity: 1, rotate: 0, scale: 1 }}
-            exit={{ opacity: 0, rotate: -90, scale: 0.8 }}
-            transition={{ duration: 0.3 }}
-            className='absolute inset-0 flex items-center justify-center'
-          >
-            <SunIcon className='size-5' />
-          </motion.span>
-        )}
-      </AnimatePresence>
-    </Button>
+            <Icon className="size-3.5" strokeWidth={2} />
+          </button>
+        )
+      })}
+    </div>
   )
 }
 

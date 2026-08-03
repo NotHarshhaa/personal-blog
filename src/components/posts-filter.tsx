@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react'
 import { Button } from '@/components/ui'
 import { ArrowUpDown, Clock, Heart, TrendingUp } from 'lucide-react'
 import PostCard, { type PostCardProps } from '@/components/post-card'
+import { Frame, FrameHeader } from '@/components/frame'
 import type { User } from '@/db/schema'
 
 type PostsFilterProps = {
@@ -22,16 +23,23 @@ const PostsFilter = ({ posts, user }: PostsFilterProps) => {
 
     switch (sortBy) {
       case 'newest':
-        return sorted.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+        return sorted.sort(
+          (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
+        )
       case 'oldest':
-        return sorted.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
+        return sorted.sort(
+          (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
+        )
       case 'popular':
         return sorted.sort((a, b) => b.likes.length - a.likes.length)
       case 'trending':
-        // Combine likes and recency for trending
         return sorted.sort((a, b) => {
-          const aScore = a.likes.length * 10 + (Date.now() - a.createdAt.getTime()) / (1000 * 60 * 60 * 24)
-          const bScore = b.likes.length * 10 + (Date.now() - b.createdAt.getTime()) / (1000 * 60 * 60 * 24)
+          const aScore =
+            a.likes.length * 10 +
+            (Date.now() - a.createdAt.getTime()) / (1000 * 60 * 60 * 24)
+          const bScore =
+            b.likes.length * 10 +
+            (Date.now() - b.createdAt.getTime()) / (1000 * 60 * 60 * 24)
           return bScore - aScore
         })
       default:
@@ -39,74 +47,76 @@ const PostsFilter = ({ posts, user }: PostsFilterProps) => {
     }
   }, [posts, sortBy])
 
-  const sortOptions: Array<{ value: SortOption; label: string; icon: React.ReactNode }> = [
-    { value: 'newest', label: 'Newest', icon: <Clock className="size-4" /> },
-    { value: 'oldest', label: 'Oldest', icon: <Clock className="size-4" /> },
-    { value: 'popular', label: 'Most Liked', icon: <Heart className="size-4" /> },
-    { value: 'trending', label: 'Trending', icon: <TrendingUp className="size-4" /> }
+  const sortOptions: Array<{
+    value: SortOption
+    label: string
+    icon: React.ReactNode
+  }> = [
+    { value: 'newest', label: 'Newest', icon: <Clock className="size-3.5" /> },
+    { value: 'oldest', label: 'Oldest', icon: <Clock className="size-3.5" /> },
+    {
+      value: 'popular',
+      label: 'Most Liked',
+      icon: <Heart className="size-3.5" />
+    },
+    {
+      value: 'trending',
+      label: 'Trending',
+      icon: <TrendingUp className="size-3.5" />
+    }
   ]
 
   return (
-    <div className="w-full">
-      {/* Filter Bar */}
-      <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="h-8 w-1 rounded-full bg-gradient-to-b from-primary to-primary/50" />
-          <div>
-            <h2 className="text-xl sm:text-2xl font-bold">Latest Posts</h2>
-            <p className="text-sm text-muted-foreground">
-              {sortedPosts.length} {sortedPosts.length === 1 ? 'article' : 'articles'} available
-            </p>
-          </div>
-        </div>
-        
-        <div className="flex items-center gap-2 w-full sm:w-auto">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-2 w-full sm:w-auto"
-          >
-            <ArrowUpDown className="size-4" />
-            <span>Sort</span>
-          </Button>
-        </div>
-      </div>
-
-      {/* Sort Options */}
+    <div className="w-full space-y-4">
       {showFilters && (
-        <div className="mb-6 sm:mb-8 flex flex-wrap gap-2 rounded-xl border border-border/40 bg-white/90 dark:bg-zinc-900/90 p-4 shadow-sm">
-          {sortOptions.map((option) => (
-            <Button
-              key={option.value}
-              variant={sortBy === option.value ? 'default' : 'outline'}
-              size="sm"
-              onClick={() => {
-                setSortBy(option.value)
-                setShowFilters(false)
-              }}
-              className="flex items-center gap-2"
-            >
-              {option.icon}
-              {option.label}
-            </Button>
-          ))}
-        </div>
+        <Frame>
+          <FrameHeader label="Sort by" />
+          <div className="flex flex-wrap gap-2 p-3 sm:p-4">
+            {sortOptions.map((option) => (
+              <Button
+                key={option.value}
+                variant={sortBy === option.value ? 'default' : 'outline'}
+                size="sm"
+                onClick={() => {
+                  setSortBy(option.value)
+                  setShowFilters(false)
+                }}
+                className="gap-2"
+              >
+                {option.icon}
+                {option.label}
+              </Button>
+            ))}
+          </div>
+        </Frame>
       )}
 
-      {/* Posts List */}
-      <div className="space-y-5 sm:space-y-6">
-        {sortedPosts.map((post) => (
-          <PostCard
-            key={post.id}
-            post={post}
-            user={user}
-          />
-        ))}
-      </div>
+      <Frame className="overflow-visible">
+        <FrameHeader label="Latest posts">
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-muted-foreground">
+              {sortedPosts.length}{' '}
+              {sortedPosts.length === 1 ? 'article' : 'articles'}
+            </span>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setShowFilters(!showFilters)}
+              className="gap-2"
+            >
+              <ArrowUpDown className="size-3.5" />
+              Sort
+            </Button>
+          </div>
+        </FrameHeader>
+        <div className="divide-y divide-border">
+          {sortedPosts.map((post) => (
+            <PostCard key={post.id} post={post} user={user} />
+          ))}
+        </div>
+      </Frame>
     </div>
   )
 }
 
 export default PostsFilter
-

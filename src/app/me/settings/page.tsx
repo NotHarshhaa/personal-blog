@@ -24,23 +24,21 @@ const SettingsPage = async () => {
   }
 
   return (
-    <>
+    <div className="relative z-10 w-full space-y-6">
       <PageHeader title={title} description={description} />
-      <div className='my-8 sm:my-12 space-y-8 sm:space-y-12'>
-        <SettingsForm
-          user={{
-            ...user,
-            createdAt: new Date(user.createdAt),
-            updatedAt: new Date(user.updatedAt),
-            github: user.github ?? '',
-            twitter: user.twitter ?? '',
-            linkedin: user.linkedin ?? '',
-            theme: user.theme ?? 'system',
-          }}
-        />
-        <Danger />
-      </div>
-    </>
+      <SettingsForm
+        user={{
+          ...user,
+          createdAt: new Date(user.createdAt),
+          updatedAt: new Date(user.updatedAt),
+          github: user.github ?? '',
+          twitter: user.twitter ?? '',
+          linkedin: user.linkedin ?? '',
+          theme: user.theme ?? 'system'
+        }}
+      />
+      <Danger />
+    </div>
   )
 }
 
