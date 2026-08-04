@@ -2,18 +2,34 @@
 
 import { Button } from '@/components/ui'
 import { ArrowUp } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const ScrollToTop = () => {
   const [isVisible, setIsVisible] = useState(false)
+  const isVisibleRef = useRef(false)
 
   useEffect(() => {
+    let ticking = false
+
     const toggleVisibility = () => {
-      setIsVisible(window.scrollY > 400)
+      const next = window.scrollY > 400
+      if (next !== isVisibleRef.current) {
+        isVisibleRef.current = next
+        setIsVisible(next)
+      }
+      ticking = false
     }
 
-    window.addEventListener('scroll', toggleVisibility, { passive: true })
-    return () => window.removeEventListener('scroll', toggleVisibility)
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true
+        requestAnimationFrame(toggleVisibility)
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true })
+    toggleVisibility()
+    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   if (!isVisible) return null

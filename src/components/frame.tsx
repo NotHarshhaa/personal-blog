@@ -41,7 +41,7 @@ export function Frame({
   return (
     <Comp
       className={cn(
-        'relative border border-border bg-card/80 backdrop-blur-[1px]',
+        'relative border border-border bg-card',
         className
       )}
       {...props}

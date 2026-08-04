@@ -101,7 +101,7 @@ const Toolbar = (props: ToolbarProps) => {
   return (
     <nav
       className={cn(
-        'sticky top-[60px] z-10 flex flex-wrap items-center justify-center border border-border bg-card/95 backdrop-blur-sm md:justify-start',
+        'sticky top-[60px] z-10 flex flex-wrap items-center justify-center border border-border bg-card md:justify-start',
         'gap-0.5 p-1 md:gap-1 md:p-2'
       )}
       aria-label='Editor toolbar'

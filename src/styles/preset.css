@@ -180,7 +180,7 @@
   }
 
   html {
-    @apply scroll-smooth font-sans;
+    @apply font-sans;
   }
 
   body {
@@ -198,7 +198,6 @@
         transparent 1px
       );
     background-size: 48px 48px;
-    background-attachment: fixed;
     background-position: center top;
     min-height: 100vh;
   }

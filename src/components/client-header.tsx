@@ -63,8 +63,27 @@ const ClientHeader = ({ user }: Props) => {
   const notificationButtonRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 8)
-    window.addEventListener('scroll', handleScroll)
+    let ticking = false
+    let lastScrolled = false
+
+    const updateScrolled = () => {
+      const next = window.scrollY > 8
+      if (next !== lastScrolled) {
+        lastScrolled = next
+        setIsScrolled(next)
+      }
+      ticking = false
+    }
+
+    const handleScroll = () => {
+      if (!ticking) {
+        ticking = true
+        requestAnimationFrame(updateScrolled)
+      }
+    }
+
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    updateScrolled()
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
@@ -146,7 +165,7 @@ const ClientHeader = ({ user }: Props) => {
   return (
     <header
       className={cn(
-        'sticky top-0 z-50 border-b border-border bg-card/95 backdrop-blur-sm',
+        'sticky top-0 z-50 border-b border-border bg-card',
         isScrolled && 'shadow-sm'
       )}
     >

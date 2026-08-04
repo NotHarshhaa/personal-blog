@@ -260,7 +260,7 @@ const Form = (props: FormProps) => {
 
           <div
             className={cn(
-              'sticky bottom-0 z-10 mt-2 flex flex-col-reverse gap-2 border border-border bg-card/95 p-3 backdrop-blur-sm sm:mt-4 sm:flex-row sm:gap-3 sm:p-4',
+              'sticky bottom-0 z-10 mt-2 flex flex-col-reverse gap-2 border border-border bg-card p-3 sm:mt-4 sm:flex-row sm:gap-3 sm:p-4',
               post.published ? 'justify-end' : 'justify-between'
             )}
           >
