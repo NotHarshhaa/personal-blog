@@ -35,7 +35,10 @@ const Editor = (props: EditorProps) => {
     immediatelyRender: false,
     editorProps: {
       attributes: {
-        class: 'prose dark:prose-invert max-w-none mx-auto focus:outline-none flex-1',
+        class:
+          options?.editable === false
+            ? 'prose dark:prose-invert max-w-none focus:outline-none'
+            : 'prose dark:prose-invert max-w-none mx-auto focus:outline-none flex-1',
         placeholder,
       },
     },
@@ -49,7 +52,7 @@ const Editor = (props: EditorProps) => {
 
   if (!editor) {
     return (
-      <div className='flex min-h-[350px] items-center justify-center border border-border bg-background'>
+      <div className='flex min-h-[200px] items-center justify-center border border-border bg-card'>
         <Loader2Icon className='mx-auto size-8 animate-spin text-muted-foreground' />
       </div>
     )
@@ -78,8 +81,9 @@ const Editor = (props: EditorProps) => {
       <EditorContent
         editor={editor}
         className={cn(
-          'bg-background flex min-h-[300px] sm:min-h-[350px] px-0 py-2 sm:py-4 focus:outline-none',
-          editor.isEditable && 'rounded-b-xl px-2 sm:px-3'
+          'bg-transparent flex px-0 py-0 focus:outline-none',
+          editor.isEditable &&
+            'min-h-[300px] sm:min-h-[350px] bg-background px-2 py-2 sm:px-3 sm:py-4'
         )}
         aria-label='Post editor'
         onFocus={() => setIsFocused(true)}

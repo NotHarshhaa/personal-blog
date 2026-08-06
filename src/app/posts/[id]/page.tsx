@@ -153,7 +153,7 @@ const PostPage = async (props: PostPageProps) => {
           <FrameHeader label="Content" />
           <FrameBody>
             <div className="flex gap-10">
-              <div className="prose prose-neutral dark:prose-invert max-w-none min-w-0 flex-1 prose-headings:font-semibold prose-a:underline-offset-2">
+              <div className="prose dark:prose-invert max-w-none min-w-0 flex-1">
                 <Editor options={{ content, editable: false }} />
               </div>
               <TableOfContents content={content ?? ''} />

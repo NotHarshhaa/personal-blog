@@ -68,12 +68,12 @@ img {
 
 /* Fix prose spacing for better readability */
 .prose {
-  line-height: 1.6 !important;
+  line-height: 1.7;
 }
 
 .prose p {
-  margin-top: 0.75rem !important;
-  margin-bottom: 0.75rem !important;
+  margin-top: 0.85rem;
+  margin-bottom: 0.85rem;
 }
 
 .prose h1,
@@ -82,82 +82,57 @@ img {
 .prose h4,
 .prose h5,
 .prose h6 {
-  margin-top: 1.5rem !important;
-  margin-bottom: 0.75rem !important;
+  margin-top: 1.75rem;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
 }
 
 .prose ul,
 .prose ol {
-  margin-top: 0.75rem !important;
-  margin-bottom: 0.75rem !important;
+  margin-top: 0.85rem;
+  margin-bottom: 0.85rem;
 }
 
 .prose li {
-  margin-top: 0.125rem !important;
-  margin-bottom: 0.125rem !important;
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
 }
 
 .prose blockquote {
-  margin-top: 1rem !important;
-  margin-bottom: 1rem !important;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
 }
 
-.prose code {
-  padding: 0.125rem 0.25rem !important;
-  margin: 0 !important;
-}
-
-.prose pre {
-  margin-top: 1rem !important;
-  margin-bottom: 1rem !important;
-}
-
-/* Mobile font size improvements - only affects mobile */
+/* Mobile font size improvements */
 @media (max-width: 768px) {
   .prose {
-    font-size: 1rem !important; /* 16px - standard readable size */
+    font-size: 1rem;
   }
-  
-  .prose p {
-    font-size: 1rem !important;
-  }
-  
+
   .prose h1 {
-    font-size: 1.75rem !important; /* 28px */
+    font-size: 1.75rem;
   }
-  
+
   .prose h2 {
-    font-size: 1.5rem !important; /* 24px */
+    font-size: 1.5rem;
   }
-  
+
   .prose h3 {
-    font-size: 1.25rem !important; /* 20px */
+    font-size: 1.25rem;
   }
-  
+
   .prose h4 {
-    font-size: 1.125rem !important; /* 18px */
+    font-size: 1.125rem;
   }
-  
+
   .prose h5,
   .prose h6 {
-    font-size: 1rem !important; /* 16px */
+    font-size: 1rem;
   }
-  
-  .prose ul,
-  .prose ol {
-    font-size: 1rem !important;
-  }
-  
-  .prose li {
-    font-size: 1rem !important;
-  }
-  
-  .prose blockquote {
-    font-size: 1rem !important;
-  }
-  
+
   .prose code {
-    font-size: 0.875rem !important; /* 14px - slightly smaller for code */
+    font-size: 0.8125rem;
   }
 }
 
@@ -201,15 +176,14 @@ a:not([class]):hover {
 .hljs {
   display: block;
   overflow-x: auto;
-  padding: 0.5em;
-
-  color: #24292e;
-  background: #ffffff;
+  padding: 0;
+  color: var(--foreground);
+  background: transparent !important;
 }
 
 .hljs-comment,
 .hljs-punctuation {
-  color: #6a737d;
+  color: var(--muted-foreground);
 }
 
 .hljs-attr,
@@ -218,29 +192,29 @@ a:not([class]):hover {
 .hljs-selector-attr,
 .hljs-selector-class,
 .hljs-selector-id {
-  color: #005cc5;
+  color: color-mix(in oklch, var(--foreground) 72%, oklch(0.45 0.12 250));
 }
 
 .hljs-variable,
 .hljs-literal,
 .hljs-number,
 .hljs-doctag {
-  color: #e36209;
+  color: color-mix(in oklch, var(--foreground) 65%, oklch(0.55 0.14 55));
 }
 
 .hljs-params {
-  color: #24292e;
+  color: var(--foreground);
 }
 
 .hljs-function {
-  color: #6f42c1;
+  color: color-mix(in oklch, var(--foreground) 70%, oklch(0.5 0.12 300));
 }
 
 .hljs-class,
 .hljs-tag,
 .hljs-title,
 .hljs-built_in {
-  color: #22863a;
+  color: color-mix(in oklch, var(--foreground) 65%, oklch(0.5 0.12 145));
 }
 
 .hljs-keyword,
@@ -249,28 +223,28 @@ a:not([class]):hover {
 .hljs-meta-keyword,
 .hljs-template-tag,
 .hljs-template-variable {
-  color: #d73a49;
+  color: color-mix(in oklch, var(--foreground) 60%, oklch(0.55 0.16 25));
 }
 
 .hljs-string,
 .hljs-undefined {
-  color: #032f62;
+  color: color-mix(in oklch, var(--foreground) 68%, oklch(0.45 0.1 230));
 }
 
 .hljs-regexp {
-  color: #032f62;
+  color: color-mix(in oklch, var(--foreground) 68%, oklch(0.45 0.1 230));
 }
 
 .hljs-symbol {
-  color: #005cc5;
+  color: color-mix(in oklch, var(--foreground) 72%, oklch(0.45 0.12 250));
 }
 
 .hljs-bullet {
-  color: #e36209;
+  color: color-mix(in oklch, var(--foreground) 65%, oklch(0.55 0.14 55));
 }
 
 .hljs-section {
-  color: #005cc5;
+  color: color-mix(in oklch, var(--foreground) 72%, oklch(0.45 0.12 250));
   font-weight: bold;
 }
 
@@ -278,140 +252,30 @@ a:not([class]):hover {
 .hljs-name,
 .hljs-selector-tag,
 .hljs-selector-pseudo {
-  color: #22863a;
+  color: color-mix(in oklch, var(--foreground) 65%, oklch(0.5 0.12 145));
 }
 
 .hljs-emphasis {
-  color: #e36209;
+  color: color-mix(in oklch, var(--foreground) 65%, oklch(0.55 0.14 55));
   font-style: italic;
 }
 
 .hljs-strong {
-  color: #e36209;
+  color: color-mix(in oklch, var(--foreground) 65%, oklch(0.55 0.14 55));
   font-weight: bold;
 }
 
 .hljs-deletion {
-  color: #b31d28;
-  background-color: #ffeef0;
+  color: color-mix(in oklch, var(--foreground) 50%, oklch(0.55 0.2 25));
+  background-color: color-mix(in oklch, oklch(0.55 0.2 25) 12%, transparent);
 }
 
 .hljs-addition {
-  color: #22863a;
-  background-color: #f0fff4;
+  color: color-mix(in oklch, var(--foreground) 50%, oklch(0.5 0.14 145));
+  background-color: color-mix(in oklch, oklch(0.5 0.14 145) 12%, transparent);
 }
 
 .hljs-link {
-  color: #032f62;
-  font-style: underline;
-}
-
-.dark {
-  .hljs {
-    display: block;
-    overflow-x: auto;
-    padding: 0.5em;
-
-    color: #c9d1d9;
-    background: #0d1117;
-  }
-
-  .hljs-comment,
-  .hljs-punctuation {
-    color: #8b949e;
-  }
-
-  .hljs-attr,
-  .hljs-attribute,
-  .hljs-meta,
-  .hljs-selector-attr,
-  .hljs-selector-class,
-  .hljs-selector-id {
-    color: #79c0ff;
-  }
-
-  .hljs-variable,
-  .hljs-literal,
-  .hljs-number,
-  .hljs-doctag {
-    color: #ffa657;
-  }
-
-  .hljs-params {
-    color: #c9d1d9;
-  }
-
-  .hljs-function {
-    color: #d2a8ff;
-  }
-
-  .hljs-class,
-  .hljs-tag,
-  .hljs-title,
-  .hljs-built_in {
-    color: #7ee787;
-  }
-
-  .hljs-keyword,
-  .hljs-type,
-  .hljs-builtin-name,
-  .hljs-meta-keyword,
-  .hljs-template-tag,
-  .hljs-template-variable {
-    color: #ff7b72;
-  }
-
-  .hljs-string,
-  .hljs-undefined {
-    color: #a5d6ff;
-  }
-
-  .hljs-regexp {
-    color: #a5d6ff;
-  }
-
-  .hljs-symbol {
-    color: #79c0ff;
-  }
-
-  .hljs-bullet {
-    color: #ffa657;
-  }
-
-  .hljs-section {
-    color: #79c0ff;
-    font-weight: bold;
-  }
-
-  .hljs-quote,
-  .hljs-name,
-  .hljs-selector-tag,
-  .hljs-selector-pseudo {
-    color: #7ee787;
-  }
-
-  .hljs-emphasis {
-    color: #ffa657;
-    font-style: italic;
-  }
-
-  .hljs-strong {
-    color: #ffa657;
-    font-weight: bold;
-  }
-
-  .hljs-deletion {
-    color: #ffa198;
-    background-color: #490202;
-  }
-
-  .hljs-addition {
-    color: #7ee787;
-    background-color: #04260f;
-  }
-
-  .hljs-link {
-    color: #a5d6ff;
-    font-style: underline;
-  }
+  color: color-mix(in oklch, var(--foreground) 68%, oklch(0.45 0.1 230));
+  text-decoration: underline;
 }

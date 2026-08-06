@@ -37,6 +37,15 @@ export const extensions: AnyExtension[] = [
     blockquote: false,
     horizontalRule: false,
     hardBreak: false,
+    // Configured separately below — avoid duplicate keyed plugins
+    dropcursor: false,
+    gapcursor: false,
+    code: {
+      HTMLAttributes: {
+        class:
+          'rounded-none border border-border bg-muted px-1 py-0.5 font-mono text-[0.875em] text-foreground',
+      },
+    },
     heading: {
       levels: [1, 2, 3, 4, 5, 6],
       HTMLAttributes: {
@@ -82,7 +91,7 @@ export const extensions: AnyExtension[] = [
   Highlight.configure({
     multicolor: true,
     HTMLAttributes: {
-      class: 'rounded px-0.5',
+      class: 'rounded-none bg-foreground/10 px-0.5',
     },
   }),
   Underline,
@@ -121,7 +130,8 @@ export const extensions: AnyExtension[] = [
     HTMLAttributes: {
       rel: 'noopener noreferrer nofollow',
       target: '_blank',
-      class: 'underline decoration-primary/30 underline-offset-2 text-primary hover:text-primary/80 transition-colors',
+      class:
+        'underline decoration-foreground/30 underline-offset-2 text-foreground hover:decoration-foreground transition-colors',
     },
   }).extend({
     inclusive: false,
@@ -133,7 +143,8 @@ export const extensions: AnyExtension[] = [
     lowlight,
     defaultLanguage: 'plaintext',
     HTMLAttributes: {
-      class: 'not-prose rounded-xl border border-border/40 bg-muted/30 shadow-sm',
+      class:
+        'not-prose relative my-5 overflow-x-auto rounded-none border border-border bg-muted font-mono text-[13px] leading-relaxed shadow-none',
     },
     languageClassPrefix: 'language-',
   }),
@@ -143,13 +154,15 @@ export const extensions: AnyExtension[] = [
     inline: false,
     allowBase64: true,
     HTMLAttributes: {
-      class: 'rounded-xl border border-border/40 max-w-full mx-auto my-6 shadow-lg transition-shadow hover:shadow-xl',
+      class:
+        'rounded-none border border-border max-w-full mx-auto my-6 shadow-none',
     },
   }),
   Youtube.configure({
     inline: false,
     HTMLAttributes: {
-      class: 'rounded-xl border border-border/40 max-w-full mx-auto my-6 shadow-lg aspect-video',
+      class:
+        'rounded-none border border-border max-w-full mx-auto my-6 shadow-none aspect-video',
     },
   }),
 
@@ -157,46 +170,48 @@ export const extensions: AnyExtension[] = [
   Table.configure({
     resizable: true,
     HTMLAttributes: {
-      class: 'my-6 border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-shadow',
+      class: 'my-6 w-full border border-border rounded-none overflow-hidden shadow-none',
     },
   }),
   TableRow.configure({
     HTMLAttributes: {
-      class: 'border-b border-border/20 last:border-0',
+      class: 'border-b border-border last:border-0',
     },
   }),
   TableCell.configure({
     HTMLAttributes: {
-      class: 'border-r border-border/20 last:border-0 p-2',
+      class: 'border-r border-border last:border-0 p-2',
     },
   }),
   TableHeader.configure({
     HTMLAttributes: {
-      class: 'border-r border-border/20 last:border-0 p-2 font-semibold bg-muted/30',
+      class:
+        'border-r border-border last:border-0 p-2 font-semibold bg-muted',
     },
   }),
 
   // Decorative elements
   HorizontalRule.configure({
     HTMLAttributes: {
-      class: 'my-8 border-t-2 border-dashed border-border/40',
+      class: 'my-8 border-t border-dashed border-border',
     },
   }),
   Blockquote.configure({
     HTMLAttributes: {
-      class: 'border-l-4 border-primary/40 pl-6 italic my-6 text-muted-foreground',
+      class:
+        'border-l-2 border-foreground pl-5 my-6 text-muted-foreground not-italic',
     },
   }),
 
   // Utilities
   HardBreak,
   Dropcursor.configure({
-    color: 'var(--primary)',
+    color: 'var(--foreground)',
     width: 2,
   }),
   Gapcursor,
   Focus.configure({
-    className: 'ring-1 ring-primary/5 rounded',
-    mode: 'shallowest'
+    className: 'ring-1 ring-foreground/15 rounded-none',
+    mode: 'shallowest',
   }),
 ]

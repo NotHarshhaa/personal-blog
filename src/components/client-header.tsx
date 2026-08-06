@@ -169,7 +169,7 @@ const ClientHeader = ({ user }: Props) => {
         isScrolled && 'shadow-sm'
       )}
     >
-      <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-14 max-w-[90rem] items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
         <Link href="/" className="flex min-w-0 items-center gap-2.5">
           <Image
             src="/logo.svg"
@@ -295,7 +295,7 @@ const ClientHeader = ({ user }: Props) => {
 
       {isSearchOpen && (
         <div className="border-t border-border">
-          <div className="relative mx-auto max-w-6xl px-4 py-3 sm:px-6 lg:px-8">
+          <div className="relative mx-auto max-w-[90rem] px-4 py-3 sm:px-6 lg:px-8">
             <div className="flex items-center gap-3 border border-border bg-background px-3 py-2.5">
               <Search className="size-4 shrink-0 text-muted-foreground" />
               <input
