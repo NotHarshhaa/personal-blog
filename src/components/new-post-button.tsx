@@ -6,8 +6,14 @@ import { useRouter } from 'next/navigation'
 import { useAction } from 'next-safe-action/hooks'
 
 import { createPostAction } from '@/actions/create-post-action'
+import { cn } from '@/lib/utils'
 
-const NewPostButton = () => {
+type NewPostButtonProps = {
+  className?: string
+  compact?: boolean
+}
+
+const NewPostButton = ({ className, compact = false }: NewPostButtonProps) => {
   const router = useRouter()
   const action = useAction(createPostAction, {
     onSuccess: ({ data }) => {
@@ -28,13 +34,19 @@ const NewPostButton = () => {
   }
 
   return (
-    <Button variant='ghost' className='py-1.5' onClick={newPost} disabled={action.isExecuting}>
+    <Button
+      variant="ghost"
+      className={cn(compact ? 'size-9 px-0' : 'py-1.5', className)}
+      onClick={newPost}
+      disabled={action.isExecuting}
+      aria-label={compact ? 'Write new post' : undefined}
+    >
       {action.isExecuting ? (
-        <Loader2Icon className='mr-2 size-4 animate-spin' />
+        <Loader2Icon className={cn('size-4 animate-spin', !compact && 'mr-2')} />
       ) : (
-        <PenSquareIcon className='mr-2 size-4' />
+        <PenSquareIcon className={cn('size-4', !compact && 'mr-2')} />
       )}
-      Write
+      {!compact && 'Write'}
     </Button>
   )
 }

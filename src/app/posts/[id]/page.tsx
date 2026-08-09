@@ -6,7 +6,6 @@ import readingTime from 'reading-time'
 
 import Editor from '@/components/editor'
 import UserAvatar from '@/components/user-avatar'
-import ReadingProgress from '@/components/reading-progress'
 import ShareButtons from '@/components/share-buttons'
 import TableOfContents from '@/components/table-of-contents'
 import RelatedPosts from '@/components/related-posts'
@@ -103,7 +102,6 @@ const PostPage = async (props: PostPageProps) => {
 
   return (
     <>
-      <ReadingProgress />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}

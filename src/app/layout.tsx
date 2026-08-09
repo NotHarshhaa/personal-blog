@@ -176,7 +176,7 @@ const RootLayout = (props: RootLayoutProps) => {
           <Header />
           <main
             id="main-content"
-            className="mx-auto min-h-[calc(100vh-14rem)] w-full max-w-[90rem] px-4 pt-20 pb-16 sm:px-6 sm:pt-24 lg:px-8"
+            className="mx-auto min-h-[calc(100vh-14rem)] w-full max-w-[90rem] px-4 pt-18 pb-16 sm:px-6 sm:pt-24 lg:px-8"
           >
             {children}
           </main>

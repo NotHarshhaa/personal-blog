@@ -2,11 +2,12 @@
 
 import type { Session } from 'next-auth'
 
-import { Bell, Search, X } from 'lucide-react'
+import { Bell, Menu as MenuIcon, Search, X } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
+import { SITE_NAME } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
 import Menu from './menu'
@@ -33,6 +34,7 @@ type SearchPost = {
 
 const ClientHeader = ({ user }: Props) => {
   const [isScrolled, setIsScrolled] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
   const [search, setSearch] = useState('')
   const [results, setResults] = useState<SearchPost[]>([])
@@ -88,12 +90,26 @@ const ClientHeader = ({ user }: Props) => {
   }, [])
 
   useEffect(() => {
-    if (!isSearchOpen) {
+    if (!isSearchOpen && !isMobileMenuOpen) {
       setSearch('')
       setResults([])
       setShowDropdown(false)
     }
-  }, [isSearchOpen])
+  }, [isSearchOpen, isMobileMenuOpen])
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) return
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [isMobileMenuOpen])
+
+  useEffect(() => {
+    if (isSearchOpen || isMobileMenuOpen) {
+      requestAnimationFrame(() => searchRef.current?.focus())
+    }
+  }, [isSearchOpen, isMobileMenuOpen])
 
   useEffect(() => {
     if (search.trim().length === 0) {
@@ -158,38 +174,167 @@ const ClientHeader = ({ user }: Props) => {
     handleToggleRead(notifId)
     router.push(`/posts/${postId}`)
     setShowNotifications(false)
+    setIsMobileMenuOpen(false)
   }
 
   const unread = notifications.filter((n) => !n.read).length
 
+  const notificationsList = (
+    <>
+      {notifications.length === 0 ? (
+        <p className="px-4 py-6 text-center text-sm text-muted-foreground">
+          No notifications yet
+        </p>
+      ) : (
+        notifications.map((notif) => (
+          <HoverMark
+            key={notif.id}
+            label="Open"
+            className={cn(
+              'border-b border-border last:border-0',
+              !notif.read && 'bg-muted/20'
+            )}
+          >
+            <button
+              type="button"
+              onClick={() => handleNotificationClick(notif.id, notif.postId)}
+              className="flex w-full flex-col gap-1 px-4 py-3 text-left"
+            >
+              <span className="line-clamp-2 text-sm font-medium">{notif.title}</span>
+              <span className="line-clamp-2 text-xs text-muted-foreground">
+                {notif.description}
+              </span>
+            </button>
+          </HoverMark>
+        ))
+      )}
+    </>
+  )
+
+  const notificationsPanel = (
+    <div className="border border-border bg-card">
+      <div className="flex items-center justify-between border-b border-border px-4 py-3">
+        <h2 className="text-sm font-semibold">Notifications</h2>
+        {unread > 0 && (
+          <span className="border border-border px-2 py-0.5 text-[10px] font-medium">
+            {unread} new
+          </span>
+        )}
+      </div>
+      <div className="max-h-72 overflow-y-auto">{notificationsList}</div>
+      {notifications.length > 0 && (
+        <div className="border-t border-border p-2">
+          <button
+            type="button"
+            onClick={handleClearAll}
+            className="w-full border border-border px-3 py-2 text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
+          >
+            Clear all
+          </button>
+        </div>
+      )}
+    </div>
+  )
+
+  const handleSearchResultSelect = (postId: string) => {
+    setIsSearchOpen(false)
+    setIsMobileMenuOpen(false)
+    setShowDropdown(false)
+    setSearch('')
+    router.push(`/posts/${postId}`)
+  }
+
+  const searchResults = (
+    <>
+      {loading && (
+        <p className="p-4 text-center text-sm text-muted-foreground">Loading...</p>
+      )}
+      {!loading && results.length === 0 && (
+        <p className="p-4 text-center text-sm text-muted-foreground">
+          No results found.
+        </p>
+      )}
+      {!loading &&
+        results.map((post) => (
+          <HoverMark
+            key={post.id}
+            label="Read article"
+            className="border-b border-border last:border-0"
+          >
+            <button
+              type="button"
+              className="block w-full px-4 py-3 text-left"
+              onClick={() => handleSearchResultSelect(post.id)}
+            >
+              <p className="text-sm font-medium">{post.title}</p>
+              <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">
+                {post.description}
+              </p>
+            </button>
+          </HoverMark>
+        ))}
+    </>
+  )
+
+  const searchField = (
+    <div className="relative">
+      <div className="flex items-center gap-3 border border-border bg-background px-3 py-2.5">
+        <Search className="size-4 shrink-0 text-muted-foreground" />
+        <input
+          ref={searchRef}
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search posts..."
+          className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+          onFocus={() => search && setShowDropdown(true)}
+        />
+      </div>
+      {showDropdown && (
+        <div className="absolute inset-x-0 z-50 mt-1 max-h-72 overflow-auto border border-border bg-card">
+          {searchResults}
+        </div>
+      )}
+    </div>
+  )
+
   return (
     <header
       className={cn(
-        'sticky top-0 z-50 border-b border-border bg-card',
+        'relative isolate sticky top-0 z-50 border-b border-border border-t border-t-card bg-card',
+        'before:pointer-events-none before:absolute before:inset-x-0 before:-top-px before:z-10 before:h-px before:bg-card',
+        'max-md:after:pointer-events-none max-md:after:absolute max-md:after:inset-x-0 max-md:after:bottom-full max-md:after:-z-10 max-md:after:h-screen max-md:after:bg-card',
+        'supports-[padding:env(safe-area-inset-top)]:pt-[env(safe-area-inset-top)]',
         isScrolled && 'shadow-sm'
       )}
     >
-      <div className="mx-auto flex h-14 max-w-[90rem] items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex min-w-0 items-center gap-2.5">
+      <div className="mx-auto flex min-h-14 max-w-[90rem] items-center justify-between gap-3 px-4 py-2 sm:px-6 lg:px-8">
+        <Link
+          href="/"
+          className="group flex min-w-0 flex-1 items-center gap-2.5 pr-2 sm:flex-none sm:pr-0"
+        >
           <Image
             src="/logo.svg"
             alt="Logo"
             width={28}
             height={28}
-            className="size-7 shrink-0 border border-border"
+            className="size-7 shrink-0 border border-border transition-transform group-hover:scale-105"
           />
-          <div className="min-w-0">
-            <p className="truncate text-sm font-semibold tracking-wide">
-              DevOps & Cloud Space
+          <div className="min-w-0 leading-tight">
+            <p className="text-[13px] font-bold tracking-tight sm:text-sm">
+              <span className="bg-gradient-to-r from-foreground via-foreground to-muted-foreground bg-clip-text text-transparent">
+                {SITE_NAME}
+              </span>
             </p>
-            <p className="hidden text-[11px] text-muted-foreground sm:block">
+            <p className="font-mono text-[9px] tracking-[0.14em] text-muted-foreground uppercase sm:text-[10px] sm:tracking-[0.16em]">
               by Harshhaa
             </p>
           </div>
         </Link>
 
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
-          <button
+          <div className="hidden items-center gap-1.5 sm:gap-2 md:flex">
+            <button
             type="button"
             onClick={() => setIsSearchOpen(!isSearchOpen)}
             className="flex size-9 items-center justify-center border border-transparent text-muted-foreground hover:border-border hover:bg-muted hover:text-foreground"
@@ -217,60 +362,9 @@ const ClientHeader = ({ user }: Props) => {
               {showNotifications && (
                 <div
                   ref={notificationsRef}
-                  className="absolute right-0 z-50 mt-2 w-80 max-w-[calc(100vw-2rem)] border border-border bg-card"
+                  className="absolute right-0 z-50 mt-2 w-80 max-w-[calc(100vw-2rem)]"
                 >
-                  <div className="flex items-center justify-between border-b border-border px-4 py-3">
-                    <h2 className="text-sm font-semibold">Notifications</h2>
-                    {unread > 0 && (
-                      <span className="border border-border px-2 py-0.5 text-[10px] font-medium">
-                        {unread} new
-                      </span>
-                    )}
-                  </div>
-                  <div className="max-h-72 overflow-y-auto">
-                    {notifications.length === 0 ? (
-                      <p className="px-4 py-8 text-center text-sm text-muted-foreground">
-                        No notifications yet
-                      </p>
-                    ) : (
-                      notifications.map((notif) => (
-                        <HoverMark
-                          key={notif.id}
-                          label="Open"
-                          className={cn(
-                            'border-b border-border last:border-0',
-                            !notif.read && 'bg-muted/20'
-                          )}
-                        >
-                          <button
-                            type="button"
-                            onClick={() =>
-                              handleNotificationClick(notif.id, notif.postId)
-                            }
-                            className="flex w-full flex-col gap-1 px-4 py-3 text-left"
-                          >
-                            <span className="line-clamp-2 text-sm font-medium">
-                              {notif.title}
-                            </span>
-                            <span className="line-clamp-2 text-xs text-muted-foreground">
-                              {notif.description}
-                            </span>
-                          </button>
-                        </HoverMark>
-                      ))
-                    )}
-                  </div>
-                  {notifications.length > 0 && (
-                    <div className="border-t border-border p-2">
-                      <button
-                        type="button"
-                        onClick={handleClearAll}
-                        className="w-full border border-border px-3 py-2 text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
-                      >
-                        Clear all
-                      </button>
-                    </div>
-                  )}
+                  {notificationsPanel}
                 </div>
               )}
             </div>
@@ -278,6 +372,14 @@ const ClientHeader = ({ user }: Props) => {
 
           {user?.role === 'admin' && <NewPostButton />}
           <ThemeToggle />
+          </div>
+
+          {user?.role === 'admin' && (
+            <div className="md:hidden">
+              <NewPostButton compact />
+            </div>
+          )}
+
           <Menu
             user={
               user
@@ -290,63 +392,101 @@ const ClientHeader = ({ user }: Props) => {
                 : null
             }
           />
+
+          <button
+            type="button"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="flex size-9 items-center justify-center border border-border text-muted-foreground hover:bg-muted hover:text-foreground md:hidden"
+            aria-label="Toggle menu"
+            aria-expanded={isMobileMenuOpen}
+          >
+            {isMobileMenuOpen ? (
+              <X className="size-4" />
+            ) : (
+              <MenuIcon className="size-4" />
+            )}
+          </button>
         </div>
       </div>
 
       {isSearchOpen && (
-        <div className="border-t border-border">
+        <div className="hidden border-t border-border md:block">
           <div className="relative mx-auto max-w-[90rem] px-4 py-3 sm:px-6 lg:px-8">
-            <div className="flex items-center gap-3 border border-border bg-background px-3 py-2.5">
-              <Search className="size-4 shrink-0 text-muted-foreground" />
-              <input
-                ref={searchRef}
-                type="text"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search posts..."
-                className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
-                onFocus={() => search && setShowDropdown(true)}
-                autoFocus
+            {searchField}
+          </div>
+        </div>
+      )}
+
+      {isMobileMenuOpen && (
+        <div className="border-t border-border md:hidden">
+          <div className="relative mx-auto max-w-[90rem] px-4 py-4 sm:px-6">
+            <div className="relative border border-border bg-card">
+              <span
+                aria-hidden
+                className="pointer-events-none absolute -top-px -left-px z-10 size-2.5 border-t-2 border-l-2 border-foreground/45"
               />
-            </div>
-            {showDropdown && (
-              <div className="absolute inset-x-4 z-50 mt-1 max-h-72 overflow-auto border border-border bg-card sm:inset-x-6">
-                {loading && (
-                  <p className="p-4 text-center text-sm text-muted-foreground">
-                    Loading...
+              <span
+                aria-hidden
+                className="pointer-events-none absolute -top-px -right-px z-10 size-2.5 border-t-2 border-r-2 border-foreground/45"
+              />
+              <span
+                aria-hidden
+                className="pointer-events-none absolute -bottom-px -left-px z-10 size-2.5 border-b-2 border-l-2 border-foreground/45"
+              />
+              <span
+                aria-hidden
+                className="pointer-events-none absolute -right-px -bottom-px z-10 size-2.5 border-b-2 border-r-2 border-foreground/45"
+              />
+
+              <div className="space-y-4 p-4">
+                <div>
+                  <p className="mb-2 text-[10px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
+                    Search
                   </p>
+                  {searchField}
+                </div>
+
+                <div className="h-px w-full bg-border" />
+
+                {user && (
+                  <div>
+                    <div className="mb-2 flex items-center justify-between">
+                      <p className="text-[10px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
+                        Notifications
+                      </p>
+                      {unread > 0 && (
+                        <span className="border border-border px-2 py-0.5 text-[10px] font-medium">
+                          {unread} new
+                        </span>
+                      )}
+                    </div>
+                    <div className="border border-border bg-background">
+                      <div className="max-h-48 overflow-y-auto">{notificationsList}</div>
+                      {notifications.length > 0 && (
+                        <div className="border-t border-border p-2">
+                          <button
+                            type="button"
+                            onClick={handleClearAll}
+                            className="w-full border border-border px-3 py-2 text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
+                          >
+                            Clear all
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 )}
-                {!loading && results.length === 0 && (
-                  <p className="p-4 text-center text-sm text-muted-foreground">
-                    No results found.
+
+                <div className="h-px w-full bg-border" />
+
+                <div>
+                  <p className="mb-2 text-[10px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
+                    Theme
                   </p>
-                )}
-                {!loading &&
-                  results.map((post) => (
-                    <HoverMark
-                      key={post.id}
-                      label="Read article"
-                      className="border-b border-border last:border-0"
-                    >
-                      <button
-                        type="button"
-                        className="block w-full px-4 py-3 text-left"
-                        onMouseDown={() => {
-                          setIsSearchOpen(false)
-                          setShowDropdown(false)
-                          setSearch('')
-                          router.push(`/posts/${post.id}`)
-                        }}
-                      >
-                        <p className="text-sm font-medium">{post.title}</p>
-                        <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">
-                          {post.description}
-                        </p>
-                      </button>
-                    </HoverMark>
-                  ))}
+                  <ThemeToggle className="flex w-full [&>button]:flex-1" />
+                </div>
               </div>
-            )}
+            </div>
           </div>
         </div>
       )}

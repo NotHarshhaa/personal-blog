@@ -199,7 +199,7 @@
         transparent 1px
       );
     background-size: 48px 48px;
-    background-position: center top;
+    background-position: center 1px;
     min-height: 100vh;
   }
 

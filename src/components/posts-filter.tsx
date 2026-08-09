@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, type ReactNode } from 'react'
 import { Button } from '@/components/ui'
 import { ArrowUpDown, Clock, Heart, TrendingUp } from 'lucide-react'
 import PostCard, { type PostCardProps } from '@/components/post-card'
@@ -50,7 +50,7 @@ const PostsFilter = ({ posts, user }: PostsFilterProps) => {
   const sortOptions: Array<{
     value: SortOption
     label: string
-    icon: React.ReactNode
+    icon: ReactNode
   }> = [
     { value: 'newest', label: 'Newest', icon: <Clock className="size-3.5" /> },
     { value: 'oldest', label: 'Oldest', icon: <Clock className="size-3.5" /> },

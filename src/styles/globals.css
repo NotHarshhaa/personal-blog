@@ -149,6 +149,7 @@ img {
 /* Smooth scrolling improvements */
 html {
   scroll-padding-top: 72px;
+  background-color: var(--background);
 }
 
 /* Better focus styles */
