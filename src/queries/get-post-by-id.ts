@@ -2,6 +2,7 @@ import { and, eq } from 'drizzle-orm'
 
 import { db } from '@/db'
 import { posts } from '@/db/schema'
+import { withPostEngagement } from '@/utils/get-seeded-view-count'
 
 export const getPostById = async (id: string) => {
   const result = await db.query.posts.findFirst({
@@ -11,7 +12,8 @@ export const getPostById = async (id: string) => {
       title: true,
       description: true,
       content: true,
-      createdAt: true
+      createdAt: true,
+      views: true
     },
     with: {
       user: {
@@ -31,7 +33,19 @@ export const getPostById = async (id: string) => {
     }
   })
 
+  if (!result) {
+    return {
+      post: result
+    }
+  }
+
   return {
-    post: result
+    post: {
+      ...result,
+      ...withPostEngagement({
+        ...result,
+        published: true
+      })
+    }
   }
 }

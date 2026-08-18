@@ -68,7 +68,7 @@ const PostPage = async (props: PostPageProps) => {
     notFound()
   }
 
-  const { title, description, content, createdAt, user: author, likes } = post
+  const { title, description, content, createdAt, user: author, likes, likeCount, views } = post
   const dateTime = formatPostDate(createdAt, {
     format: 'YYYY-MM-DD'
   })
@@ -133,7 +133,7 @@ const PostPage = async (props: PostPageProps) => {
               <span aria-hidden>·</span>
               <span>{readingTime(content ?? '').text}</span>
               <span aria-hidden>·</span>
-              <PostViews postId={id} />
+              <PostViews postId={id} initialViews={views} />
             </div>
 
             <h1 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
@@ -160,6 +160,7 @@ const PostPage = async (props: PostPageProps) => {
             <div className="mt-10 flex flex-col items-start justify-between gap-4 border-t border-border pt-6 sm:flex-row sm:items-center">
               <LikeButton
                 likes={likes}
+                likeCount={likeCount}
                 user={
                   user
                     ? {

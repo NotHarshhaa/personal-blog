@@ -8,6 +8,13 @@
       "when": 1738169844486,
       "tag": "0000_perpetual_blonde_phantom",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1787072418175,
+      "tag": "0001_overconfident_synch",
+      "breakpoints": true
     }
   ]
 }

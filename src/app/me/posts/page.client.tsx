@@ -64,7 +64,10 @@ const PostsClient = (props: ContentProps) => {
   // Stats (admin only)
   const drafts = useMemo(() => posts.filter((post) => !post.published), [posts])
   const published = useMemo(() => posts.filter((post) => post.published), [posts])
-  const totalLikes = useMemo(() => posts.reduce((acc, p) => acc + (p.likes?.length || 0), 0), [posts])
+  const totalLikes = useMemo(
+    () => posts.reduce((acc, p) => acc + (p.likeCount || 0), 0),
+    [posts]
+  )
 
   // Filtered posts
   const filteredDrafts = useMemo(

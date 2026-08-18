@@ -31,14 +31,16 @@ const PostsFilter = ({ posts, user }: PostsFilterProps) => {
           (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
         )
       case 'popular':
-        return sorted.sort((a, b) => b.likes.length - a.likes.length)
+        return sorted.sort((a, b) => b.likeCount - a.likeCount || b.views - a.views)
       case 'trending':
         return sorted.sort((a, b) => {
           const aScore =
-            a.likes.length * 10 +
+            a.likeCount * 10 +
+            a.views +
             (Date.now() - a.createdAt.getTime()) / (1000 * 60 * 60 * 24)
           const bScore =
-            b.likes.length * 10 +
+            b.likeCount * 10 +
+            b.views +
             (Date.now() - b.createdAt.getTime()) / (1000 * 60 * 60 * 24)
           return bScore - aScore
         })

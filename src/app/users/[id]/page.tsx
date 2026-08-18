@@ -69,7 +69,7 @@ const UserPage = async (props: UserPageProps) => {
   }))
 
   const totalLikes = user.posts.reduce(
-    (acc, post) => acc + (post.likes?.length || 0),
+    (acc, post) => acc + (post.likeCount || 0),
     0
   )
 
@@ -153,7 +153,7 @@ const UserPage = async (props: UserPageProps) => {
                 <div className="inline-flex items-center gap-2 border border-border px-3 py-1.5">
                   <Heart className="size-4 text-muted-foreground" />
                   <span className="text-muted-foreground">Likes</span>
-                  <span className="font-semibold">{totalLikes}</span>
+                  <span className="font-semibold">{totalLikes.toLocaleString()}</span>
                 </div>
               </div>
             </div>

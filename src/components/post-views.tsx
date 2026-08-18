@@ -6,50 +6,58 @@ import { cn } from '@/utils'
 
 type PostViewsProps = {
   postId: string
+  initialViews?: number
   className?: string
 }
 
-const PostViews = ({ postId, className }: PostViewsProps) => {
-  const [views, setViews] = useState<number | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+const PostViews = ({ postId, initialViews, className }: PostViewsProps) => {
+  const [views, setViews] = useState<number | null>(initialViews ?? null)
+  const [isLoading, setIsLoading] = useState(initialViews == null)
 
   useEffect(() => {
+    const viewedKey = `viewed-${postId}`
+    let cancelled = false
+
     const trackView = async () => {
       try {
-        // Check if already viewed in this session
-        const viewedKey = `viewed-${postId}`
-        const hasViewed = sessionStorage.getItem(viewedKey)
-        
+        const hasViewed = sessionStorage.getItem(viewedKey) === 'true'
+
         if (!hasViewed) {
-          // Track view
-          const response = await fetch(`/api/posts/${postId}/views`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          })
-          
-          if (response.ok) {
-            const data = await response.json()
-            setViews(data.views)
-            sessionStorage.setItem(viewedKey, 'true')
+          sessionStorage.setItem(viewedKey, 'true')
+        }
+
+        const response = await fetch(`/api/posts/${postId}/views`, {
+          method: hasViewed ? 'GET' : 'POST'
+        })
+
+        if (!response.ok) {
+          if (!hasViewed) {
+            sessionStorage.removeItem(viewedKey)
           }
-        } else {
-          // Just fetch current views
-          const response = await fetch(`/api/posts/${postId}/views`)
-          if (response.ok) {
-            const data = await response.json()
-            setViews(data.views)
-          }
+          return
+        }
+
+        const data = (await response.json()) as { views: number }
+        if (!cancelled) {
+          setViews(data.views)
         }
       } catch (error) {
+        if (!hasViewed) {
+          sessionStorage.removeItem(viewedKey)
+        }
         console.error('Error tracking view:', error)
       } finally {
-        setIsLoading(false)
+        if (!cancelled) {
+          setIsLoading(false)
+        }
       }
     }
 
     trackView()
+
+    return () => {
+      cancelled = true
+    }
   }, [postId])
 
   if (isLoading || views === null) {
@@ -70,4 +78,3 @@ const PostViews = ({ postId, className }: PostViewsProps) => {
 }
 
 export default PostViews
-

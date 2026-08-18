@@ -13,22 +13,24 @@ import { togglePostLikeAction } from '@/actions/toggle-post-like-action'
 
 type LikeButtonProps = {
   likes: Like[]
+  likeCount: number
   user: User | null
   postId: string
 }
 
 const LikeButton = (props: LikeButtonProps) => {
-  const { likes, user, postId } = props
+  const { likes, likeCount, user, postId } = props
   const [isAnimating, setIsAnimating] = useState(false)
   const action = useOptimisticAction(togglePostLikeAction, {
-    currentState: { likes },
+    currentState: { likes, likeCount },
     updateFn: (state) => {
       if (!user) return state
       const existingLike = state.likes.find((like) => like.userId === user.id)
 
       if (existingLike) {
         return {
-          likes: state.likes.filter((like) => like.id !== existingLike.id)
+          likes: state.likes.filter((like) => like.id !== existingLike.id),
+          likeCount: Math.max(0, state.likeCount - 1)
         }
       }
 
@@ -40,7 +42,8 @@ const LikeButton = (props: LikeButtonProps) => {
             userId: user.id,
             postId: postId
           }
-        ]
+        ],
+        likeCount: state.likeCount + 1
       }
     },
     onError: ({ error }) => {
@@ -49,7 +52,7 @@ const LikeButton = (props: LikeButtonProps) => {
   })
 
   const isUserLiked = action.optimisticState.likes.some((like) => like.userId === user?.id)
-  const likeCount = action.optimisticState.likes.length
+  const displayedLikeCount = action.optimisticState.likeCount
 
   const handleLike = async () => {
     setIsAnimating(true)
@@ -92,7 +95,7 @@ const LikeButton = (props: LikeButtonProps) => {
           )}
           aria-live='polite'
         >
-          {likeCount}
+          {displayedLikeCount.toLocaleString()}
         </span>
       </Button>
       {/* Tooltip */}

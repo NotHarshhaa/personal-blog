@@ -2,7 +2,7 @@
 
 import type { Like, Post, User } from '@/db/schema'
 
-import { HeartIcon } from 'lucide-react'
+import { EyeIcon, HeartIcon } from 'lucide-react'
 import Link from 'next/link'
 import { memo } from 'react'
 
@@ -13,8 +13,9 @@ import Controls from './controls'
 import UserAvatar from './user-avatar'
 
 export type PostCardProps = {
-  post: Pick<Post, 'id' | 'title' | 'description' | 'published' | 'createdAt'> & {
+  post: Pick<Post, 'id' | 'title' | 'description' | 'published' | 'createdAt' | 'views'> & {
     likes: Array<Pick<Like, 'id'>>
+    likeCount: number
   } & {
     user: Pick<User, 'name' | 'image' | 'id'>
   }
@@ -24,7 +25,7 @@ export type PostCardProps = {
 
 const PostCard = memo((props: PostCardProps) => {
   const { post, user, showAuthor = true } = props
-  const { id, title, description, published, createdAt, likes, user: author } =
+  const { id, title, description, published, createdAt, likeCount, views, user: author } =
     post
 
   const href = `/${published ? 'posts' : 'editor'}/${id}`
@@ -93,13 +94,20 @@ const PostCard = memo((props: PostCardProps) => {
             {description}
           </p>
         )}
-        <div className="mt-4 flex items-center text-xs text-muted-foreground">
+        <div className="mt-4 flex items-center gap-4 text-xs text-muted-foreground">
           <span
             className="inline-flex items-center gap-1.5"
-            aria-label={`${likes.length} likes`}
+            aria-label={`${views.toLocaleString()} views`}
+          >
+            <EyeIcon className="size-3.5" aria-hidden />
+            <span>{views.toLocaleString()}</span>
+          </span>
+          <span
+            className="inline-flex items-center gap-1.5"
+            aria-label={`${likeCount.toLocaleString()} likes`}
           >
             <HeartIcon className="size-3.5" aria-hidden />
-            <span>{likes.length}</span>
+            <span>{likeCount.toLocaleString()}</span>
           </span>
         </div>
       </Link>

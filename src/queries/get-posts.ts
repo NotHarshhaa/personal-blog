@@ -2,6 +2,7 @@ import { and, desc, eq } from 'drizzle-orm'
 
 import { db } from '@/db'
 import { posts } from '@/db/schema'
+import { withPostEngagement } from '@/utils/get-seeded-view-count'
 
 export const getPosts = async () => {
   const result = await db.query.posts.findMany({
@@ -11,7 +12,8 @@ export const getPosts = async () => {
       title: true,
       description: true,
       createdAt: true,
-      published: true
+      published: true,
+      views: true
     },
     with: {
       user: {
@@ -31,6 +33,6 @@ export const getPosts = async () => {
   })
 
   return {
-    posts: result
+    posts: result.map(withPostEngagement)
   }
 }
