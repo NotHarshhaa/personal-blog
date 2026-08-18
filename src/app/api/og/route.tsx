@@ -69,7 +69,7 @@ export const GET = (req: Request) => {
           </div>
           <div tw='mt-20 text-5xl font-semibold leading-tight'>{title}</div>
         </div>
-        <div tw='flex justify-end text-3xl font-bold'>blog.notharshhaa.site</div>
+        <div tw='flex justify-end text-3xl font-bold'>blog.harshhaareddy.site</div>
       </div>
     ),
     /* eslint-enable @eslint-react/dom/no-unknown-property -- custom attribute */
