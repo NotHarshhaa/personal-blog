@@ -97,7 +97,18 @@ const PostPage = async (props: PostPageProps) => {
     },
     wordCount: content?.split(' ').length || 0,
     articleSection: 'Technology',
-    keywords: ['devops', 'cloud computing', 'technology']
+    keywords: [
+      'devops',
+      'cloud computing',
+      'platform engineering',
+      'ai',
+      'machine learning',
+      'mlops',
+      'llmops',
+      'genai',
+      'ai infrastructure',
+      'technology'
+    ]
   }
 
   return (

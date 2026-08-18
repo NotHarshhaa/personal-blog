@@ -4,6 +4,7 @@ import { Suspense } from 'react'
 import Posts from '@/components/posts'
 import PostsPlaceholder from '@/components/posts-placeholder'
 import { Frame, FrameBody, FrameHeader } from '@/components/frame'
+import { SITE_NAME, SITE_TOPICS } from '@/lib/constants'
 
 const HomePage = () => {
   return (
@@ -12,12 +13,23 @@ const HomePage = () => {
         <FrameHeader label="Blog" />
         <FrameBody className="space-y-4">
           <h1 className="text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
-            DevOps & Cloud Space
+            {SITE_NAME}
           </h1>
           <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-            Hands-on tutorials, engineering notes, and practical write-ups on
-            Kubernetes, Terraform, Docker, AWS, and modern infrastructure.
+            Hands-on tutorials and engineering notes on DevOps, cloud, platform
+            engineering, AI/ML, MLOps, LLMOps, GenAI, and AI infrastructure —
+            plus Kubernetes, Terraform, Docker, and AWS.
           </p>
+          <ul className="flex flex-wrap gap-2 pt-1">
+            {SITE_TOPICS.map((topic) => (
+              <li
+                key={topic}
+                className="border border-border bg-background px-2.5 py-1 font-mono text-[11px] tracking-wide text-muted-foreground uppercase"
+              >
+                {topic}
+              </li>
+            ))}
+          </ul>
         </FrameBody>
       </Frame>
 

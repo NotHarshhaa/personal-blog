@@ -30,7 +30,7 @@ export const GET = (req: Request) => {
               viewBox='0 0 120 120'
               fill='none'
               xmlns='http://www.w3.org/2000/svg'
-              aria-label='DevOps'
+              aria-label='DevOps, Cloud and AI'
             >
               <g clipPath='url(#clip0_54_56)'>
                 <path
@@ -65,7 +65,7 @@ export const GET = (req: Request) => {
                 </clipPath>
               </defs>
             </svg>
-            <div tw='ml-8 text-6xl font-bold'>DevOps & Cloud Space</div>
+            <div tw='ml-8 text-5xl font-bold'>DevOps, Cloud & AI Space</div>
           </div>
           <div tw='mt-20 text-5xl font-semibold leading-tight'>{title}</div>
         </div>

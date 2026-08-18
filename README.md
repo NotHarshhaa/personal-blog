@@ -1,8 +1,8 @@
-# **Harshhaa's Personal DevOps & Cloud Space**
+# **Harshhaa's Personal DevOps, Cloud & AI Space**
 
 ![banner](https://imgur.com/sbilOwe.png)
 
-🚀 **Welcome to a personal space dedicated to DevOps, Cloud computing, and all things infrastructure.Discover hands-on tutorials, real-world engineering insights, and tools like Kubernetes, Terraform, Docker, and AWS.**
+🚀 **Welcome to a personal space dedicated to DevOps, Cloud, platform engineering, AI/ML, MLOps, LLMOps, GenAI, and AI infrastructure. Discover hands-on tutorials, real-world engineering insights, and tools like Kubernetes, Terraform, Docker, and AWS.**
 
 <img src="https://img.shields.io/badge/Next.js-000000.svg?style=for-the-badge&logo=Next.js&labelColor=000" alt="Framework" /> <img src="https://img.shields.io/github/languages/top/notharshhaa/personal-blog?style=for-the-badge&labelColor=000" alt="Language" /> <img src="https://img.shields.io/github/license/notharshhaa/personal-blog?style=for-the-badge&labelColor=000" alt="License" />
 
@@ -80,5 +80,5 @@ If you like this setup, make sure to support the original author with a ⭐ here
 <p align="center">
   Made with 💻 & ❤️ by <strong>@NotHarshhaa</strong> in Hyderabad, India 🇮🇳
   <br />
-  Sharing DevOps & Cloud knowledge with the community 🌐
+  Sharing DevOps, Cloud, Platform, and AI knowledge with the community 🌐
 </p>

@@ -10,7 +10,7 @@ import LoginButton from './login-button'
 
 export const metadata: Metadata = {
   title: 'Log in',
-  description: 'Log in to DevOps/Cloud Blog Space'
+  description: 'Log in to DevOps, Cloud & AI Space'
 }
 
 const LoginPage = async () => {
@@ -33,7 +33,7 @@ const LoginPage = async () => {
               Welcome back
             </h1>
             <p className="mt-2 text-sm text-muted-foreground">
-              Log in to DevOps & Cloud Space to continue.
+              Log in to DevOps, Cloud & AI Space to continue.
             </p>
           </div>
 

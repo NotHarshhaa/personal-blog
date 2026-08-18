@@ -59,8 +59,9 @@ const Footer = () => {
           <FrameGrid className="border-t-0">
             <FrameGridCell label="About" className="border-b border-border sm:border-b sm:border-r">
               <p className="text-sm leading-relaxed text-muted-foreground">
-                Writing on DevOps, cloud, and infrastructure — tutorials, notes,
-                and practical engineering from Harshhaa.
+                Writing on DevOps, cloud, platform engineering, AI/ML, MLOps,
+                LLMOps, GenAI, and AI infrastructure — tutorials and notes from
+                Harshhaa.
               </p>
             </FrameGridCell>
 

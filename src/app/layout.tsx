@@ -9,7 +9,13 @@ import { Instrument_Sans } from 'next/font/google'
 import Footer from '@/components/footer'
 import Header from '@/components/header'
 import ScrollToTop from '@/components/scroll-to-top'
-import { SITE_DESCRIPTION, SITE_NAME, SITE_TITLE, SITE_URL } from '@/lib/constants'
+import {
+  SITE_DESCRIPTION,
+  SITE_KEYWORDS,
+  SITE_NAME,
+  SITE_TITLE,
+  SITE_URL
+} from '@/lib/constants'
 
 import Providers from './providers'
 
@@ -58,21 +64,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: SITE_URL
   },
-  keywords: [
-    'blog',
-    'devops',
-    'cloud computing',
-    'kubernetes',
-    'terraform',
-    'docker',
-    'aws',
-    'azure',
-    'infrastructure',
-    'automation',
-    'ci/cd',
-    'nextjs blog',
-    'tech blog'
-  ],
+  keywords: [...SITE_KEYWORDS],
   creator: 'NotHarshhaa',
   authors: [{ name: 'NotHarshhaa', url: SITE_URL }],
   category: 'Technology',

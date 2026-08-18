@@ -46,7 +46,7 @@ const ClientHeader = ({ user }: Props) => {
       id: '1',
       postId: 'abc123',
       title: 'New Post: Learn DevOps by Playing Games',
-      description: 'Check out the latest post on gamified DevOps learning!',
+      description: 'Check out the latest post on gamified DevOps and platform learning!',
       read: false,
       createdAt: new Date().toISOString()
     },

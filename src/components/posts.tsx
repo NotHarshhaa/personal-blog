@@ -11,7 +11,7 @@ const Posts = async () => {
     return (
       <EmptyState
         title="No posts yet"
-        description="Be the first to share your DevOps and Cloud insights with the community. Start writing and sharing your knowledge!"
+        description="Be the first to share insights on DevOps, cloud, platform engineering, AI/ML, MLOps, LLMOps, and GenAI. Start writing and sharing your knowledge!"
         showAction={false}
       />
     )

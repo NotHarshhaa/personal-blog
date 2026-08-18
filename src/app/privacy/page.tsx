@@ -4,7 +4,7 @@ import { Frame, FrameBody, FrameHeader } from '@/components/frame'
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
-  description: 'How we handle your data at DevOps & Cloud Space.'
+  description: 'How we handle your data at DevOps, Cloud & AI Space.'
 }
 
 const PrivacyPage = () => (
