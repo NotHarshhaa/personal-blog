@@ -19,9 +19,9 @@ const PostViews = ({ postId, initialViews, className }: PostViewsProps) => {
     let cancelled = false
 
     const trackView = async () => {
-      try {
-        const hasViewed = sessionStorage.getItem(viewedKey) === 'true'
+      const hasViewed = sessionStorage.getItem(viewedKey) === 'true'
 
+      try {
         if (!hasViewed) {
           sessionStorage.setItem(viewedKey, 'true')
         }
