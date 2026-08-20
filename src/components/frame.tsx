@@ -3,25 +3,25 @@
 import { cn } from '@/lib/utils'
 import type { HTMLAttributes, ReactNode } from 'react'
 
-function Corners() {
+type CornerBracketsProps = {
+  className?: string
+  visible?: boolean
+}
+
+export function CornerBrackets({ className, visible = true }: CornerBracketsProps) {
+  const visibility = visible ? 'opacity-100' : 'opacity-0'
+  const sharedClassName = cn(
+    'pointer-events-none absolute size-2.5 border-foreground/45 transition-opacity sm:size-3',
+    visibility,
+    className
+  )
+
   return (
     <>
-      <span
-        aria-hidden
-        className="pointer-events-none absolute -top-px -left-px z-10 size-2.5 border-t-2 border-l-2 border-foreground/45 sm:size-3"
-      />
-      <span
-        aria-hidden
-        className="pointer-events-none absolute -top-px -right-px z-10 size-2.5 border-t-2 border-r-2 border-foreground/45 sm:size-3"
-      />
-      <span
-        aria-hidden
-        className="pointer-events-none absolute -bottom-px -left-px z-10 size-2.5 border-b-2 border-l-2 border-foreground/45 sm:size-3"
-      />
-      <span
-        aria-hidden
-        className="pointer-events-none absolute -right-px -bottom-px z-10 size-2.5 border-b-2 border-r-2 border-foreground/45 sm:size-3"
-      />
+      <span aria-hidden className={cn(sharedClassName, '-top-px -left-px z-10 border-t-2 border-l-2')} />
+      <span aria-hidden className={cn(sharedClassName, '-top-px -right-px z-10 border-t-2 border-r-2')} />
+      <span aria-hidden className={cn(sharedClassName, '-bottom-px -left-px z-10 border-b-2 border-l-2')} />
+      <span aria-hidden className={cn(sharedClassName, '-right-px -bottom-px z-10 border-b-2 border-r-2')} />
     </>
   )
 }
@@ -48,7 +48,7 @@ export function Frame({
       )}
       {...props}
     >
-      {corners && <Corners />}
+      {corners && <CornerBrackets />}
       {children}
     </Comp>
   )
@@ -74,7 +74,7 @@ export function FrameHeader({
       {...props}
     >
       {label && (
-        <span className="text-[11px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
+        <span className="bracket-title text-[11px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
           {label}
         </span>
       )}

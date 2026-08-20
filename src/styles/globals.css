@@ -44,6 +44,56 @@ img {
   }
 }
 
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  position: relative;
+  width: fit-content;
+  max-width: 100%;
+  padding: 0.3rem 0.55rem;
+  border: 1px solid transparent;
+}
+
+h1::before,
+h2::before,
+h3::before,
+h4::before,
+h5::before,
+h6::before,
+.bracket-title::before {
+  position: absolute;
+  inset: -1px;
+  content: '';
+  pointer-events: none;
+  background:
+    linear-gradient(color-mix(in oklch, var(--foreground) 48%, transparent), color-mix(in oklch, var(--foreground) 48%, transparent)) left top / 0.45rem 1px no-repeat,
+    linear-gradient(color-mix(in oklch, var(--foreground) 48%, transparent), color-mix(in oklch, var(--foreground) 48%, transparent)) left top / 1px 0.45rem no-repeat,
+    linear-gradient(color-mix(in oklch, var(--foreground) 48%, transparent), color-mix(in oklch, var(--foreground) 48%, transparent)) right top / 0.45rem 1px no-repeat,
+    linear-gradient(color-mix(in oklch, var(--foreground) 48%, transparent), color-mix(in oklch, var(--foreground) 48%, transparent)) right top / 1px 0.45rem no-repeat,
+    linear-gradient(color-mix(in oklch, var(--foreground) 48%, transparent), color-mix(in oklch, var(--foreground) 48%, transparent)) left bottom / 0.45rem 1px no-repeat,
+    linear-gradient(color-mix(in oklch, var(--foreground) 48%, transparent), color-mix(in oklch, var(--foreground) 48%, transparent)) left bottom / 1px 0.45rem no-repeat,
+    linear-gradient(color-mix(in oklch, var(--foreground) 48%, transparent), color-mix(in oklch, var(--foreground) 48%, transparent)) right bottom / 0.45rem 1px no-repeat,
+    linear-gradient(color-mix(in oklch, var(--foreground) 48%, transparent), color-mix(in oklch, var(--foreground) 48%, transparent)) right bottom / 1px 0.45rem no-repeat;
+}
+
+h1::after,
+h2::after,
+h3::after,
+h4::after,
+h5::after,
+h6::after,
+.bracket-title::after {
+  display: none;
+}
+
+.bracket-title {
+  position: relative;
+  padding: 0.3rem 0.55rem;
+}
+
 /* Focus styles for accessibility */
 :focus-visible {
   outline: 2px solid var(--ring);

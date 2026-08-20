@@ -1,3 +1,4 @@
+import { CornerBrackets } from './frame'
 import { cn } from '@/lib/utils'
 import type { HTMLAttributes, ReactNode } from 'react'
 
@@ -53,22 +54,8 @@ export function HoverMark({
             }}
           />
 
-          {/* Corner L-brackets */}
-          <span
-            aria-hidden
-            className="pointer-events-none absolute top-0 left-0 z-20 size-2.5 border-t-2 border-l-2 border-foreground opacity-0 transition-opacity duration-150 group-hover/mark:opacity-100 group-focus-within/mark:opacity-100 sm:size-3"
-          />
-          <span
-            aria-hidden
-            className="pointer-events-none absolute top-0 right-0 z-20 size-2.5 border-t-2 border-r-2 border-foreground opacity-0 transition-opacity duration-150 group-hover/mark:opacity-100 group-focus-within/mark:opacity-100 sm:size-3"
-          />
-          <span
-            aria-hidden
-            className="pointer-events-none absolute bottom-0 left-0 z-20 size-2.5 border-b-2 border-l-2 border-foreground opacity-0 transition-opacity duration-150 group-hover/mark:opacity-100 group-focus-within/mark:opacity-100 sm:size-3"
-          />
-          <span
-            aria-hidden
-            className="pointer-events-none absolute right-0 bottom-0 z-20 size-2.5 border-r-2 border-b-2 border-foreground opacity-0 transition-opacity duration-150 group-hover/mark:opacity-100 group-focus-within/mark:opacity-100 sm:size-3"
+          <CornerBrackets
+            className="z-20 border-foreground opacity-0 transition-opacity duration-150 group-hover/mark:opacity-100 group-focus-within/mark:opacity-100"
           />
 
           {label && (

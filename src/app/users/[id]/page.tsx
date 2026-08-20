@@ -84,9 +84,9 @@ const UserPage = async (props: UserPageProps) => {
             </div>
             <div className="flex w-full flex-1 flex-col items-center gap-3 sm:items-start">
               <div className="flex flex-col items-center gap-2 sm:flex-row sm:gap-3">
-                <span className="text-2xl font-semibold tracking-tight sm:text-3xl">
+                <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
                   {user.name}
-                </span>
+                </h1>
                 <UserRoleBadge role={user.role} />
               </div>
               {user.bio && (
