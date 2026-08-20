@@ -24,37 +24,31 @@ export const getSeededViewCount = (postId: string, createdAt: Date) => {
   return base + daysOnline * daily
 }
 
-export const getDisplayViewCount = (
-  postId: string,
-  createdAt: Date,
-  storedViews: number,
-  published = true
-) => {
-  if (storedViews > 0) {
-    return storedViews
-  }
+export const getFakeEngagement = (postId: string, createdAt: Date) => {
+  const fakeViews = getSeededViewCount(postId, createdAt)
+  const hash = hashString(`likes-${postId}`)
+  const rate = 0.08 + (hash % 70) / 1000
 
+  return {
+    fakeViews,
+    fakeLikes: Math.round(fakeViews * rate)
+  }
+}
+
+export const getDisplayViewCount = (storedViews: number, fakeViews: number, published = true) => {
   if (!published) {
     return 0
   }
 
-  return getSeededViewCount(postId, createdAt)
+  return storedViews + fakeViews
 }
 
-export const getDisplayLikeCount = (
-  postId: string,
-  views: number,
-  realLikes: number,
-  published = true
-) => {
-  if (!published || views <= 0) {
+export const getDisplayLikeCount = (realLikes: number, fakeLikes: number, published = true) => {
+  if (!published) {
     return realLikes
   }
 
-  const hash = hashString(`likes-${postId}`)
-  const rate = 0.08 + (hash % 70) / 1000
-
-  return Math.round(views * rate) + realLikes
+  return realLikes + fakeLikes
 }
 
 export const withPostEngagement = <
@@ -62,6 +56,8 @@ export const withPostEngagement = <
     id: string
     createdAt: Date
     views: number
+    fakeViews: number
+    fakeLikes: number
     published?: boolean
     likes: Array<unknown>
   }
@@ -69,13 +65,8 @@ export const withPostEngagement = <
   post: T
 ) => {
   const published = post.published ?? true
-  const views = getDisplayViewCount(post.id, post.createdAt, post.views, published)
-  const likeCount = getDisplayLikeCount(
-    post.id,
-    views,
-    post.likes.length,
-    published
-  )
+  const views = getDisplayViewCount(post.views, post.fakeViews, published)
+  const likeCount = getDisplayLikeCount(post.likes.length, post.fakeLikes, published)
 
   return {
     ...post,

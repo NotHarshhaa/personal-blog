@@ -4,7 +4,7 @@ import { and, eq } from 'drizzle-orm'
 import { revalidatePath } from 'next/cache'
 
 import { db } from '@/db'
-import { likes } from '@/db/schema'
+import { likes, posts } from '@/db/schema'
 import { authenticatedActionClient } from '@/lib/safe-action'
 
 import { togglePostLikeSchema } from './schema'
@@ -12,19 +12,36 @@ import { togglePostLikeSchema } from './schema'
 export const togglePostLikeAction = authenticatedActionClient
   .schema(togglePostLikeSchema)
   .action(async ({ parsedInput: { postId }, ctx: { user } }) => {
-    const existingLike = await db.query.likes.findFirst({
-      columns: {
-        id: true
-      },
-      where: and(eq(likes.postId, postId), eq(likes.userId, user.id))
-    })
+    await db.transaction(async (tx) => {
+      const [post] = await tx
+        .select({ id: posts.id })
+        .from(posts)
+        .where(and(eq(posts.id, postId), eq(posts.published, true)))
+        .for('update')
 
-    await (existingLike
-      ? db.delete(likes).where(and(eq(likes.id, existingLike.id), eq(likes.userId, user.id)))
-      : db.insert(likes).values({
-          postId,
-          userId: user.id
-        }))
+      if (!post) {
+        throw new Error('Post not found')
+      }
+
+      const existingLike = await tx.query.likes.findFirst({
+        columns: {
+          id: true
+        },
+        where: and(eq(likes.postId, postId), eq(likes.userId, user.id))
+      })
+
+      if (existingLike) {
+        await tx.delete(likes).where(eq(likes.id, existingLike.id))
+      } else {
+        await tx
+          .insert(likes)
+          .values({
+            postId,
+            userId: user.id
+          })
+          .onConflictDoNothing({ target: [likes.postId, likes.userId] })
+      }
+    })
 
     revalidatePath(`/posts/${postId}`)
   })

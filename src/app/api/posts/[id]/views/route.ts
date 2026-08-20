@@ -1,9 +1,9 @@
-import { eq, sql } from 'drizzle-orm'
+import { and, eq, sql } from 'drizzle-orm'
 import { NextRequest, NextResponse } from 'next/server'
 
 import { db } from '@/db'
 import { posts } from '@/db/schema'
-import { getSeededViewCount } from '@/utils/get-seeded-view-count'
+import { getDisplayViewCount } from '@/utils/get-seeded-view-count'
 
 const getPost = async (id: string) => {
   return db.query.posts.findFirst({
@@ -11,27 +11,20 @@ const getPost = async (id: string) => {
     columns: {
       id: true,
       views: true,
+      fakeViews: true,
       createdAt: true,
       published: true
     }
   })
 }
 
-const ensureSeededViews = async (post: {
+const getHybridViews = (post: {
   id: string
   views: number
+  fakeViews: number
   createdAt: Date
-}) => {
-  if (post.views > 0) {
-    return post.views
-  }
-
-  const views = getSeededViewCount(post.id, post.createdAt)
-
-  await db.update(posts).set({ views }).where(eq(posts.id, post.id))
-
-  return views
-}
+  published: boolean
+}) => getDisplayViewCount(post.views, post.fakeViews, post.published)
 
 export async function GET(
   _request: NextRequest,
@@ -41,13 +34,11 @@ export async function GET(
     const { id } = await params
     const post = await getPost(id)
 
-    if (!post) {
+    if (!post?.published) {
       return NextResponse.json({ error: 'Post not found' }, { status: 404 })
     }
 
-    const views = await ensureSeededViews(post)
-
-    return NextResponse.json({ views })
+    return NextResponse.json({ views: getHybridViews(post) })
   } catch (error) {
     console.error('Error fetching views:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
@@ -62,18 +53,23 @@ export async function POST(
     const { id } = await params
     const post = await getPost(id)
 
-    if (!post) {
+    if (!post?.published) {
       return NextResponse.json({ error: 'Post not found' }, { status: 404 })
     }
 
-    const currentViews = await ensureSeededViews(post)
     const [updated] = await db
       .update(posts)
       .set({ views: sql`${posts.views} + 1` })
-      .where(eq(posts.id, id))
+      .where(and(eq(posts.id, id), eq(posts.published, true)))
       .returning({ views: posts.views })
 
-    return NextResponse.json({ views: updated?.views ?? currentViews + 1 })
+    if (!updated) {
+      return NextResponse.json({ error: 'Post not found' }, { status: 404 })
+    }
+
+    return NextResponse.json({
+      views: getDisplayViewCount(updated.views, post.fakeViews, true)
+    })
   } catch (error) {
     console.error('Error tracking view:', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

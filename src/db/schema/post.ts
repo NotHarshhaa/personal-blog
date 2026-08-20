@@ -24,6 +24,8 @@ export const posts = pgTable('post', {
   content: text('content'),
   published: boolean('published').notNull().default(false),
   views: integer('views').notNull().default(0),
+  fakeViews: integer('fake_views').notNull().default(0),
+  fakeLikes: integer('fake_likes').notNull().default(0),
   createdAt: timestamp('created_at', { precision: 3 }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { precision: 3 }).notNull().defaultNow(),
   visibility: visibilityEnum('visibility').default('public').notNull()

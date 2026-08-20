@@ -1,0 +1,1 @@
+ALTER TABLE "like" ADD CONSTRAINT "like_post_id_user_id_unique" UNIQUE("post_id","user_id");

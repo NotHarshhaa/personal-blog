@@ -13,7 +13,9 @@ export const getPosts = async () => {
       description: true,
       createdAt: true,
       published: true,
-      views: true
+      views: true,
+      fakeViews: true,
+      fakeLikes: true
     },
     with: {
       user: {

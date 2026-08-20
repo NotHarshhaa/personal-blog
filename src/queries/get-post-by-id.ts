@@ -13,7 +13,9 @@ export const getPostById = async (id: string) => {
       description: true,
       content: true,
       createdAt: true,
-      views: true
+      views: true,
+      fakeViews: true,
+      fakeLikes: true
     },
     with: {
       user: {
