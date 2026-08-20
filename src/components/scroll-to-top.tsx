@@ -39,7 +39,7 @@ const ScrollToTop = () => {
       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
       size="icon"
       variant="outline"
-      className="fixed right-4 bottom-4 z-40 size-10 border-border bg-card sm:right-6 sm:bottom-6"
+      className="fixed right-4 bottom-20 z-40 size-10 border-border bg-card sm:right-6 sm:bottom-6"
       aria-label="Scroll to top"
     >
       <ArrowUp className="size-4" />

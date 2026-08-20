@@ -10,6 +10,7 @@ import { useEffect, useRef, useState } from 'react'
 import { SITE_NAME } from '@/lib/constants'
 import { cn } from '@/lib/utils'
 
+import { CornerBrackets } from './frame'
 import Menu from './menu'
 import NewPostButton from './new-post-button.lazy'
 import ThemeToggle from './theme-toggle'
@@ -301,17 +302,15 @@ const ClientHeader = ({ user }: Props) => {
   return (
     <header
       className={cn(
-        'relative isolate sticky top-0 z-50 border-b border-border border-t border-t-card bg-card',
-        'before:pointer-events-none before:absolute before:inset-x-0 before:-top-px before:z-10 before:h-px before:bg-card',
-        'max-md:after:pointer-events-none max-md:after:absolute max-md:after:inset-x-0 max-md:after:bottom-full max-md:after:-z-10 max-md:after:h-screen max-md:after:bg-card',
-        'supports-[padding:env(safe-area-inset-top)]:pt-[env(safe-area-inset-top)]',
+        'relative isolate z-50 mx-auto w-full max-w-[90rem] border border-border bg-card',
         isScrolled && 'shadow-sm'
       )}
     >
+      <CornerBrackets />
       <div className="mx-auto flex min-h-14 max-w-[90rem] items-center justify-between gap-3 px-4 py-2 sm:px-6 lg:px-8">
         <Link
           href="/"
-          className="group flex min-w-0 flex-1 items-center gap-2.5 pr-2 sm:flex-none sm:pr-0"
+          className="bracket-title group flex min-w-0 flex-1 items-center gap-2.5 pr-2 sm:flex-none sm:pr-0"
         >
           <Image
             src="/logo.svg"
