@@ -1,16 +1,16 @@
-import { ArrowLeftIcon, LockKeyholeIcon } from "lucide-react";
+import { ArrowLeftIcon, FileQuestionIcon } from "lucide-react";
 import Link from "next/link";
 
 import ErrorState from "@/components/error-state";
 import { buttonVariants } from "@/components/ui";
 
-const NotAuthorized = () => {
+const NotFound = () => {
   return (
     <ErrorState
-      status="403 / Access restricted"
-      title="This area is private"
-      description="Your current account does not have permission to view this page. Return to the blog or sign in with an authorized account to continue."
-      icon={LockKeyholeIcon}
+      status="404 / Route not found"
+      title="This page is missing"
+      description="The page may have moved, been removed, or never existed. Head back home or browse the latest posts to find something useful."
+      icon={FileQuestionIcon}
       actions={
         <>
           <Link href="/" className={buttonVariants({ size: "lg" })}>
@@ -18,10 +18,10 @@ const NotAuthorized = () => {
             Return home
           </Link>
           <Link
-            href="/login"
+            href="/posts"
             className={buttonVariants({ variant: "outline", size: "lg" })}
           >
-            Sign in
+            Browse posts
           </Link>
         </>
       }
@@ -29,4 +29,4 @@ const NotAuthorized = () => {
   );
 };
 
-export default NotAuthorized;
+export default NotFound;

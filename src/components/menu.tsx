@@ -1,6 +1,6 @@
-'use client'
+"use client";
 
-import type { User } from '@/db/schema'
+import type { User } from "@/db/schema";
 
 import {
   Avatar,
@@ -11,36 +11,43 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from '@/components/ui'
-import { UserIcon, LogOut, Settings, FileText, BadgeCheck } from 'lucide-react'
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { signOut } from 'next-auth/react'
+  DropdownMenuTrigger,
+} from "@/components/ui";
+import {
+  UserIcon,
+  LogOut,
+  Settings,
+  FileText,
+  BadgeCheck,
+  ShieldCheck,
+} from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
 
-import { cn } from '@/lib/utils'
+import { cn } from "@/lib/utils";
 
 type MenuProps = {
-  user: User | null
-}
+  user: User | null;
+};
 
 const Menu = ({ user }: MenuProps) => {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   if (!user) {
     return (
       <Link
         href={`/login?redirect=${pathname}`}
-        className={cn(buttonVariants({ variant: 'outline', size: 'sm' }))}
+        className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
       >
         Log in
       </Link>
-    )
+    );
   }
 
-  const { id, email = '', role, name: rawName, image: rawImage } = user
-  const name = rawName || 'User'
-  const image = rawImage || ''
+  const { id, email = "", role, name: rawName, image: rawImage } = user;
+  const name = rawName || "User";
+  const image = rawImage || "";
 
   return (
     <DropdownMenu>
@@ -105,6 +112,14 @@ const Menu = ({ user }: MenuProps) => {
               Settings
             </Link>
           </DropdownMenuItem>
+          {role === "admin" && (
+            <DropdownMenuItem asChild>
+              <Link href="/admin" className="gap-2">
+                <ShieldCheck className="size-4" />
+                Admin dashboard
+              </Link>
+            </DropdownMenuItem>
+          )}
         </div>
 
         <DropdownMenuSeparator />
@@ -117,7 +132,7 @@ const Menu = ({ user }: MenuProps) => {
         </div>
       </DropdownMenuContent>
     </DropdownMenu>
-  )
-}
+  );
+};
 
-export default Menu
+export default Menu;

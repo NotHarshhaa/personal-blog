@@ -1,38 +1,42 @@
-'use client'
+"use client";
 
-import { Loader2Icon, RefreshCwIcon } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { useAction } from 'next-safe-action/hooks'
+import { Loader2Icon, RefreshCwIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useAction } from "next-safe-action/hooks";
 
-import { refreshFakeEngagementAction } from '@/actions/refresh-fake-engagement-action'
-import { Button, toast } from '@/components/ui'
+import { refreshFakeEngagementAction } from "@/actions/refresh-fake-engagement-action";
+import { Button, toast } from "@/components/ui";
 
 const RefreshFakeEngagementButton = () => {
-  const router = useRouter()
+  const router = useRouter();
   const action = useAction(refreshFakeEngagementAction, {
     onSuccess: ({ data }) => {
-      toast.success(`Updated fake engagement for ${data?.updatedPosts ?? 0} posts`)
-      router.refresh()
+      const fakeViews = data?.totalFakeViews ?? 0;
+      const fakeLikes = data?.totalFakeLikes ?? 0;
+      toast.success(
+        `Balanced ${data?.updatedPosts ?? 0} posts to ${fakeViews.toLocaleString()} fake views and ${fakeLikes.toLocaleString()} fake likes`,
+      );
+      router.refresh();
     },
     onError: ({ error }) => {
-      toast.error(error.serverError)
-    }
-  })
+      toast.error(error.serverError);
+    },
+  });
 
   return (
     <Button
-      variant='outline'
+      variant="outline"
       onClick={() => action.execute()}
       disabled={action.isExecuting}
     >
       {action.isExecuting ? (
-        <Loader2Icon className='animate-spin' />
+        <Loader2Icon className="animate-spin" />
       ) : (
         <RefreshCwIcon />
       )}
-      {action.isExecuting ? 'Refreshing engagement' : 'Refresh fake engagement'}
+      {action.isExecuting ? "Balancing engagement" : "Balance fake engagement"}
     </Button>
-  )
-}
+  );
+};
 
-export default RefreshFakeEngagementButton
+export default RefreshFakeEngagementButton;
