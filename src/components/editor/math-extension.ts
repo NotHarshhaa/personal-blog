@@ -6,7 +6,6 @@ import {
   ReactNodeViewRenderer,
   type SingleCommands
 } from '@tiptap/react'
-import katex from 'katex'
 
 import { MathNodeView } from './math-node-view'
 
@@ -30,7 +29,7 @@ export const MathExtension = Node.create({
     return {
       latex: {
         default: '',
-        parseHTML: (element) => element.dataset.latex ?? '',
+        parseHTML: (element) => element.getAttribute('data-latex') ?? element.dataset.latex ?? '',
         renderHTML: (attributes) => ({
           'data-latex': attributes.latex,
           'data-display': attributes.display ? 'true' : 'false'
@@ -38,7 +37,7 @@ export const MathExtension = Node.create({
       },
       display: {
         default: false,
-        parseHTML: (element) => element.dataset.display === 'true',
+        parseHTML: (element) => (element.getAttribute('data-display') ?? element.dataset.display) === 'true',
         renderHTML: (attributes) => ({
           'data-display': attributes.display ? 'true' : 'false'
         })
@@ -58,26 +57,14 @@ export const MathExtension = Node.create({
   },
 
   renderHTML({ HTMLAttributes, node }) {
-    const latex = (node.attrs.latex as string) || ''
     const isDisplay = Boolean(node.attrs.display)
-
-    let html = ''
-    try {
-      html = katex.renderToString(latex, {
-        displayMode: isDisplay,
-        throwOnError: false
-      })
-    } catch {
-      html = latex
-    }
 
     return [
       isDisplay ? 'div' : 'span',
       {
         ...HTMLAttributes,
         class: isDisplay ? 'tiptap-math-block my-4 text-center' : 'tiptap-math inline-block mx-0.5'
-      },
-      html
+      }
     ]
   },
 

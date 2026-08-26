@@ -90,7 +90,21 @@ const DialogHeader = (props: DialogHeaderProps) => {
   return (
     <div
       data-slot='dialog-header'
-      className={cn('flex flex-col gap-2 text-center sm:text-left', className)}
+      className={cn('flex flex-col gap-2 text-center sm:text-left pr-6', className)}
+      {...rest}
+    />
+  )
+}
+
+type DialogTitleProps = React.ComponentProps<typeof DialogPrimitive.Title>
+
+const DialogTitle = (props: DialogTitleProps) => {
+  const { className, ...rest } = props
+
+  return (
+    <DialogPrimitive.Title
+      data-slot='dialog-title'
+      className={cn('text-lg font-semibold leading-none border-none p-0 before:hidden w-auto', className)}
       {...rest}
     />
   )
@@ -105,20 +119,6 @@ const DialogFooter = (props: DialogFooterProps) => {
     <div
       data-slot='dialog-footer'
       className={cn('flex flex-col-reverse gap-2 sm:flex-row sm:justify-end', className)}
-      {...rest}
-    />
-  )
-}
-
-type DialogTitleProps = React.ComponentProps<typeof DialogPrimitive.Title>
-
-const DialogTitle = (props: DialogTitleProps) => {
-  const { className, ...rest } = props
-
-  return (
-    <DialogPrimitive.Title
-      data-slot='dialog-title'
-      className={cn('text-lg font-semibold leading-none', className)}
       {...rest}
     />
   )

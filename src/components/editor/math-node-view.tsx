@@ -55,14 +55,15 @@ export const MathNodeView = (props: ReactNodeViewProps) => {
   return (
     <NodeViewWrapper
       as={isBlock ? 'div' : 'span'}
-      role="button"
-      tabIndex={0}
+      role={editor.isEditable ? 'button' : undefined}
+      tabIndex={editor.isEditable ? 0 : undefined}
       className={cn(
-        'group/math relative cursor-pointer select-none transition-all',
+        'group/math relative select-none transition-all',
+        editor.isEditable && 'cursor-pointer',
         isBlock
           ? 'my-4 flex flex-col items-center justify-center rounded-lg border border-border/80 bg-muted/20 p-4 text-center'
           : 'inline-flex items-center rounded-md border border-border/60 bg-muted/30 px-1.5 py-0.5 align-middle',
-        selected && 'ring-2 ring-primary ring-offset-1',
+        selected && editor.isEditable && 'ring-2 ring-primary ring-offset-1',
         isEditing && 'ring-2 ring-primary'
       )}
       onClick={() => {

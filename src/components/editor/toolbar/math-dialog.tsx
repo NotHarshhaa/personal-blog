@@ -77,7 +77,7 @@ export const MathDialog = ({ editor }: MathDialogProps) => {
           icon={<SigmaIcon className="size-4" />}
         />
       </DialogTrigger>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="w-full max-w-[calc(100vw-2rem)] sm:max-w-2xl max-h-[90vh] overflow-y-auto min-w-0">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <SigmaIcon className="size-5" />
@@ -88,9 +88,9 @@ export const MathDialog = ({ editor }: MathDialogProps) => {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4 py-2">
+        <div className="space-y-4 py-2 min-w-0 w-full">
           {/* Quick templates */}
-          <div className="space-y-1.5">
+          <div className="space-y-1.5 min-w-0 w-full">
             <span className="text-xs font-medium text-muted-foreground">Quick Symbols & Templates:</span>
             <div className="flex flex-wrap gap-1.5">
               {FORMULA_TEMPLATES.map((item) => (
@@ -98,7 +98,7 @@ export const MathDialog = ({ editor }: MathDialogProps) => {
                   key={item.label}
                   type="button"
                   onClick={() => setLatex((prev) => (prev ? `${prev} ${item.latex}` : item.latex))}
-                  className="rounded-md border border-border/80 bg-muted/40 px-2 py-1 text-xs font-medium transition-colors hover:bg-accent hover:text-accent-foreground"
+                  className="rounded-md border border-border/80 bg-muted/40 px-2 py-1 text-xs font-medium transition-colors hover:bg-accent hover:text-accent-foreground cursor-pointer"
                 >
                   {item.label}
                 </button>
@@ -106,23 +106,23 @@ export const MathDialog = ({ editor }: MathDialogProps) => {
             </div>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2 min-w-0 w-full">
             <Label htmlFor="math-latex" className="text-sm font-medium">
               LaTeX Equation
             </Label>
             <Textarea
               id="math-latex"
-              placeholder="e.g. 27\text{ Billion Parameters} \times 2\text{ bytes} \approx 54\text{ GB of VRAM}"
+              placeholder="e.g. \text{Establish Baseline} \longrightarrow \text{Profile Bottleneck}"
               value={latex}
               onChange={(e) => setLatex(e.target.value)}
-              className="min-h-[70px] font-mono text-xs"
+              className="min-h-[85px] w-full min-w-0 max-w-full font-mono text-xs break-all resize-y"
             />
           </div>
 
           {/* Display mode toggle */}
-          <div className="flex items-center justify-between rounded-md border border-border bg-muted/20 px-3 py-2">
-            <div className="space-y-0.5">
-              <Label htmlFor="display-mode" className="text-xs font-medium">
+          <div className="flex items-center justify-between rounded-md border border-border bg-muted/20 px-3 py-2 min-w-0 w-full gap-4">
+            <div className="space-y-0.5 min-w-0">
+              <Label htmlFor="display-mode" className="text-xs font-medium cursor-pointer">
                 Centered Block Equation
               </Label>
               <p className="text-[11px] text-muted-foreground">
@@ -137,20 +137,20 @@ export const MathDialog = ({ editor }: MathDialogProps) => {
           </div>
 
           {/* Live Preview */}
-          <div className="rounded-lg border border-border bg-background p-4 shadow-xs">
+          <div className="min-w-0 w-full rounded-lg border border-border bg-background p-4 shadow-xs">
             <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
               Live Preview:
             </span>
-            <div className="mt-2 flex min-h-[50px] items-center justify-center overflow-x-auto text-base">
-              <span
+            <div className="mt-2 flex min-h-[50px] w-full max-w-full items-center justify-center overflow-x-auto p-2 text-base">
+              <div
                 dangerouslySetInnerHTML={{ __html: livePreviewHtml }}
-                className="tiptap-katex-render"
+                className="tiptap-katex-render max-w-full overflow-x-auto py-1"
               />
             </div>
           </div>
         </div>
 
-        <DialogFooter className="flex items-center justify-end gap-2">
+        <DialogFooter className="flex items-center justify-end gap-2 w-full pt-1">
           <Button
             type="button"
             variant="outline"

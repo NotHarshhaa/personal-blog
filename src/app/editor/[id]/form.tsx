@@ -40,8 +40,8 @@ import { type Post, Visibility } from '@/db/schema'
 import { capitalize } from '@/utils/capitalize'
 
 const LivePreview = ({ content }: { content: string }) => (
-  <div className="prose LivePreview dark:prose-invert mx-auto max-w-none border border-border bg-background p-4 sm:p-6 md:p-8">
-    <div dangerouslySetInnerHTML={{ __html: content }} />
+  <div className="LivePreview mx-auto max-w-none border border-border bg-background p-4 sm:p-6 md:p-8">
+    <Editor options={{ content, editable: false }} showToolbar={false} showStats={false} showBubbleMenu={false} />
   </div>
 )
 

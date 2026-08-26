@@ -45,12 +45,12 @@ img {
   }
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1:not([data-slot*='title']),
+h2:not([data-slot*='title']),
+h3:not([data-slot*='title']),
+h4:not([data-slot*='title']),
+h5:not([data-slot*='title']),
+h6:not([data-slot*='title']) {
   position: relative;
   width: fit-content;
   max-width: 100%;
@@ -58,12 +58,12 @@ h6 {
   border: 1px solid transparent;
 }
 
-h1::before,
-h2::before,
-h3::before,
-h4::before,
-h5::before,
-h6::before,
+h1:not([data-slot*='title'])::before,
+h2:not([data-slot*='title'])::before,
+h3:not([data-slot*='title'])::before,
+h4:not([data-slot*='title'])::before,
+h5:not([data-slot*='title'])::before,
+h6:not([data-slot*='title'])::before,
 .bracket-title::before {
   position: absolute;
   inset: -1px;
@@ -80,12 +80,12 @@ h6::before,
     linear-gradient(color-mix(in oklch, var(--foreground) 48%, transparent), color-mix(in oklch, var(--foreground) 48%, transparent)) right bottom / 1px 0.45rem no-repeat;
 }
 
-h1::after,
-h2::after,
-h3::after,
-h4::after,
-h5::after,
-h6::after,
+h1:not([data-slot*='title'])::after,
+h2:not([data-slot*='title'])::after,
+h3:not([data-slot*='title'])::after,
+h4:not([data-slot*='title'])::after,
+h5:not([data-slot*='title'])::after,
+h6:not([data-slot*='title'])::after,
 .bracket-title::after {
   display: none;
 }
