@@ -253,12 +253,12 @@ ul[data-type="taskList"] li > div {
 
 .tiptap-math-block,
 .katex-display {
-  margin: 1.25rem 0 !important;
+  margin: 0.5rem 0 !important;
   text-align: center;
   max-width: 100% !important;
   overflow-x: auto !important;
   overflow-y: hidden !important;
-  padding: 0.5rem 0;
+  padding: 0 !important;
   -webkit-overflow-scrolling: touch;
 }
 
@@ -272,7 +272,7 @@ ul[data-type="taskList"] li > div {
 
 .tiptap-katex-render .katex-display {
   margin: 0 !important;
-  padding: 0.25rem 0;
+  padding: 0 !important;
   display: block;
 }
 
@@ -281,6 +281,12 @@ ul[data-type="taskList"] li > div {
   max-width: none !important;
   text-align: center !important;
   white-space: nowrap !important;
+}
+
+/* Eliminate empty paragraph gaps */
+.ProseMirror p:empty,
+.prose p:empty {
+  display: none;
 }
 
 /* Mobile & Touch Horizontal Scrollbars for Code Blocks, Math Formulas, and Tables */

@@ -75,7 +75,7 @@ function markdownToTipTapHtml(raw: string): string {
   const withBlockMath = raw.replace(/\$\$([\s\S]*?)\$\$/g, (_match, latex: string) => {
     const trimmed = latex.trim()
     const encoded = trimmed.replace(/"/g, '&quot;')
-    return `\n\n<div data-latex="${encoded}" data-display="true"></div>\n\n`
+    return `\n<div data-latex="${encoded}" data-display="true"></div>\n`
   })
 
   // 2. Inline equations: $ ... $ -> <span data-latex="..." data-display="false"></span>
@@ -85,7 +85,12 @@ function markdownToTipTapHtml(raw: string): string {
     return `<span data-latex="${encoded}" data-display="false"></span>`
   })
 
-  return md.render(withAllMath)
+  const html = md.render(withAllMath)
+  // Strip empty paragraphs and unwrap any <p><div data-latex ...></div></p>
+  return html
+    .replace(/<p>\s*(<div data-latex="[^"]*" data-display="true"><\/div>)\s*<\/p>/g, '$1')
+    .replace(/<p>\s*<\/p>/g, '')
+    .replace(/<p>\s*<br\s*\/?>\s*<\/p>/g, '')
 }
 
 export type ExtractedMetadata = {

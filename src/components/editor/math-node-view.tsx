@@ -59,7 +59,7 @@ export const MathNodeView = (props: ReactNodeViewProps) => {
       className={cn(
         'group/math not-prose relative min-w-0 max-w-full transition-all select-none',
         isBlock
-          ? 'my-5 block w-full overflow-hidden border border-border bg-card shadow-none'
+          ? 'my-2 sm:my-3 block w-full overflow-hidden border border-border bg-card shadow-none'
           : 'inline-flex max-w-full items-center border border-border/60 bg-muted/30 px-1.5 py-0.5 align-middle',
         selected && editor.isEditable && 'ring-2 ring-primary ring-offset-1',
         isEditing && 'ring-2 ring-primary'
@@ -118,7 +118,7 @@ export const MathNodeView = (props: ReactNodeViewProps) => {
           {/* Horizontally scrollable formula content area */}
           <div
             tabIndex={0}
-            className="w-full max-w-full overflow-x-auto overflow-y-hidden p-4 text-center focus:outline-hidden touch-pan-x"
+            className="w-full max-w-full overflow-x-auto overflow-y-hidden px-4 py-2.5 text-center focus:outline-hidden touch-pan-x"
             style={{ WebkitOverflowScrolling: 'touch' }}
           >
             <div
