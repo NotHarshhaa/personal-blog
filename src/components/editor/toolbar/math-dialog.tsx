@@ -1,4 +1,5 @@
 import type { Editor } from '@tiptap/react'
+
 import katex from 'katex'
 import { CheckIcon, SigmaIcon } from 'lucide-react'
 import { useMemo, useState } from 'react'

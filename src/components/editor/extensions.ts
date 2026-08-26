@@ -1,5 +1,3 @@
-import type { AnyExtension } from '@tiptap/react'
-
 import { Blockquote } from '@tiptap/extension-blockquote'
 import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight'
 import { Color } from '@tiptap/extension-color'
@@ -26,9 +24,14 @@ import { TextStyle } from '@tiptap/extension-text-style'
 import { Typography } from '@tiptap/extension-typography'
 import { Underline } from '@tiptap/extension-underline'
 import { Youtube } from '@tiptap/extension-youtube'
+import {
+  type AnyExtension,
+  ReactNodeViewRenderer
+} from '@tiptap/react'
 import { StarterKit } from '@tiptap/starter-kit'
 import { all, createLowlight } from 'lowlight'
 
+import { CodeBlockNodeView } from './code-block-node-view'
 import { MathExtension } from './math-extension'
 
 const lowlight = createLowlight(all)
@@ -134,13 +137,26 @@ export const extensions: AnyExtension[] = [
     priority: 100,
   }),
 
-  // Syntax-Highlighted Code Blocks
-  CodeBlockLowlight.configure({
+  // Syntax-Highlighted Interactive Code Blocks
+  CodeBlockLowlight.extend({
+    addNodeView() {
+      return ReactNodeViewRenderer(CodeBlockNodeView)
+    },
+    addKeyboardShortcuts() {
+      return {
+        Tab: () => {
+          if (this.editor.isActive('codeBlock')) {
+            return this.editor.commands.insertContent('  ')
+          }
+          return false
+        }
+      }
+    }
+  }).configure({
     lowlight,
     defaultLanguage: 'plaintext',
     HTMLAttributes: {
-      class:
-        'not-prose relative my-5 overflow-x-auto rounded-md border border-border bg-muted font-mono text-[13px] leading-relaxed',
+      class: 'not-prose relative my-5 overflow-hidden rounded-lg border border-border bg-muted/40 font-mono text-[13px]',
     },
     languageClassPrefix: 'language-',
   }),
