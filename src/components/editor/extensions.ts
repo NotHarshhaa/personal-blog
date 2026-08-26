@@ -30,6 +30,7 @@ import {
 } from '@tiptap/react'
 import { StarterKit } from '@tiptap/starter-kit'
 import { all, createLowlight } from 'lowlight'
+import { Markdown } from 'tiptap-markdown'
 
 import { CodeBlockNodeView } from './code-block-node-view'
 import { MathExtension } from './math-extension'
@@ -221,5 +222,17 @@ export const extensions: AnyExtension[] = [
   Focus.configure({
     className: 'ring-1 ring-primary/20 rounded-sm',
     mode: 'shallowest',
+  }),
+
+  // Markdown Paste & Formatting Support
+  Markdown.configure({
+    html: true,
+    tightLists: true,
+    tightListClass: 'normal',
+    bulletListMarker: '-',
+    linkify: true,
+    breaks: false,
+    transformPastedText: true,
+    transformCopiedText: false,
   }),
 ]

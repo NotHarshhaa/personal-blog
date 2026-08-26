@@ -23,6 +23,7 @@ import { HeadingDropdown } from './heading-dropdown'
 import { ImageDialog } from './image-dialog'
 import { LinkDialog } from './link-dialog'
 import { ListGroup } from './list-group'
+import { type ExtractedMetadata,MarkdownDialog } from './markdown-dialog'
 import { MathDialog } from './math-dialog'
 import { TableMenu } from './table-menu'
 import { ToolbarButton } from './toolbar-button'
@@ -32,9 +33,10 @@ import { YoutubeDialog } from './youtube-dialog'
 type ToolbarProps = {
   editor: Editor
   className?: string
+  onMetadataExtracted?: (meta: ExtractedMetadata) => void
 }
 
-export const Toolbar = ({ editor }: ToolbarProps) => {
+export const Toolbar = ({ editor, onMetadataExtracted }: ToolbarProps) => {
   return (
     <nav
       className="flex flex-wrap items-center gap-0.5"
@@ -150,8 +152,9 @@ export const Toolbar = ({ editor }: ToolbarProps) => {
 
       <ToolbarDivider />
 
-      {/* Mathematics & Formula */}
+      {/* Markdown Import/Export & Mathematics */}
       <div className="flex items-center gap-0.5">
+        <MarkdownDialog editor={editor} onMetadataExtracted={onMetadataExtracted} />
         <MathDialog editor={editor} />
       </div>
 

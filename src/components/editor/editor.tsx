@@ -1,5 +1,7 @@
 'use client'
 
+import type { ExtractedMetadata } from './toolbar/markdown-dialog'
+
 import '@/styles/editor.css'
 
 import {
@@ -21,6 +23,7 @@ import Toolbar from './toolbar'
 export type EditorProps = {
   options?: Partial<EditorOptions>
   onChange?: (editor: EditorEvents['update']['editor']) => void
+  onMetadataExtracted?: (meta: ExtractedMetadata) => void
   placeholder?: string
   className?: string
   showToolbar?: boolean
@@ -32,6 +35,7 @@ export const Editor = (props: EditorProps) => {
   const {
     options,
     onChange,
+    onMetadataExtracted,
     placeholder = 'Start writing your post...',
     className,
     showToolbar = true,
@@ -94,7 +98,7 @@ export const Editor = (props: EditorProps) => {
       {/* Main Sticky Toolbar */}
       {isEditable && showToolbar && (
         <div className="sticky top-0 z-20 border-b border-border/80 bg-card/95 px-2 py-1.5 backdrop-blur-md">
-          <Toolbar editor={editor} />
+          <Toolbar editor={editor} onMetadataExtracted={onMetadataExtracted} />
         </div>
       )}
 

@@ -251,6 +251,14 @@ const Form = (props: FormProps) => {
                   onChange={(editor) => {
                     setContent(editor.getHTML())
                   }}
+                  onMetadataExtracted={({ title: extractedTitle, description: extractedDescription }) => {
+                    if (extractedTitle) {
+                      setTitle(extractedTitle)
+                    }
+                    if (extractedDescription) {
+                      setDescription(extractedDescription)
+                    }
+                  }}
                 />
               ) : (
                 <LivePreview content={content ?? ''} />

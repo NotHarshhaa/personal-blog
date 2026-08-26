@@ -1,7 +1,17 @@
 bradlc
+cmdk
 dbaeumer
+dropcursor
 esbenp
+esbuild
+gapcursor
+katex
 lightningcss
+linkify
 lowlight
+nelsonlaidev
+noopener
+noreferrer
 paralleldrive
+prosemirror
 Tabler
