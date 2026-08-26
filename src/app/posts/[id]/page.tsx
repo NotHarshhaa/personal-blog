@@ -34,9 +34,11 @@ export const generateMetadata = async (props: PostPageProps): Promise<Metadata> 
   const ISOPublishedTime = new Date(post.createdAt).toISOString()
   const ISOModifiedTime = new Date(post.updatedAt).toISOString()
 
+  const ogImageUrl = `${SITE_URL}/api/og?title=${encodeURIComponent(post.title)}${post.description ? `&description=${encodeURIComponent(post.description)}` : ''}`
+
   return {
     title: post.title,
-    description: post.description,
+    description: post.description ?? undefined,
     openGraph: {
       url: `${SITE_URL}/posts/${id}`,
       type: 'article',
@@ -47,13 +49,19 @@ export const generateMetadata = async (props: PostPageProps): Promise<Metadata> 
       authors: `${SITE_URL}/users/${post.authorId}`,
       images: [
         {
-          url: `${SITE_URL}/api/og?title=${post.title}`,
+          url: ogImageUrl,
           width: 1200,
           height: 630,
           alt: post.title,
           type: 'image/png'
         }
       ]
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: post.title,
+      description: post.description ?? undefined,
+      images: [ogImageUrl]
     }
   }
 }

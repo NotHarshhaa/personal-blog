@@ -1,78 +1,216 @@
 import { ImageResponse } from 'next/og'
-import { NextResponse } from 'next/server'
 
 export const runtime = 'edge'
 
 export const GET = (req: Request) => {
   const { searchParams } = new URL(req.url)
-  const title = searchParams.get('title')
-
-  if (!title) {
-    return NextResponse.json(
-      {
-        error: 'Missing title'
-      },
-      {
-        status: 400
-      }
-    )
-  }
+  const title = searchParams.get('title') || 'DevOps, Cloud & AI Engineering'
+  const description = searchParams.get('description') || ''
 
   return new ImageResponse(
     (
-      /* eslint-disable @eslint-react/dom/no-unknown-property -- custom attribute */
-      <div tw='bg-gradient-to-br from-blue-900 via-blue-800 to-indigo-900 flex w-full h-full justify-between flex-col text-white p-24'>
-        <div tw='flex flex-col'>
-          <div tw='flex items-center mb-8'>
-            <svg
-              width='120'
-              height='120'
-              viewBox='0 0 120 120'
-              fill='none'
-              xmlns='http://www.w3.org/2000/svg'
-              aria-label='DevOps, Cloud and AI'
+      <div
+        style={{
+          height: '100%',
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          backgroundColor: '#0c0e12',
+          backgroundImage:
+            'radial-gradient(circle at 25px 25px, rgba(255, 255, 255, 0.07) 2%, transparent 0%), radial-gradient(circle at 75px 75px, rgba(255, 255, 255, 0.04) 2%, transparent 0%)',
+          backgroundSize: '100px 100px',
+          padding: '48px',
+          position: 'relative',
+          fontFamily: 'system-ui, -apple-system, sans-serif',
+          color: '#ffffff'
+        }}
+      >
+        {/* Inner Blueprint Frame */}
+        <div
+          style={{
+            position: 'relative',
+            height: '100%',
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            border: '1px solid rgba(255, 255, 255, 0.12)',
+            backgroundColor: 'rgba(17, 20, 27, 0.75)',
+            padding: '44px 48px'
+          }}
+        >
+          {/* Corner L-Brackets */}
+          <div
+            style={{
+              position: 'absolute',
+              top: '-2px',
+              left: '-2px',
+              width: '20px',
+              height: '20px',
+              borderTop: '3px solid #60a5fa',
+              borderLeft: '3px solid #60a5fa'
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              top: '-2px',
+              right: '-2px',
+              width: '20px',
+              height: '20px',
+              borderTop: '3px solid #60a5fa',
+              borderRight: '3px solid #60a5fa'
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '-2px',
+              left: '-2px',
+              width: '20px',
+              height: '20px',
+              borderBottom: '3px solid #60a5fa',
+              borderLeft: '3px solid #60a5fa'
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '-2px',
+              right: '-2px',
+              width: '20px',
+              height: '20px',
+              borderBottom: '3px solid #60a5fa',
+              borderRight: '3px solid #60a5fa'
+            }}
+          />
+
+          {/* Top Header Badge */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                backgroundColor: 'rgba(255, 255, 255, 0.05)',
+                padding: '6px 14px'
+              }}
             >
-              <g clipPath='url(#clip0_54_56)'>
-                <path
-                  d='M88 0H32C14.3269 0 0 14.3269 0 32V88C0 105.673 14.3269 120 32 120H88C105.673 120 120 105.673 120 88V32C120 14.3269 105.673 0 88 0Z'
-                  fill='#F1F1F1'
-                />
-                <path
-                  d='M89.1673 26.667V93.3337H39.1673C36.9572 93.3337 34.8376 92.4557 33.2748 90.8929C31.712 89.3301 30.834 87.2105 30.834 85.0003V35.0003C30.834 32.7902 31.712 30.6706 33.2748 29.1078C34.8376 27.545 36.9572 26.667 39.1673 26.667H89.1673Z'
-                  stroke='black'
-                  strokeWidth='5.33'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                />
-                <path
-                  d='M89.1673 76.667H39.1673C36.9572 76.667 34.8376 77.545 33.2748 79.1078C31.712 80.6706 30.834 82.7902 30.834 85.0003'
-                  stroke='black'
-                  strokeWidth='5.33'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                />
-                <path
-                  d='M47.5 43.333H72.5'
-                  stroke='black'
-                  strokeWidth='5.33'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                />
-              </g>
-              <defs>
-                <clipPath id='clip0_54_56'>
-                  <rect width='120' height='120' fill='white' />
-                </clipPath>
-              </defs>
-            </svg>
-            <div tw='ml-8 text-5xl font-bold'>DevOps, Cloud & AI Space</div>
+              <div
+                style={{
+                  width: '8px',
+                  height: '8px',
+                  borderRadius: '50%',
+                  backgroundColor: '#10b981'
+                }}
+              />
+              <span
+                style={{
+                  fontFamily: 'monospace',
+                  fontSize: '14px',
+                  letterSpacing: '0.14em',
+                  textTransform: 'uppercase',
+                  color: '#94a3b8',
+                  fontWeight: 600
+                }}
+              >
+                DEVOPS · CLOUD · AI PLATFORM
+              </span>
+            </div>
+
+            <span
+              style={{
+                fontFamily: 'monospace',
+                fontSize: '14px',
+                color: '#64748b',
+                letterSpacing: '0.1em'
+              }}
+            >
+              ARTICLE // PUBLICATION
+            </span>
           </div>
-          <div tw='mt-20 text-5xl font-semibold leading-tight'>{title}</div>
+
+          {/* Center Main Content (Article Title & Description) */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: 'auto', marginBottom: 'auto' }}>
+            <div
+              style={{
+                fontSize: title.length > 60 ? '44px' : title.length > 35 ? '52px' : '58px',
+                fontWeight: 800,
+                lineHeight: 1.18,
+                letterSpacing: '-0.03em',
+                color: '#f8fafc',
+                maxHeight: '220px',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis'
+              }}
+            >
+              {title}
+            </div>
+
+            {description ? (
+              <div
+                style={{
+                  fontSize: '22px',
+                  lineHeight: 1.45,
+                  color: '#94a3b8',
+                  maxHeight: '68px',
+                  overflow: 'hidden',
+                  fontWeight: 400
+                }}
+              >
+                {description}
+              </div>
+            ) : null}
+          </div>
+
+          {/* Bottom Footer Metadata */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              width: '100%',
+              borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+              paddingTop: '18px'
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div
+                style={{
+                  width: '32px',
+                  height: '32px',
+                  border: '1px solid #3b82f6',
+                  backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  color: '#60a5fa'
+                }}
+              >
+                H
+              </div>
+              <span style={{ fontSize: '18px', fontWeight: 600, color: '#e2e8f0' }}>Harshhaa</span>
+            </div>
+
+            <div
+              style={{
+                fontFamily: 'monospace',
+                fontSize: '15px',
+                color: '#94a3b8',
+                letterSpacing: '0.08em',
+                fontWeight: 500
+              }}
+            >
+              blog.harshhaareddy.site
+            </div>
+          </div>
         </div>
-        <div tw='flex justify-end text-3xl font-bold'>blog.harshhaareddy.site</div>
       </div>
     ),
-    /* eslint-enable @eslint-react/dom/no-unknown-property -- custom attribute */
     {
       width: 1200,
       height: 630
