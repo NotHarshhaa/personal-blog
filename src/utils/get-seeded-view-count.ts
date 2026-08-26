@@ -18,8 +18,10 @@ export const getSeededViewCount = (postId: string, createdAt: Date) => {
     1,
     Math.floor((Date.now() - createdAt.getTime()) / 86_400_000),
   );
-  const base = 120 + (hash % 181);
-  const daily = 6 + (hash % 9);
+  // Base views range between 1,450 and 4,900
+  const base = 1450 + (hash % 3450);
+  // Daily velocity between 42 and 130 views/day
+  const daily = 42 + (hash % 88);
 
   return base + daysOnline * daily;
 };
@@ -27,11 +29,14 @@ export const getSeededViewCount = (postId: string, createdAt: Date) => {
 export const getFakeEngagement = (postId: string, createdAt: Date) => {
   const fakeViews = getSeededViewCount(postId, createdAt);
   const hash = hashString(`likes-${postId}`);
-  const rate = 0.035 + (hash % 21) / 1000;
+  // Natural tech post like conversion rate: ~5.2% to 8.4%
+  const rate = 0.052 + (hash % 32) / 1000;
+  const calculatedLikes = Math.round(fakeViews * rate);
+  const baseLikes = 35 + (hash % 45);
 
   return {
     fakeViews,
-    fakeLikes: Math.round(fakeViews * rate),
+    fakeLikes: Math.max(baseLikes, calculatedLikes),
   };
 };
 
@@ -73,10 +78,14 @@ export const withPostEngagement = <
   post: T,
 ) => {
   const published = post.published ?? true;
-  const views = getDisplayViewCount(post.views, post.fakeViews, published);
+  const seeded = getFakeEngagement(post.id, post.createdAt);
+  const effectiveFakeViews = Math.max(post.fakeViews, seeded.fakeViews);
+  const effectiveFakeLikes = Math.max(post.fakeLikes, seeded.fakeLikes);
+
+  const views = getDisplayViewCount(post.views, effectiveFakeViews, published);
   const likeCount = getDisplayLikeCount(
     post.likes.length,
-    post.fakeLikes,
+    effectiveFakeLikes,
     published,
   );
 
