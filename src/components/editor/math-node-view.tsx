@@ -59,8 +59,8 @@ export const MathNodeView = (props: ReactNodeViewProps) => {
       className={cn(
         'group/math not-prose relative min-w-0 max-w-full transition-all select-none',
         isBlock
-          ? 'my-5 block w-full overflow-hidden rounded-lg border border-border bg-muted/25 shadow-xs'
-          : 'inline-flex max-w-full items-center rounded-md border border-border/60 bg-muted/30 px-1.5 py-0.5 align-middle',
+          ? 'my-5 block w-full overflow-hidden border border-border bg-card shadow-none'
+          : 'inline-flex max-w-full items-center border border-border/60 bg-muted/30 px-1.5 py-0.5 align-middle',
         selected && editor.isEditable && 'ring-2 ring-primary ring-offset-1',
         isEditing && 'ring-2 ring-primary'
       )}

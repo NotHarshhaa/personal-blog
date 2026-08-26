@@ -40,7 +40,7 @@ export const CodeBlockNodeView = (props: ReactNodeViewProps) => {
     LANGUAGES.find((lang) => lang.value === currentLanguage)?.label || currentLanguage
 
   return (
-    <NodeViewWrapper className="not-prose relative my-5 max-w-full overflow-hidden rounded-lg border border-border bg-muted/40 shadow-xs">
+    <NodeViewWrapper className="not-prose relative my-5 max-w-full overflow-hidden border border-border bg-card shadow-none">
       {/* Code Block Window Header */}
       <div className="flex items-center justify-between border-b border-border/70 bg-muted/80 px-3 py-1.5 text-xs text-muted-foreground select-none">
         <div className="flex items-center gap-2">

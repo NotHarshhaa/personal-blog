@@ -97,61 +97,60 @@
   }
 }
 
-/* Tables UI */
+/* Tables UI - Technical Blueprint Style */
 .ProseMirror table,
 .prose table {
-  border-collapse: separate;
-  border-spacing: 0;
+  border-collapse: collapse;
   width: 100%;
   max-width: 100%;
-  border-radius: 0.5rem;
+  border-radius: 0 !important;
   border: 1px solid var(--border);
-  overflow: hidden;
   margin: 1.75rem 0;
-  font-size: 0.875rem;
-  line-height: 1.5;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+  background-color: var(--card);
+  box-shadow: none !important;
 }
 
 .ProseMirror thead,
 .prose thead {
-  background: color-mix(in oklch, var(--muted) 85%, transparent);
+  background: var(--muted);
+  border-bottom: 1px solid var(--border);
 }
 
 .ProseMirror th,
 .prose th {
-  border-bottom: 2px solid var(--border);
-  border-right: 1px solid color-mix(in oklch, var(--border) 60%, transparent);
-  padding: 0.65rem 0.95rem;
+  border: 1px solid var(--border);
+  padding: 0.625rem 0.875rem;
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.75rem;
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
   text-align: left;
-  color: var(--foreground);
-  font-size: 0.8125rem;
-  letter-spacing: 0.02em;
-}
-
-.ProseMirror th:last-child,
-.prose th:last-child {
-  border-right: none;
+  color: var(--muted-foreground);
 }
 
 .ProseMirror td,
 .prose td {
-  border-bottom: 1px solid color-mix(in oklch, var(--border) 60%, transparent);
-  border-right: 1px solid color-mix(in oklch, var(--border) 60%, transparent);
-  padding: 0.65rem 0.95rem;
+  border: 1px solid var(--border);
+  padding: 0.625rem 0.875rem;
+  font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  font-size: 0.8125rem;
+  line-height: 1.6;
   color: var(--foreground);
   vertical-align: top;
 }
 
-.ProseMirror tr:last-child td,
-.prose tr:last-child td {
-  border-bottom: none;
-}
-
-.ProseMirror td:last-child,
-.prose td:last-child {
-  border-right: none;
+.ProseMirror td code,
+.prose td code {
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, monospace;
+  font-size: 0.85em;
+  background: var(--muted);
+  border: 1px solid var(--border);
+  padding: 0.1rem 0.35rem;
+  border-radius: 0;
 }
 
 .ProseMirror tbody tr,
@@ -161,12 +160,12 @@
 
 .ProseMirror tbody tr:nth-child(even),
 .prose tbody tr:nth-child(even) {
-  background-color: color-mix(in oklch, var(--muted) 25%, transparent);
+  background-color: color-mix(in oklch, var(--muted) 35%, transparent);
 }
 
 .ProseMirror tbody tr:hover,
 .prose tbody tr:hover {
-  background-color: color-mix(in oklch, var(--muted) 55%, transparent);
+  background-color: color-mix(in oklch, var(--muted) 70%, transparent);
 }
 
 .ProseMirror .selectedCell:after {
@@ -186,7 +185,7 @@
   right: -2px;
   top: 0;
   bottom: -2px;
-  width: 4px;
+  width: 3px;
   background-color: var(--primary);
   pointer-events: none;
 }
@@ -196,8 +195,15 @@
   overflow-x: auto;
   max-width: 100%;
   -webkit-overflow-scrolling: touch;
-  margin: 1.5rem 0;
-  border-radius: 0.5rem;
+  margin: 1.75rem 0;
+  border-radius: 0;
+  border: 1px solid var(--border);
+}
+
+.tableWrapper table,
+.prose .table-wrapper table {
+  margin: 0 !important;
+  border: none !important;
 }
 
 /* Task lists */
