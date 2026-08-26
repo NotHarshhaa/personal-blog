@@ -24,7 +24,7 @@ const LANGUAGES = [
 ]
 
 export const CodeBlockNodeView = (props: ReactNodeViewProps) => {
-  const { node, updateAttributes } = props
+  const { node, updateAttributes, editor } = props
   const [copied, setCopied] = useState(false)
 
   const currentLanguage = (node.attrs.language as string) || 'plaintext'
@@ -36,8 +36,11 @@ export const CodeBlockNodeView = (props: ReactNodeViewProps) => {
     setTimeout(() => setCopied(false), 1800)
   }
 
+  const selectedLanguageLabel =
+    LANGUAGES.find((lang) => lang.value === currentLanguage)?.label || currentLanguage
+
   return (
-    <NodeViewWrapper className="not-prose relative my-5 overflow-hidden rounded-lg border border-border bg-muted/40 shadow-xs">
+    <NodeViewWrapper className="not-prose relative my-5 max-w-full overflow-hidden rounded-lg border border-border bg-muted/40 shadow-xs">
       {/* Code Block Window Header */}
       <div className="flex items-center justify-between border-b border-border/70 bg-muted/80 px-3 py-1.5 text-xs text-muted-foreground select-none">
         <div className="flex items-center gap-2">
@@ -48,26 +51,32 @@ export const CodeBlockNodeView = (props: ReactNodeViewProps) => {
             <span className="size-2 rounded-full bg-green-400/70" />
           </div>
 
-          {/* Language Selector */}
-          <select
-            contentEditable={false}
-            value={currentLanguage}
-            onChange={(e) => updateAttributes({ language: e.target.value })}
-            className="rounded border border-border/60 bg-background/60 px-1.5 py-0.5 font-mono text-[11px] font-medium text-foreground transition-colors hover:bg-background focus:outline-hidden"
-          >
-            {LANGUAGES.map((lang) => (
-              <option key={lang.value} value={lang.value}>
-                {lang.label}
-              </option>
-            ))}
-          </select>
+          {/* Language Selector (editable) or Badge (read-only) */}
+          {editor.isEditable ? (
+            <select
+              contentEditable={false}
+              value={currentLanguage}
+              onChange={(e) => updateAttributes({ language: e.target.value })}
+              className="rounded border border-border/60 bg-background/60 px-1.5 py-0.5 font-mono text-[11px] font-medium text-foreground transition-colors hover:bg-background focus:outline-hidden cursor-pointer"
+            >
+              {LANGUAGES.map((lang) => (
+                <option key={lang.value} value={lang.value}>
+                  {lang.label}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <span className="rounded border border-border/40 bg-background/40 px-1.5 py-0.5 font-mono text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+              {selectedLanguageLabel}
+            </span>
+          )}
         </div>
 
         {/* Copy Button */}
         <button
           type="button"
           onClick={handleCopy}
-          className="inline-flex items-center gap-1 rounded border border-border/50 bg-background/60 px-2 py-0.5 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-background hover:text-foreground"
+          className="inline-flex items-center gap-1 rounded border border-border/50 bg-background/60 px-2 py-0.5 text-[11px] font-medium text-muted-foreground transition-colors hover:bg-background hover:text-foreground cursor-pointer"
           title="Copy code"
         >
           {copied ? (
@@ -85,8 +94,8 @@ export const CodeBlockNodeView = (props: ReactNodeViewProps) => {
       </div>
 
       {/* Code Content */}
-      <pre className="overflow-x-auto p-3.5 font-mono text-[13px] leading-relaxed text-foreground">
-        <NodeViewContent as="code" className={`language-${currentLanguage}`} />
+      <pre className="w-full max-w-full overflow-x-auto p-3.5 font-mono text-[13px] leading-relaxed text-foreground whitespace-pre break-normal">
+        <NodeViewContent as="code" className={`language-${currentLanguage} whitespace-pre break-normal`} />
       </pre>
     </NodeViewWrapper>
   )
