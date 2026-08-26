@@ -1,10 +1,12 @@
 'use client'
 
-import { Button } from '@/components/ui'
+import { Loader2Icon } from 'lucide-react'
 import Image from 'next/image'
 import { useSearchParams } from 'next/navigation'
 import { signIn } from 'next-auth/react'
 import { useState } from 'react'
+
+import { Button } from '@/components/ui'
 
 const LoginButton = () => {
   const [loading, setLoading] = useState(false)
@@ -12,52 +14,33 @@ const LoginButton = () => {
   const pathname = searchParams.get('redirect') ?? '/'
 
   return (
-    <div className="flex w-full flex-col items-center gap-4">
-      <Button
-        onClick={() => {
-          setLoading(true)
-          void signIn('google', {
-            redirect: false,
-            callbackUrl: pathname
-          })
-        }}
-        variant="outline"
-        size="lg"
-        className="flex w-full items-center justify-center gap-3"
-        disabled={loading}
-        aria-label="Continue with Google"
-      >
+    <Button
+      onClick={() => {
+        setLoading(true)
+        void signIn('google', {
+          redirect: false,
+          callbackUrl: pathname
+        })
+      }}
+      variant="outline"
+      size="lg"
+      className="group relative flex h-12 w-full items-center justify-center gap-3 border-border/80 bg-background/60 text-sm font-medium shadow-xs backdrop-blur-xs transition-all duration-200 hover:border-foreground/30 hover:bg-accent/40 active:scale-[0.99]"
+      disabled={loading}
+      aria-label="Continue with Google"
+    >
+      {loading ? (
+        <Loader2Icon className="size-4 animate-spin text-muted-foreground" />
+      ) : (
         <Image
           src="/images/google.svg"
           alt="Google"
-          width={20}
-          height={20}
-          className="shrink-0"
+          width={18}
+          height={18}
+          className="shrink-0 transition-transform duration-200 group-hover:scale-110"
         />
-        <span>Continue with Google</span>
-        {loading && (
-          <span className="ml-1 size-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
-        )}
-      </Button>
-
-      <p className="text-center text-xs leading-relaxed text-muted-foreground">
-        By continuing, you agree to our{' '}
-        <a
-          href="/terms"
-          className="underline underline-offset-2 hover:text-foreground"
-        >
-          Terms of Service
-        </a>{' '}
-        and{' '}
-        <a
-          href="/privacy"
-          className="underline underline-offset-2 hover:text-foreground"
-        >
-          Privacy Policy
-        </a>
-        .
-      </p>
-    </div>
+      )}
+      <span>Continue with Google</span>
+    </Button>
   )
 }
 
