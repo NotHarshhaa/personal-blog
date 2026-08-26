@@ -1,32 +1,32 @@
 import type { AnyExtension } from '@tiptap/react'
 
-import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight'
-import { Highlight } from '@tiptap/extension-highlight'
-import { Link } from '@tiptap/extension-link'
-import { Placeholder } from '@tiptap/extension-placeholder'
-import { TaskItem } from '@tiptap/extension-task-item'
-import { TaskList } from '@tiptap/extension-task-list'
-import { StarterKit } from '@tiptap/starter-kit'
-import { Underline } from '@tiptap/extension-underline'
-import { Subscript } from '@tiptap/extension-subscript'
-import { Superscript } from '@tiptap/extension-superscript'
-import { Image } from '@tiptap/extension-image'
-import { Table } from '@tiptap/extension-table'
-import { TableRow } from '@tiptap/extension-table-row'
-import { TableCell } from '@tiptap/extension-table-cell'
-import { TableHeader } from '@tiptap/extension-table-header'
-import { HorizontalRule } from '@tiptap/extension-horizontal-rule'
 import { Blockquote } from '@tiptap/extension-blockquote'
-import { HardBreak } from '@tiptap/extension-hard-break'
-import { TextAlign } from '@tiptap/extension-text-align'
-import { Typography } from '@tiptap/extension-typography'
+import { CodeBlockLowlight } from '@tiptap/extension-code-block-lowlight'
 import { Color } from '@tiptap/extension-color'
-import { TextStyle } from '@tiptap/extension-text-style'
-import { FontFamily } from '@tiptap/extension-font-family'
 import { Dropcursor } from '@tiptap/extension-dropcursor'
 import Focus from '@tiptap/extension-focus'
-import { Youtube } from '@tiptap/extension-youtube'
+import { FontFamily } from '@tiptap/extension-font-family'
 import { Gapcursor } from '@tiptap/extension-gapcursor'
+import { HardBreak } from '@tiptap/extension-hard-break'
+import { Highlight } from '@tiptap/extension-highlight'
+import { HorizontalRule } from '@tiptap/extension-horizontal-rule'
+import { Image } from '@tiptap/extension-image'
+import { Link } from '@tiptap/extension-link'
+import { Placeholder } from '@tiptap/extension-placeholder'
+import { Subscript } from '@tiptap/extension-subscript'
+import { Superscript } from '@tiptap/extension-superscript'
+import { Table } from '@tiptap/extension-table'
+import { TableCell } from '@tiptap/extension-table-cell'
+import { TableHeader } from '@tiptap/extension-table-header'
+import { TableRow } from '@tiptap/extension-table-row'
+import { TaskItem } from '@tiptap/extension-task-item'
+import { TaskList } from '@tiptap/extension-task-list'
+import { TextAlign } from '@tiptap/extension-text-align'
+import { TextStyle } from '@tiptap/extension-text-style'
+import { Typography } from '@tiptap/extension-typography'
+import { Underline } from '@tiptap/extension-underline'
+import { Youtube } from '@tiptap/extension-youtube'
+import { StarterKit } from '@tiptap/starter-kit'
 import { all, createLowlight } from 'lowlight'
 
 const lowlight = createLowlight(all)
@@ -37,27 +37,18 @@ export const extensions: AnyExtension[] = [
     blockquote: false,
     horizontalRule: false,
     hardBreak: false,
-    // Configured separately below — avoid duplicate keyed plugins
     dropcursor: false,
     gapcursor: false,
     code: {
       HTMLAttributes: {
         class:
-          'rounded-none border border-border bg-muted px-1 py-0.5 font-mono text-[0.875em] text-foreground',
+          'rounded border border-border bg-muted px-1.5 py-0.5 font-mono text-[0.875em] text-foreground',
       },
     },
     heading: {
       levels: [1, 2, 3, 4, 5, 6],
       HTMLAttributes: {
         class: 'font-bold tracking-tight',
-        level: {
-          1: 'text-4xl mt-8 mb-4',
-          2: 'text-3xl mt-6 mb-3',
-          3: 'text-2xl mt-4 mb-2',
-          4: 'text-xl mt-3 mb-2',
-          5: 'text-lg mt-2 mb-1',
-          6: 'text-base mt-2 mb-1'
-        }
       },
     },
     bulletList: {
@@ -77,7 +68,7 @@ export const extensions: AnyExtension[] = [
     },
   }),
 
-  // Text styling
+  // Text Styling & Typography
   TextStyle,
   Color,
   FontFamily,
@@ -87,27 +78,27 @@ export const extensions: AnyExtension[] = [
     alignments: ['left', 'center', 'right', 'justify'],
   }),
 
-  // Inline formatting
+  // Inline Formatting
   Highlight.configure({
     multicolor: true,
     HTMLAttributes: {
-      class: 'rounded-none bg-foreground/10 px-0.5',
+      class: 'rounded-sm bg-yellow-200/40 dark:bg-yellow-500/30 px-1 py-0.5',
     },
   }),
   Underline,
   Subscript,
   Superscript,
 
-  // Lists and tasks
+  // Lists & Tasks
   TaskList.configure({
     HTMLAttributes: {
-      class: 'not-prose pl-2',
+      class: 'not-prose pl-0 space-y-1 my-3',
     },
   }),
   TaskItem.configure({
     nested: true,
     HTMLAttributes: {
-      class: 'flex items-start gap-1 my-1',
+      class: 'flex items-start gap-2 my-1',
     },
   }),
 
@@ -115,9 +106,9 @@ export const extensions: AnyExtension[] = [
   Placeholder.configure({
     placeholder: ({ node }) => {
       if (node.type.name === 'heading') {
-        return "What's the title?"
+        return "Heading..."
       }
-      return 'Start writing or press "/" for commands...'
+      return 'Start writing your story or notes...'
     },
     includeChildren: true,
   }),
@@ -131,38 +122,36 @@ export const extensions: AnyExtension[] = [
       rel: 'noopener noreferrer nofollow',
       target: '_blank',
       class:
-        'underline decoration-foreground/30 underline-offset-2 text-foreground hover:decoration-foreground transition-colors',
+        'underline decoration-foreground/40 underline-offset-3 text-primary hover:decoration-foreground transition-colors font-medium',
     },
   }).extend({
     inclusive: false,
     priority: 100,
   }),
 
-  // Code blocks
+  // Syntax-Highlighted Code Blocks
   CodeBlockLowlight.configure({
     lowlight,
     defaultLanguage: 'plaintext',
     HTMLAttributes: {
       class:
-        'not-prose relative my-5 overflow-x-auto rounded-none border border-border bg-muted font-mono text-[13px] leading-relaxed shadow-none',
+        'not-prose relative my-5 overflow-x-auto rounded-md border border-border bg-muted font-mono text-[13px] leading-relaxed',
     },
     languageClassPrefix: 'language-',
   }),
 
-  // Media
+  // Media (Images & YouTube)
   Image.configure({
     inline: false,
     allowBase64: true,
     HTMLAttributes: {
-      class:
-        'rounded-none border border-border max-w-full mx-auto my-6 shadow-none',
+      class: 'rounded-md border border-border max-w-full mx-auto my-6 shadow-sm',
     },
   }),
   Youtube.configure({
     inline: false,
     HTMLAttributes: {
-      class:
-        'rounded-none border border-border max-w-full mx-auto my-6 shadow-none aspect-video',
+      class: 'rounded-md border border-border max-w-full mx-auto my-6 aspect-video shadow-sm',
     },
   }),
 
@@ -170,7 +159,7 @@ export const extensions: AnyExtension[] = [
   Table.configure({
     resizable: true,
     HTMLAttributes: {
-      class: 'my-6 w-full border border-border rounded-none overflow-hidden shadow-none',
+      class: 'my-6 w-full border-collapse border border-border rounded-md overflow-hidden shadow-xs',
     },
   }),
   TableRow.configure({
@@ -180,38 +169,36 @@ export const extensions: AnyExtension[] = [
   }),
   TableCell.configure({
     HTMLAttributes: {
-      class: 'border-r border-border last:border-0 p-2',
+      class: 'border-r border-border last:border-0 p-2.5 align-top text-sm',
     },
   }),
   TableHeader.configure({
     HTMLAttributes: {
-      class:
-        'border-r border-border last:border-0 p-2 font-semibold bg-muted',
+      class: 'border-r border-border last:border-0 p-2.5 font-semibold bg-muted/80 text-left text-sm',
     },
   }),
 
-  // Decorative elements
+  // Block Dividers & Quotes
   HorizontalRule.configure({
     HTMLAttributes: {
-      class: 'my-8 border-t border-dashed border-border',
+      class: 'my-8 border-t border-border',
     },
   }),
   Blockquote.configure({
     HTMLAttributes: {
-      class:
-        'border-l-2 border-foreground pl-5 my-6 text-muted-foreground not-italic',
+      class: 'border-l-4 border-primary pl-4 my-6 text-muted-foreground italic',
     },
   }),
 
-  // Utilities
+  // Editor Utilities
   HardBreak,
   Dropcursor.configure({
-    color: 'var(--foreground)',
+    color: 'var(--primary)',
     width: 2,
   }),
   Gapcursor,
   Focus.configure({
-    className: 'ring-1 ring-foreground/15 rounded-none',
+    className: 'ring-1 ring-primary/20 rounded-sm',
     mode: 'shallowest',
   }),
 ]
