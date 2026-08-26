@@ -29,6 +29,8 @@ import { Youtube } from '@tiptap/extension-youtube'
 import { StarterKit } from '@tiptap/starter-kit'
 import { all, createLowlight } from 'lowlight'
 
+import { MathExtension } from './math-extension'
+
 const lowlight = createLowlight(all)
 
 export const extensions: AnyExtension[] = [
@@ -67,6 +69,9 @@ export const extensions: AnyExtension[] = [
       },
     },
   }),
+
+  // Mathematics (KaTeX / LaTeX)
+  MathExtension,
 
   // Text Styling & Typography
   TextStyle,
@@ -108,7 +113,7 @@ export const extensions: AnyExtension[] = [
       if (node.type.name === 'heading') {
         return "Heading..."
       }
-      return 'Start writing your story or notes...'
+      return 'Start writing your story, notes, or math formulas...'
     },
     includeChildren: true,
   }),

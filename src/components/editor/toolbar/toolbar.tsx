@@ -1,7 +1,4 @@
-'use client'
-
 import type { Editor } from '@tiptap/react'
-
 import {
   BoldIcon,
   CodeIcon,
@@ -25,6 +22,7 @@ import { HeadingDropdown } from './heading-dropdown'
 import { ImageDialog } from './image-dialog'
 import { LinkDialog } from './link-dialog'
 import { ListGroup } from './list-group'
+import { MathDialog } from './math-dialog'
 import { TableMenu } from './table-menu'
 import { ToolbarButton } from './toolbar-button'
 import { ToolbarDivider } from './toolbar-divider'
@@ -147,6 +145,13 @@ export const Toolbar = ({ editor }: ToolbarProps) => {
           tooltip="Divider Rule"
           icon={<MinusIcon className="size-4" />}
         />
+      </div>
+
+      <ToolbarDivider />
+
+      {/* Mathematics & Formula */}
+      <div className="flex items-center gap-0.5">
+        <MathDialog editor={editor} />
       </div>
 
       <ToolbarDivider />
