@@ -390,15 +390,15 @@
           "notNull": true,
           "default": 0
         },
-        "fake_views": {
-          "name": "fake_views",
+        "baseline_views": {
+          "name": "baseline_views",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "default": 0
         },
-        "fake_likes": {
-          "name": "fake_likes",
+        "baseline_likes": {
+          "name": "baseline_likes",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,

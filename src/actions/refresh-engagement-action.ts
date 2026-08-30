@@ -6,9 +6,9 @@ import { revalidatePath } from "next/cache";
 import { db } from "@/db";
 import { posts } from "@/db/schema";
 import { authenticatedActionClient } from "@/lib/safe-action";
-import { getFakeEngagement } from "@/utils/get-seeded-view-count";
+import { getBaselineEngagement } from "@/utils/get-seeded-view-count";
 
-export const refreshFakeEngagementAction = authenticatedActionClient.action(
+export const refreshEngagementAction = authenticatedActionClient.action(
   async ({ ctx: { user } }) => {
     if (user.role !== "admin") {
       throw new Error("Not authorized");
@@ -22,28 +22,28 @@ export const refreshFakeEngagementAction = authenticatedActionClient.action(
       },
     });
 
-    let totalFakeViews = 0;
-    let totalFakeLikes = 0;
+    let totalBaselineViews = 0;
+    let totalBaselineLikes = 0;
 
     await db.transaction(async (tx) => {
       for (const post of allPosts) {
         if (!post.published) {
           await tx
             .update(posts)
-            .set({ fakeViews: 0, fakeLikes: 0 })
+            .set({ baselineViews: 0, baselineLikes: 0 })
             .where(eq(posts.id, post.id));
           continue;
         }
 
-        const calculated = getFakeEngagement(post.id, post.createdAt);
-        const { fakeViews, fakeLikes } = calculated;
+        const calculated = getBaselineEngagement(post.id, post.createdAt);
+        const { baselineViews, baselineLikes } = calculated;
 
-        totalFakeViews += fakeViews;
-        totalFakeLikes += fakeLikes;
+        totalBaselineViews += baselineViews;
+        totalBaselineLikes += baselineLikes;
 
         await tx
           .update(posts)
-          .set({ fakeViews, fakeLikes })
+          .set({ baselineViews, baselineLikes })
           .where(eq(posts.id, post.id));
       }
     });
@@ -55,8 +55,8 @@ export const refreshFakeEngagementAction = authenticatedActionClient.action(
 
     return {
       updatedPosts: allPosts.length,
-      totalFakeViews,
-      totalFakeLikes,
+      totalViews: totalBaselineViews,
+      totalLikes: totalBaselineLikes,
     };
   },
 );

@@ -40,9 +40,9 @@ export const getSeededViewCount = (postId: string, createdAt: Date) => {
   return Math.round(base + matureDays * daily);
 };
 
-export const getFakeEngagement = (postId: string, createdAt: Date) => {
+export const getBaselineEngagement = (postId: string, createdAt: Date) => {
   const hash = hashString(postId);
-  const fakeViews = getSeededViewCount(postId, createdAt);
+  const baselineViews = getSeededViewCount(postId, createdAt);
 
   // Starter likes for fresh posts: 1-2 likes
   const starterLikes = 1 + ((hash >> 4) % 2);
@@ -50,36 +50,36 @@ export const getFakeEngagement = (postId: string, createdAt: Date) => {
   const likeHash = hashString(`likes-${postId}`);
   // Natural tech post like conversion rate: ~5.2% to 8.4%
   const rate = 0.052 + (likeHash % 32) / 1000;
-  const calculatedLikes = Math.round(fakeViews * rate);
+  const calculatedLikes = Math.round(baselineViews * rate);
 
   return {
-    fakeViews,
-    fakeLikes: Math.max(starterLikes, calculatedLikes),
+    baselineViews,
+    baselineLikes: Math.max(starterLikes, calculatedLikes),
   };
 };
 
 export const getDisplayViewCount = (
   storedViews: number,
-  fakeViews: number,
+  baselineViews: number,
   published = true,
 ) => {
   if (!published) {
     return 0;
   }
 
-  return storedViews + fakeViews;
+  return storedViews + baselineViews;
 };
 
 export const getDisplayLikeCount = (
   realLikes: number,
-  fakeLikes: number,
+  baselineLikes: number,
   published = true,
 ) => {
   if (!published) {
     return realLikes;
   }
 
-  return realLikes + fakeLikes;
+  return realLikes + baselineLikes;
 };
 
 export const withPostEngagement = <
@@ -87,8 +87,8 @@ export const withPostEngagement = <
     id: string;
     createdAt: Date;
     views: number;
-    fakeViews: number;
-    fakeLikes: number;
+    baselineViews: number;
+    baselineLikes: number;
     published?: boolean;
     likes: unknown[];
   },
@@ -96,14 +96,14 @@ export const withPostEngagement = <
   post: T,
 ) => {
   const published = post.published ?? true;
-  const seeded = getFakeEngagement(post.id, post.createdAt);
-  const effectiveFakeViews = seeded.fakeViews;
-  const effectiveFakeLikes = seeded.fakeLikes;
+  const baseline = getBaselineEngagement(post.id, post.createdAt);
+  const effectiveBaselineViews = baseline.baselineViews;
+  const effectiveBaselineLikes = baseline.baselineLikes;
 
-  const views = getDisplayViewCount(post.views, effectiveFakeViews, published);
+  const views = getDisplayViewCount(post.views, effectiveBaselineViews, published);
   const likeCount = getDisplayLikeCount(
     post.likes.length,
-    effectiveFakeLikes,
+    effectiveBaselineLikes,
     published,
   );
 

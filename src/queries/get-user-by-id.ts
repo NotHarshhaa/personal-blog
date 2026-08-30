@@ -28,8 +28,8 @@ export const getUserById = async (id: string) => {
           visibility: true,
           createdAt: true,
           views: true,
-          fakeViews: true,
-          fakeLikes: true
+          baselineViews: true,
+          baselineLikes: true
         },
         orderBy: desc(posts.createdAt),
         with: {
@@ -47,7 +47,7 @@ export const getUserById = async (id: string) => {
     user: result
       ? {
           ...result,
-          posts: result.posts.map(withPostEngagement)
+          posts: result.posts.map((post) => withPostEngagement(post))
         }
       : result
   }

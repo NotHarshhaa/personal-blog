@@ -14,8 +14,8 @@ export const getPosts = async () => {
       createdAt: true,
       published: true,
       views: true,
-      fakeViews: true,
-      fakeLikes: true
+      baselineViews: true,
+      baselineLikes: true
     },
     with: {
       user: {
@@ -35,6 +35,6 @@ export const getPosts = async () => {
   })
 
   return {
-    posts: result.map(withPostEngagement)
+    posts: result.map((post) => withPostEngagement(post))
   }
 }

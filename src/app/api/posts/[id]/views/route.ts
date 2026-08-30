@@ -5,7 +5,7 @@ import { NextResponse } from 'next/server'
 
 import { db } from '@/db'
 import { posts } from '@/db/schema'
-import { getDisplayViewCount, getFakeEngagement } from '@/utils/get-seeded-view-count'
+import { getBaselineEngagement, getDisplayViewCount } from '@/utils/get-seeded-view-count'
 
 const getPost = async (id: string) => {
   return db.query.posts.findFirst({
@@ -13,7 +13,7 @@ const getPost = async (id: string) => {
     columns: {
       id: true,
       views: true,
-      fakeViews: true,
+      baselineViews: true,
       createdAt: true,
       published: true
     }
@@ -23,12 +23,12 @@ const getPost = async (id: string) => {
 const getHybridViews = (post: {
   id: string
   views: number
-  fakeViews: number
+  baselineViews: number
   createdAt: Date
   published: boolean
 }) => {
-  const fakeViews = getFakeEngagement(post.id, post.createdAt).fakeViews
-  return getDisplayViewCount(post.views, fakeViews, post.published)
+  const baselineViews = getBaselineEngagement(post.id, post.createdAt).baselineViews
+  return getDisplayViewCount(post.views, baselineViews, post.published)
 }
 
 export async function GET(
@@ -72,9 +72,9 @@ export async function POST(
       return NextResponse.json({ error: 'Post not found' }, { status: 404 })
     }
 
-    const fakeViews = getFakeEngagement(post.id, post.createdAt).fakeViews
+    const baselineViews = getBaselineEngagement(post.id, post.createdAt).baselineViews
     return NextResponse.json({
-      views: getDisplayViewCount(updated.views, fakeViews, true)
+      views: getDisplayViewCount(updated.views, baselineViews, true)
     })
   } catch (error) {
     console.error('Error tracking view:', error)

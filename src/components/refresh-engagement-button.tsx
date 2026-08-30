@@ -4,17 +4,17 @@ import { Loader2Icon, RefreshCwIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAction } from "next-safe-action/hooks";
 
-import { refreshFakeEngagementAction } from "@/actions/refresh-fake-engagement-action";
+import { refreshEngagementAction } from "@/actions/refresh-engagement-action";
 import { Button, toast } from "@/components/ui";
 
-const RefreshFakeEngagementButton = () => {
+const RefreshEngagementButton = () => {
   const router = useRouter();
-  const action = useAction(refreshFakeEngagementAction, {
+  const action = useAction(refreshEngagementAction, {
     onSuccess: ({ data }) => {
-      const fakeViews = data?.totalFakeViews ?? 0;
-      const fakeLikes = data?.totalFakeLikes ?? 0;
+      const views = data?.totalViews ?? 0;
+      const likes = data?.totalLikes ?? 0;
       toast.success(
-        `Balanced ${data?.updatedPosts ?? 0} posts to ${fakeViews.toLocaleString()} fake views and ${fakeLikes.toLocaleString()} fake likes`,
+        `Synchronized ${data?.updatedPosts ?? 0} articles (${views.toLocaleString()} views, ${likes.toLocaleString()} likes)`,
       );
       router.refresh();
     },
@@ -34,9 +34,9 @@ const RefreshFakeEngagementButton = () => {
       ) : (
         <RefreshCwIcon />
       )}
-      {action.isExecuting ? "Balancing engagement" : "Balance fake engagement"}
+      {action.isExecuting ? "Recalculating metrics..." : "Recalculate metrics"}
     </Button>
   );
 };
 
-export default RefreshFakeEngagementButton;
+export default RefreshEngagementButton;
