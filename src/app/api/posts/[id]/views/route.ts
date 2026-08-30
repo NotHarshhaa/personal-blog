@@ -1,9 +1,11 @@
+import type { NextRequest } from 'next/server'
+
 import { and, eq, sql } from 'drizzle-orm'
-import { NextRequest, NextResponse } from 'next/server'
+import { NextResponse } from 'next/server'
 
 import { db } from '@/db'
 import { posts } from '@/db/schema'
-import { getDisplayViewCount } from '@/utils/get-seeded-view-count'
+import { getDisplayViewCount, getFakeEngagement } from '@/utils/get-seeded-view-count'
 
 const getPost = async (id: string) => {
   return db.query.posts.findFirst({
@@ -24,7 +26,10 @@ const getHybridViews = (post: {
   fakeViews: number
   createdAt: Date
   published: boolean
-}) => getDisplayViewCount(post.views, post.fakeViews, post.published)
+}) => {
+  const fakeViews = getFakeEngagement(post.id, post.createdAt).fakeViews
+  return getDisplayViewCount(post.views, fakeViews, post.published)
+}
 
 export async function GET(
   _request: NextRequest,
@@ -67,8 +72,9 @@ export async function POST(
       return NextResponse.json({ error: 'Post not found' }, { status: 404 })
     }
 
+    const fakeViews = getFakeEngagement(post.id, post.createdAt).fakeViews
     return NextResponse.json({
-      views: getDisplayViewCount(updated.views, post.fakeViews, true)
+      views: getDisplayViewCount(updated.views, fakeViews, true)
     })
   } catch (error) {
     console.error('Error tracking view:', error)

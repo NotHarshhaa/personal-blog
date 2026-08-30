@@ -18,6 +18,7 @@ export const refreshFakeEngagementAction = authenticatedActionClient.action(
       columns: {
         id: true,
         createdAt: true,
+        published: true,
       },
     });
 
@@ -26,6 +27,14 @@ export const refreshFakeEngagementAction = authenticatedActionClient.action(
 
     await db.transaction(async (tx) => {
       for (const post of allPosts) {
+        if (!post.published) {
+          await tx
+            .update(posts)
+            .set({ fakeViews: 0, fakeLikes: 0 })
+            .where(eq(posts.id, post.id));
+          continue;
+        }
+
         const calculated = getFakeEngagement(post.id, post.createdAt);
         const { fakeViews, fakeLikes } = calculated;
 
