@@ -8,7 +8,7 @@
 
 ## 🔗 **Blog Site**
 
-🌐 Visit: [blog.harshhaareddy.site](https://blog.harshhaareddy.site)
+🌐 Visit: [blog.harshhaareddy.com](https://blog.harshhaareddy.com)
 
 ## 🛠 **Tech Stack**
 

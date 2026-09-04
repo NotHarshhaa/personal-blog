@@ -205,7 +205,7 @@ export const GET = (req: Request) => {
                 fontWeight: 500
               }}
             >
-              blog.harshhaareddy.site
+              blog.harshhaareddy.com
             </div>
           </div>
         </div>

@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 
 # Sitemap
-Sitemap: https://blog.harshhaareddy.site/sitemap.xml
+Sitemap: https://blog.harshhaareddy.com/sitemap.xml
 
 # Crawl-delay for respectful crawling
 Crawl-delay: 1
