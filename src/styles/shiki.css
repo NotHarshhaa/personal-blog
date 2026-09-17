@@ -73,3 +73,18 @@ pre.shiki .highlighted {
   filter: blur(0);
   opacity: 1;
 }
+
+/* Lowlight / Highlight.js Diff Support */
+.hljs-addition {
+  background-color: rgba(16, 185, 129, 0.15) !important;
+  color: rgb(34, 197, 94) !important;
+  display: inline-block;
+  width: 100%;
+}
+
+.hljs-deletion {
+  background-color: rgba(244, 63, 94, 0.15) !important;
+  color: rgb(244, 63, 94) !important;
+  display: inline-block;
+  width: 100%;
+}

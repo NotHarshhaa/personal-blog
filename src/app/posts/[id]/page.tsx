@@ -5,14 +5,16 @@ import { notFound } from 'next/navigation'
 import readingTime from 'reading-time'
 
 import Editor from '@/components/editor'
-import UserAvatar from '@/components/user-avatar'
+import { Frame, FrameBody, FrameHeader } from '@/components/frame'
+import GiscusComments from '@/components/giscus-comments'
+import PostViews from '@/components/post-views'
+import ReadingProgress from '@/components/reading-progress'
+import RelatedPosts from '@/components/related-posts'
 import ShareButtons from '@/components/share-buttons'
 import TableOfContents from '@/components/table-of-contents'
-import RelatedPosts from '@/components/related-posts'
-import PostViews from '@/components/post-views'
-import { Frame, FrameBody, FrameHeader } from '@/components/frame'
+import UserAvatar from '@/components/user-avatar'
 import { getCurrentUser } from '@/lib/auth'
-import { SITE_URL, SITE_TITLE } from '@/lib/constants'
+import { SITE_TITLE, SITE_URL } from '@/lib/constants'
 import { getPostById } from '@/queries/get-post-by-id'
 import { getPostMetadataById } from '@/queries/get-post-metadata-by-id'
 import { formatPostDate } from '@/utils/format-post-date'
@@ -34,7 +36,10 @@ export const generateMetadata = async (props: PostPageProps): Promise<Metadata> 
   const ISOPublishedTime = new Date(post.createdAt).toISOString()
   const ISOModifiedTime = new Date(post.updatedAt).toISOString()
 
-  const ogImageUrl = `${SITE_URL}/api/og?title=${encodeURIComponent(post.title)}${post.description ? `&description=${encodeURIComponent(post.description)}` : ''}`
+  const descriptionQuery = post.description
+    ? `&description=${encodeURIComponent(post.description)}`
+    : ''
+  const ogImageUrl = `${SITE_URL}/api/og?title=${encodeURIComponent(post.title)}${descriptionQuery}`
 
   return {
     title: post.title,
@@ -113,7 +118,7 @@ const PostPage = async (props: PostPageProps) => {
       '@type': 'WebPage',
       '@id': `${SITE_URL}/posts/${id}`
     },
-    wordCount: content?.split(' ').length || 0,
+    wordCount: content?.split(' ').length ?? 0,
     articleSection: 'Technology',
     keywords: [
       'devops',
@@ -126,7 +131,7 @@ const PostPage = async (props: PostPageProps) => {
       'genai',
       'ai infrastructure',
       'technology',
-      ...(tags ?? [])
+      ...tags
     ]
   }
 
@@ -136,6 +141,7 @@ const PostPage = async (props: PostPageProps) => {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
+      <ReadingProgress />
       <article className="relative z-10 w-full space-y-6">
         <Frame as="header">
           <FrameHeader label="Article" />
@@ -175,7 +181,7 @@ const PostPage = async (props: PostPageProps) => {
               </p>
             )}
 
-            {tags && tags.length > 0 && (
+            {tags.length > 0 && (
               <ul className="flex flex-wrap gap-2 pt-1" aria-label="Article topics">
                 {tags.map((tag) => (
                   <li key={tag}>
@@ -219,12 +225,14 @@ const PostPage = async (props: PostPageProps) => {
               />
               <ShareButtons
                 title={title}
-                description={description || undefined}
+                description={description ?? undefined}
                 postId={id}
               />
             </div>
           </FrameBody>
         </Frame>
+
+        <GiscusComments postId={id} postTitle={title} />
 
         <RelatedPosts
           currentPostId={id}

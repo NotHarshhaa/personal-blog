@@ -140,6 +140,32 @@ export const extensions: AnyExtension[] = [
 
   // Syntax-Highlighted Interactive Code Blocks
   CodeBlockLowlight.extend({
+    addAttributes() {
+      return {
+        ...this.parent?.(),
+        filename: {
+          default: null,
+          parseHTML: (element) => element.dataset.filename ?? null,
+          renderHTML: (attributes) => {
+            if (!attributes.filename) {
+              return {}
+            }
+            return {
+              'data-filename': attributes.filename as string
+            }
+          }
+        },
+        showLineNumbers: {
+          default: true,
+          parseHTML: (element) => element.dataset.lineNumbers !== 'false',
+          renderHTML: (attributes) => {
+            return {
+              'data-line-numbers': attributes.showLineNumbers ? 'true' : 'false'
+            }
+          }
+        }
+      }
+    },
     addNodeView() {
       return ReactNodeViewRenderer(CodeBlockNodeView)
     },
