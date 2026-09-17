@@ -39,7 +39,10 @@ export const generateMetadata = async (props: PostPageProps): Promise<Metadata> 
   const descriptionQuery = post.description
     ? `&description=${encodeURIComponent(post.description)}`
     : ''
-  const ogImageUrl = `${SITE_URL}/api/og?title=${encodeURIComponent(post.title)}${descriptionQuery}`
+  const tagsQuery = post.tags.length > 0
+    ? `&tags=${encodeURIComponent(post.tags.slice(0, 4).join(','))}`
+    : ''
+  const ogImageUrl = `${SITE_URL}/api/og?title=${encodeURIComponent(post.title)}${descriptionQuery}${tagsQuery}`
 
   return {
     title: post.title,

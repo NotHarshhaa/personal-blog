@@ -4,8 +4,19 @@ export const runtime = 'edge'
 
 export const GET = (req: Request) => {
   const { searchParams } = new URL(req.url)
-  const title = searchParams.get('title') || 'DevOps, Cloud & AI Engineering'
-  const description = searchParams.get('description') || ''
+  const title = searchParams.get('title') ?? 'DevOps, Cloud & AI Space'
+  const description = searchParams.get('description') ?? ''
+  const tagsParam = searchParams.get('tags')
+  const tags = tagsParam
+    ? tagsParam.split(',').map((t) => t.trim()).filter(Boolean)
+    : ['DevOps', 'Cloud', 'AI Platform']
+
+  let titleFontSize = '56px'
+  if (title.length > 65) {
+    titleFontSize = '40px'
+  } else if (title.length > 38) {
+    titleFontSize = '48px'
+  }
 
   return new ImageResponse(
     (
@@ -15,18 +26,41 @@ export const GET = (req: Request) => {
           width: '100%',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'space-between',
-          backgroundColor: '#0c0e12',
+          backgroundColor: '#07090e',
           backgroundImage:
-            'radial-gradient(circle at 25px 25px, rgba(255, 255, 255, 0.07) 2%, transparent 0%), radial-gradient(circle at 75px 75px, rgba(255, 255, 255, 0.04) 2%, transparent 0%)',
-          backgroundSize: '100px 100px',
-          padding: '48px',
+            'linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px)',
+          backgroundSize: '44px 44px',
+          padding: '36px',
           position: 'relative',
-          fontFamily: 'system-ui, -apple-system, sans-serif',
+          fontFamily: 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
           color: '#ffffff'
         }}
       >
-        {/* Inner Blueprint Frame */}
+        {/* Subtle Ambient Radial Glows */}
+        <div
+          style={{
+            position: 'absolute',
+            top: '0px',
+            right: '0px',
+            width: '600px',
+            height: '400px',
+            backgroundImage:
+              'radial-gradient(circle at 80% 20%, rgba(56, 189, 248, 0.12) 0%, transparent 70%)'
+          }}
+        />
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '0px',
+            left: '0px',
+            width: '500px',
+            height: '350px',
+            backgroundImage:
+              'radial-gradient(circle at 20% 80%, rgba(99, 102, 241, 0.09) 0%, transparent 70%)'
+          }}
+        />
+
+        {/* Blueprint Main Frame */}
         <div
           style={{
             position: 'relative',
@@ -35,21 +69,20 @@ export const GET = (req: Request) => {
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
-            border: '1px solid rgba(255, 255, 255, 0.12)',
-            backgroundColor: 'rgba(17, 20, 27, 0.75)',
-            padding: '44px 48px'
+            border: '1px solid rgba(255, 255, 255, 0.16)',
+            backgroundColor: 'rgba(12, 16, 25, 0.94)'
           }}
         >
-          {/* Corner L-Brackets */}
+          {/* Signature Blueprint Corner Brackets */}
           <div
             style={{
               position: 'absolute',
               top: '-2px',
               left: '-2px',
-              width: '20px',
-              height: '20px',
-              borderTop: '3px solid #60a5fa',
-              borderLeft: '3px solid #60a5fa'
+              width: '24px',
+              height: '24px',
+              borderTop: '3px solid rgba(255, 255, 255, 0.65)',
+              borderLeft: '3px solid rgba(255, 255, 255, 0.65)'
             }}
           />
           <div
@@ -57,10 +90,10 @@ export const GET = (req: Request) => {
               position: 'absolute',
               top: '-2px',
               right: '-2px',
-              width: '20px',
-              height: '20px',
-              borderTop: '3px solid #60a5fa',
-              borderRight: '3px solid #60a5fa'
+              width: '24px',
+              height: '24px',
+              borderTop: '3px solid rgba(255, 255, 255, 0.65)',
+              borderRight: '3px solid rgba(255, 255, 255, 0.65)'
             }}
           />
           <div
@@ -68,10 +101,10 @@ export const GET = (req: Request) => {
               position: 'absolute',
               bottom: '-2px',
               left: '-2px',
-              width: '20px',
-              height: '20px',
-              borderBottom: '3px solid #60a5fa',
-              borderLeft: '3px solid #60a5fa'
+              width: '24px',
+              height: '24px',
+              borderBottom: '3px solid rgba(255, 255, 255, 0.65)',
+              borderLeft: '3px solid rgba(255, 255, 255, 0.65)'
             }}
           />
           <div
@@ -79,21 +112,32 @@ export const GET = (req: Request) => {
               position: 'absolute',
               bottom: '-2px',
               right: '-2px',
-              width: '20px',
-              height: '20px',
-              borderBottom: '3px solid #60a5fa',
-              borderRight: '3px solid #60a5fa'
+              width: '24px',
+              height: '24px',
+              borderBottom: '3px solid rgba(255, 255, 255, 0.65)',
+              borderRight: '3px solid rgba(255, 255, 255, 0.65)'
             }}
           />
 
-          {/* Top Header Badge */}
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+          {/* Blueprint Frame Header */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              width: '100%',
+              borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+              backgroundColor: 'rgba(255, 255, 255, 0.02)',
+              padding: '16px 32px'
+            }}
+          >
+            {/* Live Status Pill */}
             <div
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '10px',
-                border: '1px solid rgba(255, 255, 255, 0.15)',
+                gap: '8px',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
                 backgroundColor: 'rgba(255, 255, 255, 0.05)',
                 padding: '6px 14px'
               }}
@@ -103,59 +147,106 @@ export const GET = (req: Request) => {
                   width: '8px',
                   height: '8px',
                   borderRadius: '50%',
-                  backgroundColor: '#10b981'
+                  backgroundColor: '#10b981',
+                  boxShadow: '0 0 8px #10b981'
                 }}
               />
               <span
                 style={{
                   fontFamily: 'monospace',
-                  fontSize: '14px',
-                  letterSpacing: '0.14em',
+                  fontSize: '12px',
+                  letterSpacing: '0.16em',
                   textTransform: 'uppercase',
-                  color: '#94a3b8',
-                  fontWeight: 600
+                  color: '#e2e8f0',
+                  fontWeight: 700
                 }}
               >
-                DEVOPS · CLOUD · AI PLATFORM
+                ARTICLE // DEVOPS · CLOUD · AI
               </span>
             </div>
 
-            <span
-              style={{
-                fontFamily: 'monospace',
-                fontSize: '14px',
-                color: '#64748b',
-                letterSpacing: '0.1em'
-              }}
-            >
-              ARTICLE // PUBLICATION
-            </span>
-          </div>
-
-          {/* Center Main Content (Article Title & Description) */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginTop: 'auto', marginBottom: 'auto' }}>
+            {/* Spec Tag */}
             <div
               style={{
-                fontSize: title.length > 60 ? '44px' : title.length > 35 ? '52px' : '58px',
+                fontFamily: 'monospace',
+                fontSize: '12px',
+                color: '#64748b',
+                letterSpacing: '0.14em'
+              }}
+            >
+              [ SYS: VERIFIED ] // SPEC: 1200×630
+            </div>
+          </div>
+
+          {/* Center Main Content */}
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              flex: 1,
+              padding: '24px 40px'
+            }}
+          >
+            {/* Topic Tags */}
+            {tags.length > 0 ? (
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '10px',
+                  marginBottom: '18px'
+                }}
+              >
+                {tags.slice(0, 4).map((tag) => (
+                  <div
+                    key={tag}
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                      border: '1px solid rgba(255, 255, 255, 0.16)',
+                      backgroundColor: 'rgba(255, 255, 255, 0.04)',
+                      padding: '5px 12px',
+                      fontFamily: 'monospace',
+                      fontSize: '12px',
+                      fontWeight: 600,
+                      letterSpacing: '0.08em',
+                      textTransform: 'uppercase',
+                      color: '#cbd5e1'
+                    }}
+                  >
+                    <span style={{ color: '#38bdf8' }}>#</span>
+                    <span>{tag}</span>
+                  </div>
+                ))}
+              </div>
+            ) : null}
+
+            {/* Article Title */}
+            <div
+              style={{
+                fontSize: titleFontSize,
                 fontWeight: 800,
-                lineHeight: 1.18,
-                letterSpacing: '-0.03em',
-                color: '#f8fafc',
-                maxHeight: '220px',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis'
+                lineHeight: 1.15,
+                letterSpacing: '-0.035em',
+                color: '#ffffff',
+                maxHeight: '190px',
+                overflow: 'hidden'
               }}
             >
               {title}
             </div>
 
+            {/* Article Description */}
             {description ? (
               <div
                 style={{
-                  fontSize: '22px',
+                  fontSize: '20px',
                   lineHeight: 1.45,
                   color: '#94a3b8',
-                  maxHeight: '68px',
+                  marginTop: '16px',
+                  maxHeight: '64px',
                   overflow: 'hidden',
                   fontWeight: 400
                 }}
@@ -165,7 +256,7 @@ export const GET = (req: Request) => {
             ) : null}
           </div>
 
-          {/* Bottom Footer Metadata */}
+          {/* Blueprint Frame Footer */}
           <div
             style={{
               display: 'flex',
@@ -173,39 +264,86 @@ export const GET = (req: Request) => {
               justifyContent: 'space-between',
               width: '100%',
               borderTop: '1px solid rgba(255, 255, 255, 0.1)',
-              paddingTop: '18px'
+              backgroundColor: 'rgba(255, 255, 255, 0.02)',
+              padding: '16px 32px'
             }}
           >
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            {/* Left: Author & Space Branding */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <div
                 style={{
-                  width: '32px',
-                  height: '32px',
-                  border: '1px solid #3b82f6',
-                  backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                  width: '34px',
+                  height: '34px',
+                  border: '1px solid rgba(255, 255, 255, 0.28)',
+                  backgroundColor: 'rgba(255, 255, 255, 0.08)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  fontSize: '14px',
-                  fontWeight: 700,
-                  color: '#60a5fa'
+                  fontFamily: 'monospace',
+                  fontSize: '15px',
+                  fontWeight: 800,
+                  color: '#ffffff'
                 }}
               >
                 H
               </div>
-              <span style={{ fontSize: '18px', fontWeight: 600, color: '#e2e8f0' }}>Harshhaa</span>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                <span
+                  style={{
+                    fontSize: '16px',
+                    fontWeight: 700,
+                    color: '#f8fafc',
+                    lineHeight: 1.2
+                  }}
+                >
+                  Harshhaa
+                </span>
+                <span
+                  style={{
+                    fontFamily: 'monospace',
+                    fontSize: '10px',
+                    color: '#64748b',
+                    letterSpacing: '0.14em',
+                    textTransform: 'uppercase'
+                  }}
+                >
+                  DevOps, Cloud & AI Space
+                </span>
+              </div>
             </div>
 
+            {/* Right: Terminal Prompt Domain Badge */}
             <div
               style={{
-                fontFamily: 'monospace',
-                fontSize: '15px',
-                color: '#94a3b8',
-                letterSpacing: '0.08em',
-                fontWeight: 500
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                border: '1px solid rgba(255, 255, 255, 0.16)',
+                backgroundColor: 'rgba(0, 0, 0, 0.45)',
+                padding: '8px 16px'
               }}
             >
-              blog.harshhaareddy.com
+              <span
+                style={{
+                  fontFamily: 'monospace',
+                  fontSize: '13px',
+                  fontWeight: 700,
+                  color: '#38bdf8'
+                }}
+              >
+                &gt;_
+              </span>
+              <span
+                style={{
+                  fontFamily: 'monospace',
+                  fontSize: '14px',
+                  color: '#f1f5f9',
+                  letterSpacing: '0.04em',
+                  fontWeight: 600
+                }}
+              >
+                blog.harshhaareddy.com
+              </span>
             </div>
           </div>
         </div>

@@ -11,7 +11,8 @@ export const getPostMetadataById = async (id: string) => {
       description: true,
       authorId: true,
       updatedAt: true,
-      createdAt: true
+      createdAt: true,
+      tags: true
     }
   })
 
