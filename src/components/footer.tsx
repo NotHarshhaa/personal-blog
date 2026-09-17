@@ -2,6 +2,7 @@
 
 import { SiGithub, SiInstagram, SiTelegram, SiX } from '@icons-pack/react-simple-icons'
 import { useState } from 'react'
+import { RssIcon } from 'lucide-react'
 import { Button } from '@/components/ui'
 import {
   Frame,
@@ -111,6 +112,19 @@ const Footer = () => {
 
             <FrameGridCell label="Site" className="sm:border-b-0">
               <ul className="-mx-1 space-y-0.5 text-sm text-muted-foreground">
+                <li>
+                  <HoverMark label="Feed" className="px-1 py-1.5">
+                    <a
+                      href="/feed.xml"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1.5 underline underline-offset-4 hover:text-foreground"
+                    >
+                      <RssIcon className="size-3 text-amber-500" />
+                      RSS Feed
+                    </a>
+                  </HoverMark>
+                </li>
                 <li>
                   <HoverMark label="View" className="px-1 py-1.5">
                     <a

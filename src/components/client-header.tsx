@@ -15,6 +15,7 @@ import Menu from './menu'
 import NewPostButton from './new-post-button.lazy'
 import ThemeToggle from './theme-toggle'
 import { HoverMark } from './hover-mark'
+import CommandMenu from './command-menu'
 
 type Props = {
   user: Session['user'] | null
@@ -37,6 +38,7 @@ const ClientHeader = ({ user }: Props) => {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [isCommandOpen, setIsCommandOpen] = useState(false)
   const [search, setSearch] = useState('')
   const [results, setResults] = useState<SearchPost[]>([])
   const [loading, setLoading] = useState(false)
@@ -334,14 +336,18 @@ const ClientHeader = ({ user }: Props) => {
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
           <div className="hidden items-center gap-1.5 sm:gap-2 md:flex">
             <button
-            type="button"
-            onClick={() => setIsSearchOpen(!isSearchOpen)}
-            className="flex size-9 items-center justify-center border border-transparent text-muted-foreground hover:border-border hover:bg-muted hover:text-foreground"
-            aria-label="Toggle search"
-            aria-expanded={isSearchOpen}
-          >
-            {isSearchOpen ? <X className="size-4" /> : <Search className="size-4" />}
-          </button>
+              type="button"
+              onClick={() => setIsCommandOpen(true)}
+              className="flex items-center gap-2 border border-border/80 bg-background/60 px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:border-foreground hover:bg-muted/50 hover:text-foreground cursor-pointer"
+              aria-label="Search articles and run commands (Cmd+K)"
+              title="Quick Search (⌘K)"
+            >
+              <Search className="size-3.5" />
+              <span className="hidden lg:inline">Search...</span>
+              <kbd className="rounded border border-border bg-muted px-1.5 py-0.5 font-mono text-[10px] font-semibold text-muted-foreground">
+                ⌘K
+              </kbd>
+            </button>
 
           {user && (
             <div className="relative">
@@ -378,6 +384,15 @@ const ClientHeader = ({ user }: Props) => {
               <NewPostButton compact />
             </div>
           )}
+
+          <button
+            type="button"
+            onClick={() => setIsCommandOpen(true)}
+            className="flex size-9 items-center justify-center border border-border text-muted-foreground hover:bg-muted hover:text-foreground md:hidden cursor-pointer"
+            aria-label="Open search command palette"
+          >
+            <Search className="size-4" />
+          </button>
 
           <Menu
             user={
@@ -489,6 +504,13 @@ const ClientHeader = ({ user }: Props) => {
           </div>
         </div>
       )}
+
+      <CommandMenu
+        open={isCommandOpen}
+        onOpenChange={setIsCommandOpen}
+        userRole={user?.role}
+        isLoggedIn={!!user}
+      />
     </header>
   )
 }

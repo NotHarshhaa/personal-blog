@@ -15,7 +15,8 @@ export const getPostById = async (id: string) => {
       createdAt: true,
       views: true,
       baselineViews: true,
-      baselineLikes: true
+      baselineLikes: true,
+      tags: true
     },
     with: {
       user: {

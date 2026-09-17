@@ -12,7 +12,8 @@ export async function GET() {
       description: post.description,
       createdAt: post.createdAt,
       user: post.user,
-      likes: post.likes
+      likes: post.likes,
+      tags: post.tags ?? []
     }))
   })
 }

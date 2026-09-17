@@ -1,6 +1,22 @@
 'use client'
 
 import {
+  EyeIcon,
+  EyeOffIcon,
+  GlobeIcon,
+  Loader2Icon,
+  LockIcon,
+  PlusIcon,
+  TagIcon,
+  XIcon} from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useAction } from 'next-safe-action/hooks'
+import { type ChangeEvent, type KeyboardEvent, useState } from 'react'
+
+import { updatePostAction } from '@/actions/update-post-action'
+import Editor from '@/components/editor'
+import { Frame, FrameBody, FrameHeader } from '@/components/frame'
+import {
   Button,
   Dialog,
   DialogContent,
@@ -16,27 +32,13 @@ import {
   SelectItem,
   SelectTrigger,
   SelectValue,
-  Textarea,
-  toast,
   Separator,
-  Switch
-} from '@/components/ui'
-import { cn } from '@/utils'
-import {
-  GlobeIcon,
-  Loader2Icon,
-  LockIcon,
-  EyeIcon,
-  EyeOffIcon
-} from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { useAction } from 'next-safe-action/hooks'
-import { type ChangeEvent, useState } from 'react'
-
-import { updatePostAction } from '@/actions/update-post-action'
-import Editor from '@/components/editor'
-import { Frame, FrameBody, FrameHeader } from '@/components/frame'
+  Switch,
+  Textarea,
+  toast} from '@/components/ui'
 import { type Post, Visibility } from '@/db/schema'
+import { SITE_TOPICS } from '@/lib/constants'
+import { cn } from '@/utils'
 import { capitalize } from '@/utils/capitalize'
 
 const LivePreview = ({ content }: { content: string }) => (
@@ -54,6 +56,8 @@ const Form = (props: FormProps) => {
   const [title, setTitle] = useState(post.title)
   const [description, setDescription] = useState(post.description)
   const [content, setContent] = useState(post.content)
+  const [tags, setTags] = useState<string[]>(post.tags)
+  const [tagInput, setTagInput] = useState('')
   const [visibility, setVisibility] = useState<Visibility>(
     post.visibility as Visibility
   )
@@ -79,12 +83,32 @@ const Form = (props: FormProps) => {
     }
   })
 
+  const handleAddTag = (tagToAdd: string) => {
+    const trimmed = tagToAdd.trim().replace(/^#/, '')
+    if (!trimmed) return
+    if (tags.some((t) => t.toLowerCase() === trimmed.toLowerCase())) return
+    setTags((prev) => [...prev, trimmed])
+    setTagInput('')
+  }
+
+  const handleRemoveTag = (tagToRemove: string) => {
+    setTags((prev) => prev.filter((t) => t !== tagToRemove))
+  }
+
+  const handleTagInputKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' || e.key === ',') {
+      e.preventDefault()
+      handleAddTag(tagInput)
+    }
+  }
+
   const handleUpdatePost = async (published = false) => {
     await action.executeAsync({
       postId: post.id,
       title,
       content,
       description,
+      tags,
       published
     })
   }
@@ -124,13 +148,13 @@ const Form = (props: FormProps) => {
                     Visibility
                   </Label>
                   <Select
-                    value={visibility ?? Visibility.Public}
+                    value={visibility}
                     onValueChange={(value: string) => {
                       if (
-                        value === Visibility.Public ||
-                        value === Visibility.Private
+                        value === (Visibility.Public as string) ||
+                        value === (Visibility.Private as string)
                       ) {
-                        setVisibility(value)
+                        setVisibility(value as Visibility)
                       }
                     }}
                   >
@@ -215,6 +239,95 @@ const Form = (props: FormProps) => {
             </div>
           </div>
 
+          {/* Tags & Topics Selector */}
+          <div className="space-y-3 border border-border bg-card/40 p-3.5 sm:p-4">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <TagIcon className="size-4 text-muted-foreground" />
+                <Label htmlFor="post-tags" className="text-sm font-medium">
+                  Topics & Tags
+                </Label>
+              </div>
+              <span className="text-xs text-muted-foreground">
+                {tags.length} {tags.length === 1 ? 'tag' : 'tags'}
+              </span>
+            </div>
+
+            {/* Current Tags */}
+            <div className="flex flex-wrap items-center gap-1.5">
+              {tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="inline-flex items-center gap-1 border border-border bg-background px-2.5 py-1 font-mono text-xs font-medium text-foreground"
+                >
+                  #{tag}
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveTag(tag)}
+                    className="text-muted-foreground hover:text-destructive cursor-pointer"
+                    title={`Remove ${tag}`}
+                  >
+                    <XIcon className="size-3" />
+                  </button>
+                </span>
+              ))}
+
+              {/* Tag Input */}
+              <div className="flex items-center gap-1">
+                <Input
+                  id="post-tags"
+                  type="text"
+                  placeholder="Add tag (press Enter)..."
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onKeyDown={handleTagInputKeyDown}
+                  className="h-8 max-w-[220px] text-xs font-mono"
+                />
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => handleAddTag(tagInput)}
+                  disabled={!tagInput.trim()}
+                  className="h-8 px-2 text-xs"
+                >
+                  <PlusIcon className="size-3.5" />
+                </Button>
+              </div>
+            </div>
+
+            {/* Quick Suggestions from SITE_TOPICS */}
+            <div className="pt-1">
+              <p className="mb-1.5 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
+                Quick topic presets:
+              </p>
+              <div className="flex flex-wrap gap-1.5">
+                {SITE_TOPICS.map((topic) => {
+                  const isSelected = tags.some(
+                    (t) => t.toLowerCase() === topic.toLowerCase()
+                  )
+                  return (
+                    <button
+                      key={topic}
+                      type="button"
+                      onClick={() =>
+                        isSelected ? handleRemoveTag(topic) : handleAddTag(topic)
+                      }
+                      className={cn(
+                        'border px-2 py-0.5 font-mono text-[11px] transition-colors cursor-pointer',
+                        isSelected
+                          ? 'border-foreground bg-foreground text-background font-medium'
+                          : 'border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground'
+                      )}
+                    >
+                      {isSelected ? `✓ ${topic}` : `+ ${topic}`}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+
           <div className="space-y-3 sm:space-y-4">
             <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
               <div>
@@ -245,7 +358,9 @@ const Form = (props: FormProps) => {
             </div>
 
             <div className="overflow-hidden border border-border bg-background">
-              {!showPreview ? (
+              {showPreview ? (
+                <LivePreview content={content ?? ''} />
+              ) : (
                 <Editor
                   options={{ content }}
                   onChange={(editor) => {
@@ -260,8 +375,6 @@ const Form = (props: FormProps) => {
                     }
                   }}
                 />
-              ) : (
-                <LivePreview content={content ?? ''} />
               )}
             </div>
           </div>

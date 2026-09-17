@@ -62,7 +62,10 @@ export const metadata: Metadata = {
     ]
   },
   alternates: {
-    canonical: SITE_URL
+    canonical: SITE_URL,
+    types: {
+      'application/rss+xml': [{ url: '/feed.xml', title: `${SITE_TITLE} RSS Feed` }]
+    }
   },
   keywords: [...SITE_KEYWORDS],
   creator: 'NotHarshhaa',

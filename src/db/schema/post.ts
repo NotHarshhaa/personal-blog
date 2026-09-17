@@ -1,5 +1,5 @@
 import { createId } from '@paralleldrive/cuid2'
-import { type InferSelectModel, relations } from 'drizzle-orm'
+import { type InferSelectModel, relations, sql } from 'drizzle-orm'
 import { boolean, integer, pgEnum, pgTable, text, timestamp } from 'drizzle-orm/pg-core'
 
 import { users } from './auth'
@@ -28,7 +28,8 @@ export const posts = pgTable('post', {
   baselineLikes: integer('baseline_likes').notNull().default(0),
   createdAt: timestamp('created_at', { precision: 3 }).notNull().defaultNow(),
   updatedAt: timestamp('updated_at', { precision: 3 }).notNull().defaultNow(),
-  visibility: visibilityEnum('visibility').default('public').notNull()
+  visibility: visibilityEnum('visibility').default('public').notNull(),
+  tags: text('tags').array().notNull().default(sql`'{}'::text[]`)
 })
 
 export const postsRelations = relations(posts, ({ one, many }) => ({

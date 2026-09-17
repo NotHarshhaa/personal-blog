@@ -1,4 +1,5 @@
 import { range } from '@/utils'
+import Link from 'next/link'
 import { Suspense } from 'react'
 
 import Posts from '@/components/posts'
@@ -20,13 +21,15 @@ const HomePage = () => {
             engineering, AI/ML, MLOps, LLMOps, GenAI, and AI infrastructure —
             plus Kubernetes, Terraform, Docker, and AWS.
           </p>
-          <ul className="flex flex-wrap gap-2 pt-1">
+          <ul className="flex flex-wrap gap-2 pt-1" aria-label="Explore topics">
             {SITE_TOPICS.map((topic) => (
-              <li
-                key={topic}
-                className="border border-border bg-background px-2.5 py-1 font-mono text-[11px] tracking-wide text-muted-foreground uppercase"
-              >
-                {topic}
+              <li key={topic}>
+                <Link
+                  href={`/?tag=${encodeURIComponent(topic)}`}
+                  className="inline-block border border-border bg-background px-2.5 py-1 font-mono text-[11px] tracking-wide text-muted-foreground uppercase transition-colors hover:border-foreground hover:text-foreground"
+                >
+                  {topic}
+                </Link>
               </li>
             ))}
           </ul>

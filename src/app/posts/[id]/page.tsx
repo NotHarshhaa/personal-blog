@@ -76,7 +76,17 @@ const PostPage = async (props: PostPageProps) => {
     notFound()
   }
 
-  const { title, description, content, createdAt, user: author, likes, likeCount, views } = post
+  const {
+    title,
+    description,
+    content,
+    createdAt,
+    user: author,
+    likes,
+    likeCount,
+    views,
+    tags
+  } = post
   const dateTime = formatPostDate(createdAt, {
     format: 'YYYY-MM-DD'
   })
@@ -115,7 +125,8 @@ const PostPage = async (props: PostPageProps) => {
       'llmops',
       'genai',
       'ai infrastructure',
-      'technology'
+      'technology',
+      ...(tags ?? [])
     ]
   }
 
@@ -162,6 +173,21 @@ const PostPage = async (props: PostPageProps) => {
               <p className="max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg">
                 {description}
               </p>
+            )}
+
+            {tags && tags.length > 0 && (
+              <ul className="flex flex-wrap gap-2 pt-1" aria-label="Article topics">
+                {tags.map((tag) => (
+                  <li key={tag}>
+                    <Link
+                      href={`/?tag=${encodeURIComponent(tag)}`}
+                      className="inline-block border border-border bg-background px-2.5 py-1 font-mono text-[11px] tracking-wide text-muted-foreground uppercase transition-colors hover:border-foreground hover:text-foreground"
+                    >
+                      #{tag}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             )}
           </FrameBody>
         </Frame>

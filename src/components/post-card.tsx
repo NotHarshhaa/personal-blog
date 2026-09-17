@@ -6,14 +6,15 @@ import { EyeIcon, HeartIcon } from 'lucide-react'
 import Link from 'next/link'
 import { memo } from 'react'
 
-import { formatPostDate } from '@/utils/format-post-date'
 import { HoverMark } from '@/components/hover-mark'
+import { formatPostDate } from '@/utils/format-post-date'
 
 import Controls from './controls'
 import UserAvatar from './user-avatar'
 
 export type PostCardProps = {
   post: Pick<Post, 'id' | 'title' | 'description' | 'published' | 'createdAt' | 'views'> & {
+    tags?: string[]
     likes: Array<Pick<Like, 'id'>>
     likeCount: number
   } & {
@@ -21,6 +22,7 @@ export type PostCardProps = {
   }
   user: User | null
   showAuthor?: boolean
+  onTagClick?: (tag: string) => void
 }
 
 const PostCard = memo((props: PostCardProps) => {
@@ -93,6 +95,28 @@ const PostCard = memo((props: PostCardProps) => {
           <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground sm:text-base">
             {description}
           </p>
+        )}
+        {post.tags && post.tags.length > 0 && (
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            {post.tags.map((tag) => (
+              <button
+                key={tag}
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  if (props.onTagClick) {
+                    props.onTagClick(tag)
+                  } else {
+                    globalThis.location.href = `/?tag=${encodeURIComponent(tag)}`
+                  }
+                }}
+                className="relative z-20 border border-border/80 bg-background/80 px-2 py-0.5 font-mono text-[10px] text-muted-foreground uppercase tracking-wider transition-colors hover:border-foreground hover:text-foreground cursor-pointer"
+              >
+                #{tag}
+              </button>
+            ))}
+          </div>
         )}
         <div className="mt-4 flex items-center gap-4 text-xs text-muted-foreground">
           <span

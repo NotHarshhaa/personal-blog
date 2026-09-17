@@ -15,7 +15,8 @@ export const getPostsByUserId = async (userId: string) => {
       createdAt: true,
       views: true,
       baselineViews: true,
-      baselineLikes: true
+      baselineLikes: true,
+      tags: true
     },
     orderBy: desc(posts.createdAt),
     with: {

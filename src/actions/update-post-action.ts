@@ -21,4 +21,6 @@ export const updatePostAction = authenticatedActionClient
       .where(and(eq(posts.id, postId), eq(posts.authorId, user.id)))
 
     revalidatePath(`/posts/${postId}`)
+    revalidatePath('/')
+    revalidatePath('/feed.xml')
   })

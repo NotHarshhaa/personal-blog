@@ -20,7 +20,8 @@ export const updatePostSchema = z.object({
   content: z.string().nullable().optional(),
   description: z.string().nullable().optional(),
   published: z.boolean().optional(),
-  visibility: z.nativeEnum(Visibility).optional()
+  visibility: z.nativeEnum(Visibility).optional(),
+  tags: z.array(z.string()).optional()
 })
 
 export const updateUserSchema = z.object({
