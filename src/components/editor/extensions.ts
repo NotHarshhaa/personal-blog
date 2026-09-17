@@ -183,7 +183,7 @@ export const extensions: AnyExtension[] = [
     lowlight,
     defaultLanguage: 'plaintext',
     HTMLAttributes: {
-      class: 'not-prose relative my-5 overflow-hidden rounded-lg border border-border bg-muted/40 font-mono text-[13px]',
+      class: 'not-prose code-block-blueprint relative my-6 w-full border border-border bg-card font-mono text-[13px]',
     },
     languageClassPrefix: 'language-',
   }),
@@ -193,13 +193,13 @@ export const extensions: AnyExtension[] = [
     inline: false,
     allowBase64: true,
     HTMLAttributes: {
-      class: 'rounded-md border border-border max-w-full mx-auto my-6 shadow-sm',
+      class: 'border border-border max-w-full mx-auto my-6',
     },
   }),
   Youtube.configure({
     inline: false,
     HTMLAttributes: {
-      class: 'rounded-md border border-border max-w-full mx-auto my-6 aspect-video shadow-sm',
+      class: 'border border-border max-w-full mx-auto my-6 aspect-video',
     },
   }),
 
@@ -207,7 +207,7 @@ export const extensions: AnyExtension[] = [
   Table.configure({
     resizable: true,
     HTMLAttributes: {
-      class: 'my-6 w-full border-collapse border border-border rounded-md overflow-hidden shadow-xs',
+      class: 'my-6 w-full border-collapse border border-border overflow-hidden',
     },
   }),
   TableRow.configure({
@@ -246,7 +246,7 @@ export const extensions: AnyExtension[] = [
   }),
   Gapcursor,
   Focus.configure({
-    className: 'ring-1 ring-primary/20 rounded-sm',
+    className: 'ring-1 ring-primary/20',
     mode: 'shallowest',
   }),
 

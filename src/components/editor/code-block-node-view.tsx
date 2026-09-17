@@ -15,6 +15,7 @@ import {
 } from 'lucide-react'
 import { useState } from 'react'
 
+import { CornerBrackets } from '@/components/frame'
 import { cn } from '@/utils'
 
 const LANGUAGES = [
@@ -65,48 +66,37 @@ export const CodeBlockNodeView = (props: ReactNodeViewProps) => {
   let filenameElement: React.ReactNode = null
   if (editor.isEditable) {
     filenameElement = (
-      <div className="flex items-center gap-1.5">
-        <FileCodeIcon className="size-3.5 text-muted-foreground" />
-        <input
-          type="text"
-          value={filename}
-          placeholder="filename (e.g. main.tf, deployment.yaml)"
-          onChange={(e) => updateAttributes({ filename: e.target.value })}
-          className="h-6 w-48 rounded border border-border/70 bg-background/80 px-2 font-mono text-[11px] text-foreground placeholder:text-muted-foreground/60 outline-none focus:border-foreground"
-        />
-      </div>
+      <input
+        type="text"
+        value={filename}
+        placeholder="filename (e.g. main.tf, deployment.yaml)"
+        onChange={(e) => updateAttributes({ filename: e.target.value })}
+        className="h-6 w-44 border border-border bg-background px-2 font-mono text-[11px] text-foreground placeholder:text-muted-foreground/50 outline-none focus:border-foreground"
+      />
     )
   } else if (filename) {
     filenameElement = (
-      <div className="flex items-center gap-1.5 rounded border border-border/60 bg-background/80 px-2 py-0.5 font-mono text-[11px] font-medium text-foreground">
-        <FileCodeIcon className="size-3.5 text-foreground" />
+      <div className="flex items-center gap-1.5 border border-border bg-background px-2 py-0.5 font-mono text-[11px] font-medium text-foreground">
+        <span className="text-muted-foreground/60">#</span>
         <span>{filename}</span>
       </div>
     )
   }
 
   return (
-    <NodeViewWrapper className="not-prose relative my-6 max-w-full overflow-hidden border border-border bg-card shadow-sm">
-      {/* Code Block Window Header */}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/80 bg-muted/60 px-3 py-2 text-xs text-muted-foreground select-none">
-        <div className="flex flex-wrap items-center gap-2.5">
-          {/* Terminal Window Dots */}
-          <div className="flex items-center gap-1.5 pr-1">
-            <span className="size-2.5 rounded-full bg-red-400/80" />
-            <span className="size-2.5 rounded-full bg-yellow-400/80" />
-            <span className="size-2.5 rounded-full bg-green-400/80" />
-          </div>
+    <NodeViewWrapper className="not-prose code-block-blueprint relative my-6 w-full border border-border bg-card">
+      <CornerBrackets />
 
-          {/* Filename Display (Read-only) or Input (Editable) */}
-          {filenameElement}
-
-          {/* Language Selector (editable) or Badge (read-only) */}
+      {/* Blueprint Header */}
+      <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-border bg-muted/40 px-3.5 py-2 select-none sm:px-4">
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Language Indicator */}
           {editor.isEditable ? (
             <select
               contentEditable={false}
               value={currentLanguage}
               onChange={(e) => updateAttributes({ language: e.target.value })}
-              className="h-6 rounded border border-border/70 bg-background/80 px-2 font-mono text-[11px] font-medium text-foreground transition-colors hover:bg-background focus:outline-none cursor-pointer"
+              className="h-6 border border-border bg-background px-2 font-mono text-[11px] font-medium text-foreground transition-colors hover:border-foreground focus:outline-none cursor-pointer"
             >
               {LANGUAGES.map((lang) => (
                 <option key={lang.value} value={lang.value}>
@@ -115,16 +105,23 @@ export const CodeBlockNodeView = (props: ReactNodeViewProps) => {
               ))}
             </select>
           ) : (
-            <div className="flex items-center gap-1 rounded border border-border/50 bg-background/50 px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+            <div className="flex items-center gap-1.5 border border-border bg-background px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
               {isTerminal && <TerminalIcon className="size-3 text-emerald-500" />}
               {isDiff && <GitCompareIcon className="size-3 text-amber-500" />}
+              {!isTerminal && !isDiff && (
+                <FileCodeIcon className="size-3 text-foreground/70" />
+              )}
               <span>{selectedLanguageLabel}</span>
             </div>
           )}
+
+          {/* Filename Tag */}
+          {filenameElement}
         </div>
 
-        {/* Action Controls: Line numbers toggle & Copy */}
+        {/* Blueprint Action Controls */}
         <div className="flex items-center gap-2">
+          {/* Toggle Line Numbers */}
           <button
             type="button"
             onClick={() => {
@@ -135,47 +132,49 @@ export const CodeBlockNodeView = (props: ReactNodeViewProps) => {
               }
             }}
             className={cn(
-              'inline-flex items-center gap-1 rounded border px-1.5 py-0.5 font-mono text-[10px] transition-colors cursor-pointer',
+              'inline-flex items-center gap-1.5 border px-2 py-1 font-mono text-[11px] uppercase tracking-wider transition-colors cursor-pointer active:translate-y-px',
               showLineNumbers
-                ? 'border-border/80 bg-background/80 text-foreground'
-                : 'border-transparent text-muted-foreground/60 hover:text-muted-foreground'
+                ? 'border-foreground bg-foreground text-background'
+                : 'border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground'
             )}
             title="Toggle line numbers"
           >
             <HashIcon className="size-3" />
-            <span>{lineCount} {lineCount === 1 ? 'line' : 'lines'}</span>
+            <span>
+              {lineCount} {lineCount === 1 ? 'LINE' : 'LINES'}
+            </span>
           </button>
 
           {/* Copy Button */}
           <button
             type="button"
             onClick={handleCopy}
-            className="inline-flex items-center gap-1.5 rounded border border-border/70 bg-background/80 px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground transition-colors hover:border-foreground hover:bg-background hover:text-foreground cursor-pointer"
+            className="inline-flex items-center gap-1.5 border border-border bg-background px-2.5 py-1 font-mono text-[11px] font-medium uppercase tracking-wider text-muted-foreground transition-colors hover:border-foreground hover:bg-muted hover:text-foreground cursor-pointer active:translate-y-px"
             title="Copy code to clipboard"
           >
             {copied ? (
               <>
                 <CheckIcon className="size-3 text-emerald-500" />
-                <span className="text-emerald-600 dark:text-emerald-400">
-                  Copied
+                <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                  COPIED
                 </span>
               </>
             ) : (
               <>
                 <CopyIcon className="size-3" />
-                <span>Copy</span>
+                <span>COPY</span>
               </>
             )}
           </button>
         </div>
       </div>
 
-      {/* Code Content Area with Line Numbers */}
-      <div className="relative flex w-full max-w-full overflow-x-auto bg-card">
+      {/* Code Editor Body */}
+      <div className="relative flex w-full max-w-full overflow-x-auto bg-card/60">
         {showLineNumbers && (
           <div
             aria-hidden
-            className="sticky left-0 z-10 flex flex-col border-r border-border/60 bg-muted/20 px-2.5 py-3.5 text-right font-mono text-[12px] leading-relaxed text-muted-foreground/40 select-none"
+            className="sticky left-0 z-10 flex flex-col border-r border-border bg-muted/20 px-3 py-3.5 text-right font-mono text-[12px] leading-relaxed text-muted-foreground/40 select-none"
           >
             {Array.from({ length: lineCount }, (_, i) => (
               <span key={i}>{i + 1}</span>
@@ -185,13 +184,16 @@ export const CodeBlockNodeView = (props: ReactNodeViewProps) => {
 
         <pre
           className={cn(
-            'w-full max-w-full overflow-x-auto p-3.5 font-mono text-[13px] leading-relaxed whitespace-pre break-normal',
+            'w-full max-w-full overflow-x-auto p-3.5 font-mono text-[13px] leading-relaxed whitespace-pre break-normal selection:bg-foreground selection:text-background',
             isDiff && 'bg-background/40'
           )}
         >
           <NodeViewContent
             as="code"
-            className={cn(`language-${currentLanguage}`, 'whitespace-pre break-normal')}
+            className={cn(
+              `language-${currentLanguage}`,
+              'whitespace-pre break-normal'
+            )}
           />
         </pre>
       </div>
