@@ -25,7 +25,8 @@ export const getPostById = async (id: string) => {
         columns: {
           id: true,
           name: true,
-          image: true
+          image: true,
+          bio: true
         }
       },
       likes: {
