@@ -1,7 +1,9 @@
 'use client'
 
 import { BookmarkIcon } from 'lucide-react'
+import { usePathname, useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 import { Button } from '@/components/ui'
 import { useBookmarks } from '@/hooks/use-bookmarks'
@@ -21,13 +23,35 @@ type BookmarkButtonProps = {
 export const BookmarkButton = ({ post, userId }: BookmarkButtonProps) => {
   const { isBookmarked, toggleBookmark, isLoaded } = useBookmarks(userId)
   const [isAnimating, setIsAnimating] = useState(false)
+  const router = useRouter()
+  const pathname = usePathname()
 
-  const active = isBookmarked(post.id)
+  const active = Boolean(userId && isBookmarked(post.id))
 
   const handleToggle = async () => {
+    if (!userId) {
+      toast.info('Please sign in to save articles to your bookmarks')
+      router.push(`/login?redirect=${encodeURIComponent(pathname)}`)
+      return
+    }
+
     setIsAnimating(true)
     await toggleBookmark(post)
     setTimeout(() => setIsAnimating(false), 300)
+  }
+
+  const getAriaLabel = () => {
+    if (userId) {
+      return active ? 'Remove bookmark' : 'Bookmark post'
+    }
+    return 'Sign in to bookmark post'
+  }
+
+  const getTooltip = () => {
+    if (userId) {
+      return active ? 'Remove bookmark' : 'Save for later'
+    }
+    return 'Sign in to bookmark'
   }
 
   return (
@@ -43,7 +67,7 @@ export const BookmarkButton = ({ post, userId }: BookmarkButtonProps) => {
         disabled={!isLoaded}
         onClick={handleToggle}
         aria-pressed={active}
-        aria-label={active ? 'Remove bookmark' : 'Bookmark post'}
+        aria-label={getAriaLabel()}
         type="button"
       >
         <BookmarkIcon
@@ -59,7 +83,7 @@ export const BookmarkButton = ({ post, userId }: BookmarkButtonProps) => {
 
       {/* Tooltip */}
       <span className="pointer-events-none absolute left-1/2 top-full z-20 mt-1 w-max -translate-x-1/2 scale-95 border border-border bg-card px-2 py-1 text-xs text-foreground opacity-0 shadow transition-all group-hover:opacity-100 group-focus-within:opacity-100">
-        {active ? 'Remove bookmark' : 'Save for later'}
+        {getTooltip()}
       </span>
     </div>
   )
