@@ -1,7 +1,5 @@
 import { ImageResponse } from 'next/og'
 
-export const runtime = 'edge'
-
 const fontBoldResponse = await fetch(
   'https://cdn.jsdelivr.net/fontsource/fonts/instrument-sans@latest/latin-700-normal.ttf'
 )

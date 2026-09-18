@@ -3,9 +3,6 @@ import type { NextConfig } from 'next'
 import './src/env'
 
 const nextConfig: NextConfig = {
-  eslint: {
-    ignoreDuringBuilds: true
-  },
   images: {
     remotePatterns: [
       {
@@ -14,6 +11,7 @@ const nextConfig: NextConfig = {
       }
     ],
     formats: ['image/webp', 'image/avif'],
+    qualities: [75, 90],
     minimumCacheTTL: 60 * 60 * 24 * 7, // 7 days
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;"
