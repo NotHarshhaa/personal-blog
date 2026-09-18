@@ -34,16 +34,16 @@ const ScrollBar = (props: ScrollBarProps) => {
       data-slot='scroll-area-scrollbar'
       orientation={orientation}
       className={cn(
-        'flex touch-none select-none p-px transition-colors',
-        orientation === 'vertical' && 'h-full w-2.5 border-l border-l-transparent',
-        orientation === 'horizontal' && 'h-2.5 flex-col border-t border-t-transparent',
+        'flex touch-none select-none bg-background p-0 transition-colors',
+        orientation === 'vertical' && 'h-full w-2 border-l border-border',
+        orientation === 'horizontal' && 'h-2 flex-col border-t border-border',
         className
       )}
       {...rest}
     >
       <ScrollAreaPrimitive.ScrollAreaThumb
         data-slot='scroll-area-thumb'
-        className='bg-border relative flex-1 rounded-full'
+        className='relative flex-1 rounded-none border border-border bg-foreground/20 hover:bg-foreground/45 active:bg-foreground transition-colors'
       />
     </ScrollAreaPrimitive.ScrollAreaScrollbar>
   )

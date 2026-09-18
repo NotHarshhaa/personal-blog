@@ -22,6 +22,52 @@
   box-sizing: border-box;
 }
 
+/* Technical Blueprint Scrollbars */
+html,
+body,
+* {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklch, var(--foreground) 24%, transparent) var(--background);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background);
+  border-left: 1px solid var(--border);
+}
+
+::-webkit-scrollbar-track:horizontal {
+  border-left: none;
+  border-top: 1px solid var(--border);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: color-mix(in oklch, var(--foreground) 24%, transparent);
+  border: 1px solid var(--border);
+  border-radius: 0px !important;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(in oklch, var(--foreground) 48%, transparent);
+  border-color: var(--foreground);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background-color: var(--foreground);
+  border-color: var(--foreground);
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--background);
+  border-top: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+}
+
 body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
