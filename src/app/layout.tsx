@@ -168,12 +168,12 @@ const RootLayout = (props: RootLayoutProps) => {
           Skip to main content
         </a>
         <Providers>
-          <div className="px-4 pt-3 sm:px-6 sm:pt-5 lg:px-8">
+          <div className="sticky top-0 z-40 w-full bg-background/80 px-4 pt-2.5 pb-2 backdrop-blur-md transition-all sm:px-6 sm:pt-3 lg:px-8">
             <Header />
           </div>
           <main
             id="main-content"
-            className="mx-auto min-h-[calc(100vh-14rem)] w-full max-w-[90rem] px-4 pt-18 pb-16 sm:px-6 sm:pt-24 lg:px-8"
+            className="mx-auto min-h-[calc(100vh-14rem)] w-full max-w-[90rem] px-4 pt-6 pb-16 sm:px-6 sm:pt-8 lg:px-8"
           >
             {children}
           </main>

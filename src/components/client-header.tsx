@@ -5,7 +5,7 @@ import type { Session } from 'next-auth'
 import { Bell, Menu as MenuIcon, Search, X } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 
 import { SITE_NAME } from '@/lib/constants'
@@ -18,6 +18,13 @@ import { HoverMark } from './hover-mark'
 import Menu from './menu'
 import NewPostButton from './new-post-button.lazy'
 import ThemeToggle from './theme-toggle'
+
+const NAV_ITEMS = [
+  { href: '/', label: '[posts]', match: (p: string) => p === '/' || p.startsWith('/posts') },
+  { href: '/roadmaps', label: '[roadmaps]', match: (p: string) => p.startsWith('/roadmaps') },
+  { href: '/bookmarks', label: '[bookmarks]', match: (p: string) => p.startsWith('/bookmarks') },
+  { href: '/newsletter', label: '[dispatch]', match: (p: string) => p.startsWith('/newsletter') }
+]
 
 type Props = {
   user: Session['user'] | null
@@ -58,6 +65,7 @@ const ClientHeader = ({ user }: Props) => {
   const [readIds, setReadIds] = useState<string[]>([])
   const searchRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
+  const pathname = usePathname()
   const notificationsRef = useRef<HTMLDivElement>(null)
   const notificationButtonRef = useRef<HTMLButtonElement>(null)
 
@@ -285,25 +293,36 @@ const ClientHeader = ({ user }: Props) => {
   )
 
   const notificationsPanel = (
-    <div className="border border-border bg-card">
-      <div className="flex items-center justify-between border-b border-border px-4 py-3">
-        <h2 className="text-sm font-semibold">Notifications</h2>
-        {unread > 0 && (
-          <span className="border border-border px-2 py-0.5 text-[10px] font-medium">
-            {unread} new
+    <div className="relative border border-border bg-card shadow-xl">
+      <CornerBrackets />
+      <div className="flex items-center justify-between border-b border-border bg-muted/30 px-3.5 py-2 font-mono">
+        <div className="flex items-center gap-2">
+          <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          <h2 className="text-[11px] font-bold uppercase tracking-wider text-foreground">
+            // DISPATCHES
+          </h2>
+        </div>
+        {unread > 0 ? (
+          <span className="border border-border bg-foreground text-background px-1.5 py-0.5 text-[9px] font-mono font-bold tracking-wider">
+            {unread} NEW
+          </span>
+        ) : (
+          <span className="font-mono text-[10px] text-muted-foreground uppercase">
+            ALL CAUGHT UP
           </span>
         )}
       </div>
-      <div className="max-h-72 overflow-y-auto">{notificationsList}</div>
+      <div className="max-h-72 divide-y divide-border overflow-y-auto">{notificationsList}</div>
       {notifications.length > 0 && (
-        <div className="border-t border-border p-2">
+        <div className="flex items-center justify-between border-t border-border bg-muted/20 p-2 font-mono text-[10px]">
           <button
             type="button"
             onClick={handleClearAll}
-            className="w-full border border-border px-3 py-2 text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
+            className="flex items-center gap-1.5 border border-border bg-background px-2.5 py-1 text-muted-foreground transition-colors hover:border-foreground hover:bg-muted hover:text-foreground cursor-pointer"
           >
-            Clear all
+            <span>[MARK ALL AS READ]</span>
           </button>
+          <span className="text-muted-foreground/60">{notifications.length} TOTAL</span>
         </div>
       )}
     </div>
@@ -380,28 +399,38 @@ const ClientHeader = ({ user }: Props) => {
     >
       <CornerBrackets />
       <div className="mx-auto flex min-h-14 max-w-[90rem] items-center justify-between gap-3 px-4 py-2 sm:px-6 lg:px-8">
-        <Link
-          href="/"
-          className="bracket-title group flex min-w-0 flex-1 items-center gap-2.5 pr-2 sm:flex-none sm:pr-0"
-        >
-          <Image
-            src="/logo.svg"
-            alt="Logo"
-            width={28}
-            height={28}
-            className="size-7 shrink-0 border border-border transition-transform group-hover:scale-105"
-          />
-          <div className="min-w-0 leading-tight">
-            <p className="text-[13px] font-bold tracking-tight sm:text-sm">
-              <span className="bg-gradient-to-r from-foreground via-foreground to-muted-foreground bg-clip-text text-transparent">
-                {SITE_NAME}
-              </span>
-            </p>
-            <p className="font-mono text-[9px] tracking-[0.14em] text-muted-foreground uppercase sm:text-[10px] sm:tracking-[0.16em]">
-              by Harshhaa
-            </p>
+        <div className="flex items-center gap-2.5 min-w-0 flex-1 sm:flex-none">
+          <Link
+            href="/"
+            className="bracket-title group flex min-w-0 items-center gap-2.5 pr-2 sm:pr-0"
+          >
+            <Image
+              src="/logo.svg"
+              alt="Logo"
+              width={28}
+              height={28}
+              className="size-7 shrink-0 border border-border transition-transform group-hover:scale-105"
+            />
+            <div className="min-w-0 leading-tight">
+              <p className="text-[13px] font-bold tracking-tight sm:text-sm truncate">
+                <span className="bg-gradient-to-r from-foreground via-foreground to-muted-foreground bg-clip-text text-transparent">
+                  {SITE_NAME}
+                </span>
+              </p>
+              <p className="font-mono text-[9px] tracking-[0.14em] text-muted-foreground uppercase sm:text-[10px] sm:tracking-[0.16em]">
+                by Harshhaa
+              </p>
+            </div>
+          </Link>
+
+          <div className="hidden xl:flex items-center gap-1.5 border border-border/70 bg-muted/40 px-2 py-0.5 font-mono text-[9px] text-muted-foreground uppercase tracking-wider">
+            <span className="relative flex size-1.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+              <span className="relative inline-flex size-1.5 rounded-full bg-emerald-500" />
+            </span>
+            <span>SYS:OK</span>
           </div>
-        </Link>
+        </div>
 
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
           <div className="hidden items-center gap-1.5 sm:gap-2 md:flex">
@@ -413,62 +442,58 @@ const ClientHeader = ({ user }: Props) => {
               title="Quick Search (⌘K)"
             >
               <Search className="size-3.5" />
-              <span className="hidden lg:inline">Search...</span>
-              <kbd className="rounded border border-border bg-muted px-1.5 py-0.5 font-mono text-[10px] font-semibold text-muted-foreground">
+              <span className="hidden lg:inline font-mono text-xs">Search...</span>
+              <kbd className="rounded-none border border-border bg-muted px-1.5 py-0.5 font-mono text-[10px] font-semibold text-muted-foreground">
                 ⌘K
               </kbd>
             </button>
 
-          <nav className="hidden items-center gap-1 sm:flex md:gap-1.5" aria-label="Main Navigation">
-            <Link
-              href="/"
-              className="border border-transparent px-2 py-1 font-mono text-xs text-muted-foreground transition-colors hover:border-border hover:bg-muted/50 hover:text-foreground"
-            >
-              [posts]
-            </Link>
-            <Link
-              href="/roadmaps"
-              className="border border-transparent px-2 py-1 font-mono text-xs text-muted-foreground transition-colors hover:border-border hover:bg-muted/50 hover:text-foreground"
-            >
-              [roadmaps]
-            </Link>
-            <Link
-              href="/bookmarks"
-              className="border border-transparent px-2 py-1 font-mono text-xs text-muted-foreground transition-colors hover:border-border hover:bg-muted/50 hover:text-foreground"
-            >
-              [bookmarks]
-            </Link>
-            <Link
-              href="/newsletter"
-              className="border border-transparent px-2 py-1 font-mono text-xs text-muted-foreground transition-colors hover:border-border hover:bg-muted/50 hover:text-foreground"
-            >
-              [dispatch]
-            </Link>
-          </nav>
+            <nav className="hidden items-center gap-1 sm:flex md:gap-1.5" aria-label="Main Navigation">
+              {NAV_ITEMS.map((item) => {
+                const isActive = item.match(pathname)
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      'border px-2.5 py-1 font-mono text-xs transition-colors duration-150',
+                      isActive
+                        ? 'border-foreground/80 bg-foreground text-background font-semibold shadow-2xs'
+                        : 'border-transparent text-muted-foreground hover:border-border hover:bg-muted/60 hover:text-foreground'
+                    )}
+                  >
+                    {item.label}
+                  </Link>
+                )
+              })}
+            </nav>
 
-          <div className="relative">
-            <button
-              ref={notificationButtonRef}
-              type="button"
-              onClick={() => setShowNotifications(!showNotifications)}
-              className="relative flex size-9 items-center justify-center border border-transparent text-muted-foreground hover:border-border hover:bg-muted hover:text-foreground cursor-pointer"
-              aria-label="Show notifications"
-            >
-              <Bell className="size-4" />
-              {unread > 0 && (
-                <span className="absolute top-1.5 right-1.5 size-1.5 rounded-full bg-foreground" />
-              )}
-            </button>
-
-            {showNotifications && (
-              <div
-                ref={notificationsRef}
-                className="absolute right-0 z-50 mt-2 w-80 max-w-[calc(100vw-2rem)]"
+            <div className="relative">
+              <button
+                ref={notificationButtonRef}
+                type="button"
+                onClick={() => setShowNotifications(!showNotifications)}
+                className={cn(
+                  'relative flex size-9 items-center justify-center border text-muted-foreground hover:border-border hover:bg-muted hover:text-foreground cursor-pointer transition-colors',
+                  showNotifications ? 'border-border bg-muted text-foreground' : 'border-transparent'
+                )}
+                aria-label="Show notifications"
               >
-                {notificationsPanel}
-              </div>
-            )}
-          </div>
+                <Bell className="size-4" />
+                {unread > 0 && (
+                  <span className="absolute top-1.5 right-1.5 size-1.5 rounded-full bg-foreground" />
+                )}
+              </button>
+
+              {showNotifications && (
+                <div
+                  ref={notificationsRef}
+                  className="absolute right-0 z-50 mt-2 w-80 max-w-[calc(100vw-2rem)]"
+                >
+                  {notificationsPanel}
+                </div>
+              )}
+            </div>
 
           {user?.role === 'admin' && <NewPostButton />}
           <ThemeToggle />
@@ -562,34 +587,25 @@ const ClientHeader = ({ user }: Props) => {
                     Navigation
                   </p>
                   <div className="grid grid-cols-2 gap-2 font-mono text-xs">
-                    <Link
-                      href="/"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="border border-border bg-background p-2.5 transition-colors hover:bg-muted"
-                    >
-                      [posts]
-                    </Link>
-                    <Link
-                      href="/roadmaps"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="border border-border bg-background p-2.5 transition-colors hover:bg-muted"
-                    >
-                      [roadmaps]
-                    </Link>
-                    <Link
-                      href="/bookmarks"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="border border-border bg-background p-2.5 transition-colors hover:bg-muted"
-                    >
-                      [bookmarks]
-                    </Link>
-                    <Link
-                      href="/newsletter"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="border border-border bg-background p-2.5 transition-colors hover:bg-muted"
-                    >
-                      [dispatch]
-                    </Link>
+                    {NAV_ITEMS.map((item) => {
+                      const isActive = item.match(pathname)
+                      return (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className={cn(
+                            'flex items-center justify-between border p-2.5 transition-colors',
+                            isActive
+                              ? 'border-foreground bg-foreground text-background font-semibold'
+                              : 'border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground'
+                          )}
+                        >
+                          <span>{item.label}</span>
+                          {isActive && <span className="size-1.5 rounded-full bg-background" />}
+                        </Link>
+                      )
+                    })}
                   </div>
                 </div>
 
