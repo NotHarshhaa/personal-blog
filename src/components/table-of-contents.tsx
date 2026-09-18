@@ -1,18 +1,18 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { cn } from '@/utils'
-import { List } from 'lucide-react'
-import { Button } from '@/components/ui'
+import { ArrowUp, List } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
+
+import { CornerBrackets, Frame, FrameBody, FrameHeader } from '@/components/frame'
 import {
+  Button,
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger
 } from '@/components/ui'
-import { Frame, FrameBody, FrameHeader } from '@/components/frame'
-import { HoverMark } from '@/components/hover-mark'
+import { cn } from '@/utils'
 
 type Heading = {
   id: string
@@ -25,7 +25,7 @@ type TableOfContentsProps = {
   className?: string
 }
 
-const TableOfContents = ({ content, className }: TableOfContentsProps) => {
+export const TableOfContents = ({ content, className }: TableOfContentsProps) => {
   const [headings, setHeadings] = useState<Heading[]>([])
   const [activeId, setActiveId] = useState<string>('')
   const [isMobileOpen, setIsMobileOpen] = useState(false)
@@ -39,7 +39,7 @@ const TableOfContents = ({ content, className }: TableOfContentsProps) => {
       }
 
       const headingElements = contentElement.querySelectorAll(
-        'h1, h2, h3, h4, h5, h6'
+        'h2, h3, h4'
       )
 
       const extractedHeadings: Heading[] = []
@@ -67,10 +67,13 @@ const TableOfContents = ({ content, className }: TableOfContentsProps) => {
           heading.id = id
         }
 
-        extractedHeadings.push({ id, text, level })
+        extractedHeadings.push({ id, text: text.trim(), level })
       })
 
       setHeadings(extractedHeadings)
+      if (extractedHeadings.length > 0 && !activeId && extractedHeadings[0]?.id) {
+        setActiveId(extractedHeadings[0].id)
+      }
     }
 
     extractHeadings()
@@ -82,7 +85,7 @@ const TableOfContents = ({ content, className }: TableOfContentsProps) => {
     }
 
     return () => observer.disconnect()
-  }, [content])
+  }, [content, activeId])
 
   useEffect(() => {
     if (headings.length === 0) return
@@ -96,7 +99,7 @@ const TableOfContents = ({ content, className }: TableOfContentsProps) => {
         })
       },
       {
-        rootMargin: '-20% 0% -35% 0%',
+        rootMargin: '-15% 0% -65% 0%',
         threshold: 0
       }
     )
@@ -125,7 +128,7 @@ const TableOfContents = ({ content, className }: TableOfContentsProps) => {
     e.preventDefault()
     const element = document.getElementById(id)
     if (element) {
-      const offset = 100
+      const offset = 90
       const elementPosition = element.getBoundingClientRect().top
       const offsetPosition = elementPosition + window.pageYOffset - offset
 
@@ -134,63 +137,148 @@ const TableOfContents = ({ content, className }: TableOfContentsProps) => {
         behavior: 'smooth'
       })
 
+      setActiveId(id)
       setIsMobileOpen(false)
     }
   }
 
+  const activeIndex = useMemo(() => {
+    const idx = headings.findIndex((h) => h.id === activeId)
+    return idx >= 0 ? idx + 1 : 1
+  }, [headings, activeId])
+
   if (headings.length === 0) return null
 
-  const tocContent = (
-    <nav className="max-h-[60vh] space-y-0.5 overflow-y-auto">
-      {headings.map((heading) => (
-        <HoverMark key={heading.id} label="Jump" className="py-0.5">
-          <a
-            href={`#${heading.id}`}
-            onClick={(e) => handleClick(e, heading.id)}
-            className={cn(
-              'block py-1 text-sm text-muted-foreground transition-colors hover:text-foreground',
-              heading.level === 1 && 'pl-0 font-semibold',
-              heading.level === 2 && 'pl-3',
-              heading.level === 3 && 'pl-6 text-xs',
-              heading.level >= 4 && 'pl-9 text-xs',
-              activeId === heading.id && 'font-medium text-foreground underline'
-            )}
-          >
-            {heading.text}
-          </a>
-        </HoverMark>
-      ))}
-    </nav>
+  const renderTocItems = (isMobile = false) => (
+    <div className="relative">
+      <nav
+        className={cn(
+          'space-y-1 overflow-y-auto pr-1',
+          isMobile ? 'max-h-[65vh]' : 'max-h-[calc(100vh-14rem)]'
+        )}
+        aria-label="Table of contents"
+      >
+        <div className="relative border-l border-border/80 pl-2.5 space-y-1">
+          {headings.map((heading, index) => {
+            const isActive = activeId === heading.id
+            const isSubheading = heading.level > 2
+
+            return (
+              <a
+                key={heading.id}
+                href={`#${heading.id}`}
+                onClick={(e) => handleClick(e, heading.id)}
+                className={cn(
+                  'group relative flex items-start py-1 text-xs leading-snug transition-all duration-150',
+                  isSubheading ? 'pl-2 text-[11px]' : 'pl-0',
+                  isActive
+                    ? 'font-semibold text-foreground'
+                    : 'text-muted-foreground/80 hover:text-foreground hover:translate-x-0.5'
+                )}
+              >
+                {/* Active Indicator Bar on Left Border */}
+                {isActive && (
+                  <span
+                    aria-hidden
+                    className="absolute -left-[11px] top-1.5 h-3.5 w-0.5 bg-foreground transition-all duration-150"
+                  />
+                )}
+
+                <span className="flex items-start gap-1.5 min-w-0 flex-1">
+                  {isSubheading ? (
+                    <span
+                      aria-hidden
+                      className={cn(
+                        'mt-0.5 font-mono text-[9px] shrink-0',
+                        isActive ? 'text-foreground' : 'text-muted-foreground/40'
+                      )}
+                    >
+                      ↳
+                    </span>
+                  ) : (
+                    <span
+                      aria-hidden
+                      className={cn(
+                        'mt-0.5 font-mono text-[10px] shrink-0 tracking-tight',
+                        isActive ? 'text-foreground font-bold' : 'text-muted-foreground/50'
+                      )}
+                    >
+                      {String(index + 1).padStart(2, '0')}.
+                    </span>
+                  )}
+                  <span className="break-words line-clamp-2">{heading.text}</span>
+                </span>
+              </a>
+            )
+          })}
+        </div>
+      </nav>
+
+      {/* Quick Jump to Top */}
+      <button
+        type="button"
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        className="mt-3.5 flex w-full items-center justify-between border-t border-border pt-2.5 font-mono text-[10px] uppercase tracking-wider text-muted-foreground transition-colors hover:border-foreground hover:text-foreground cursor-pointer"
+        aria-label="Scroll to top of article"
+      >
+        <span className="inline-flex items-center gap-1.5">
+          <ArrowUp className="size-3" />
+          <span>Top of page</span>
+        </span>
+        <span className="text-[9px] text-muted-foreground/60">
+          [{headings.length} items]
+        </span>
+      </button>
+    </div>
   )
 
   return (
     <>
-      <aside className={cn('sticky top-24 hidden w-56 shrink-0 lg:block', className)}>
+      {/* Desktop Sticky Blueprint Sidebar */}
+      <aside className={cn('sticky top-24 hidden w-64 shrink-0 lg:block', className)}>
         <Frame>
-          <FrameHeader label="On this page" />
-          <FrameBody className="py-4">{tocContent}</FrameBody>
+          <FrameHeader label="Table of Contents">
+            <div className="flex items-center gap-1.5 font-mono text-[10px] text-muted-foreground">
+              <span>SECTION</span>
+              <span className="font-bold text-foreground">
+                [{String(activeIndex).padStart(2, '0')}/{String(headings.length).padStart(2, '0')}]
+              </span>
+            </div>
+          </FrameHeader>
+          <FrameBody className="p-3 sm:p-4">
+            {renderTocItems(false)}
+          </FrameBody>
         </Frame>
       </aside>
 
-      <div className="fixed right-6 bottom-6 z-40 lg:hidden">
+      {/* Mobile Floating Blueprint Button & Drawer */}
+      <div className="fixed right-5 bottom-6 z-40 lg:hidden">
         <Dialog open={isMobileOpen} onOpenChange={setIsMobileOpen}>
           <DialogTrigger asChild>
             <Button
-              size="icon"
-              className="size-12 border border-border bg-primary text-primary-foreground"
+              className="relative size-11 border border-border bg-card text-foreground shadow-lg rounded-none transition-all hover:border-foreground hover:bg-foreground hover:text-background active:translate-y-px cursor-pointer"
               aria-label="Open Table of Contents"
             >
-              <List className="size-5" />
+              <CornerBrackets className="size-2" />
+              <List className="size-4" />
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-h-[80vh] max-w-[90vw] border-border sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle className="flex items-center gap-2 text-sm font-semibold tracking-[0.12em] uppercase">
-                <List className="size-4" />
-                On this page
-              </DialogTitle>
-            </DialogHeader>
-            <div className="mt-4">{tocContent}</div>
+          <DialogContent className="max-h-[85vh] max-w-[92vw] border border-border bg-card p-0 rounded-none shadow-2xl sm:max-w-md">
+            <CornerBrackets />
+            <div className="border-b border-border bg-muted/40 px-4 py-3">
+              <DialogHeader className="p-0">
+                <DialogTitle className="flex items-center justify-between font-mono text-xs font-semibold uppercase tracking-wider text-foreground">
+                  <span className="flex items-center gap-2">
+                    <List className="size-3.5" />
+                    Table of Contents
+                  </span>
+                  <span className="text-[10px] text-muted-foreground">
+                    [{String(activeIndex).padStart(2, '0')}/{String(headings.length).padStart(2, '0')}]
+                  </span>
+                </DialogTitle>
+              </DialogHeader>
+            </div>
+            <div className="p-4">{renderTocItems(true)}</div>
           </DialogContent>
         </Dialog>
       </div>
