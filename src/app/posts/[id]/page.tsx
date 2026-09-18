@@ -8,9 +8,11 @@ import BookmarkButton from '@/components/bookmark-button'
 import Editor from '@/components/editor'
 import { Frame, FrameBody, FrameHeader } from '@/components/frame'
 import GiscusComments from '@/components/giscus-comments'
+import HeadingAnchors from '@/components/heading-anchors'
 import NewsletterCard from '@/components/newsletter-card'
 import PostViews from '@/components/post-views'
 import ReadingProgress from '@/components/reading-progress'
+import ReadingResume from '@/components/reading-resume'
 import RelatedPosts from '@/components/related-posts'
 import SeriesNavigator from '@/components/series-navigator'
 import ShareButtons from '@/components/share-buttons'
@@ -148,6 +150,8 @@ const PostPage = async (props: PostPageProps) => {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
       <ReadingProgress />
+      <ReadingResume postId={id} />
+      <HeadingAnchors />
       <article className="relative z-10 w-full space-y-6">
         <Frame as="header">
           <FrameHeader label="Article" />
