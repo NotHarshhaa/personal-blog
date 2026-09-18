@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { memo } from 'react'
 
 import { HoverMark } from '@/components/hover-mark'
+import { cn } from '@/utils'
 import { formatPostDate } from '@/utils/format-post-date'
 
 import Controls from './controls'
@@ -22,11 +23,12 @@ export type PostCardProps = {
   }
   user: User | null
   showAuthor?: boolean
+  activeTag?: string | null
   onTagClick?: (tag: string) => void
 }
 
 const PostCard = memo((props: PostCardProps) => {
-  const { post, user, showAuthor = true } = props
+  const { post, user, showAuthor = true, activeTag } = props
   const { id, title, description, published, createdAt, likeCount, views, user: author } =
     post
 
@@ -37,45 +39,49 @@ const PostCard = memo((props: PostCardProps) => {
     <HoverMark
       as="article"
       label={actionLabel}
-      className="border-b border-border last:border-b-0"
+      className="relative flex flex-col justify-between"
     >
-      <div className="flex items-start justify-between gap-3 px-4 pt-5 sm:px-5 sm:pt-6">
-        {showAuthor && (
+      <div className="flex items-center justify-between border-b border-border bg-muted/40 px-4 py-2 sm:px-5">
+        {showAuthor ? (
           <Link
             href={`/users/${author.id}`}
-            className="relative z-20 flex min-w-0 flex-1 items-center gap-2.5 text-sm"
+            className="group/author flex min-w-0 flex-1 items-center gap-2 hover:text-foreground"
             aria-label={`View posts by ${author.name}`}
-            onClick={(e) => e.stopPropagation()}
           >
             <UserAvatar
-              width={28}
-              height={28}
-              userId={author.id}
+              width={20}
+              height={20}
               src={author.image}
               alt={author.name}
-              className="size-7 shrink-0 border border-border"
+              userId={author.id}
+              className="size-5 border border-border"
             />
             <div className="flex min-w-0 flex-col gap-0.5 sm:flex-row sm:items-center sm:gap-2">
               <span className="truncate font-medium">{author.name}</span>
-              <span
-                className="hidden text-muted-foreground sm:inline"
-                aria-hidden
-              >
+              <span className="hidden text-muted-foreground sm:inline" aria-hidden>
                 ·
               </span>
               <time
-                className="shrink-0 text-xs text-muted-foreground"
                 dateTime={createdAt.toISOString()}
+                className="shrink-0 text-xs text-muted-foreground"
               >
                 {formatPostDate(createdAt, { relative: true })}
               </time>
             </div>
           </Link>
+        ) : (
+          <time
+            dateTime={createdAt.toISOString()}
+            className="text-xs text-muted-foreground"
+          >
+            {formatPostDate(createdAt, { relative: true })}
+          </time>
         )}
+
         <div className="relative z-20 ml-2 shrink-0">
           <Controls
-            user={user}
             id={id}
+            user={user}
             authorId={author.id}
             postTitle={title}
           />
@@ -98,24 +104,44 @@ const PostCard = memo((props: PostCardProps) => {
         )}
         {post.tags && post.tags.length > 0 && (
           <div className="mt-3 flex flex-wrap gap-1.5">
-            {post.tags.map((tag) => (
-              <button
-                key={tag}
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault()
-                  e.stopPropagation()
-                  if (props.onTagClick) {
-                    props.onTagClick(tag)
-                  } else {
-                    globalThis.location.href = `/?tag=${encodeURIComponent(tag)}`
-                  }
-                }}
-                className="relative z-20 border border-border/80 bg-background/80 px-2 py-0.5 font-mono text-[10px] text-muted-foreground uppercase tracking-wider transition-colors hover:border-foreground hover:text-foreground cursor-pointer"
-              >
-                #{tag}
-              </button>
-            ))}
+            {post.tags.map((tag) => {
+              const isSelected =
+                Boolean(activeTag) &&
+                activeTag?.toLowerCase().trim() === tag.toLowerCase().trim()
+
+              return (
+                <button
+                  key={tag}
+                  type="button"
+                  onClick={(e) => {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    if (props.onTagClick) {
+                      props.onTagClick(tag)
+                    } else {
+                      globalThis.location.href = `/?tag=${encodeURIComponent(tag)}`
+                    }
+                  }}
+                  className={cn(
+                    'relative z-20 inline-flex items-center gap-1 border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider transition-all duration-150 cursor-pointer',
+                    isSelected
+                      ? 'border-foreground bg-foreground text-background font-semibold shadow-xs'
+                      : 'border-border/80 bg-background/80 text-muted-foreground hover:border-foreground hover:bg-muted/50 hover:text-foreground'
+                  )}
+                  aria-pressed={isSelected}
+                  aria-label={`Filter by topic: ${tag}`}
+                >
+                  <span
+                    className={
+                      isSelected ? 'text-background/70' : 'text-muted-foreground/60'
+                    }
+                  >
+                    #
+                  </span>
+                  <span>{tag}</span>
+                </button>
+              )
+            })}
           </div>
         )}
         <div className="mt-4 flex items-center gap-4 text-xs text-muted-foreground">
