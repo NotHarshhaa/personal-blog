@@ -64,6 +64,7 @@
 }
 
 /* Blueprint Interactive Code Block Reset */
+[data-node-view-wrapper].code-block-blueprint pre,
 [data-node-view-wrapper] .code-block-blueprint pre,
 .code-block-blueprint pre {
   border: none !important;

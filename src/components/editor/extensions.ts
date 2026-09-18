@@ -37,6 +37,48 @@ import { MathExtension } from './math-extension'
 
 const lowlight = createLowlight(all)
 
+/**
+ * Detects if content is already structured HTML rather than raw markdown text.
+ * When posts are stored or passed as HTML (e.g. from the database or editor.getHTML()),
+ * running markdown-it's parser over them breaks <pre><code> blocks containing blank lines,
+ * because markdown-it terminates HTML blocks on blank lines (\n\n).
+ */
+const isHtmlContent = (content: unknown): boolean => {
+  if (typeof content !== 'string') return false
+  const trimmed = content.trim()
+  if (!trimmed) return false
+  return (
+    (trimmed.startsWith('<') && trimmed.endsWith('>')) ||
+    /^<(!DOCTYPE|html|head|body|p|div|h[1-6]|ul|ol|li|pre|blockquote|table|section|article|span|code|a|strong|em|img)/i.test(
+      trimmed
+    )
+  )
+}
+
+const SafeMarkdown = Markdown.extend({
+  onBeforeCreate() {
+    this.parent?.()
+    const storage = this.editor.storage as Record<string, any>
+    if (storage?.markdown?.parser) {
+      const origParse = storage.markdown.parser.parse.bind(storage.markdown.parser)
+      storage.markdown.parser.parse = (content: any, options: any) => {
+        if (isHtmlContent(content)) {
+          return content
+        }
+        return origParse(content, options)
+      }
+    }
+    // If the initial content was HTML, restore it so markdown-it's parser does not corrupt it
+    const editorOptions = this.editor.options as Record<string, any>
+    if (
+      editorOptions.initialContent &&
+      isHtmlContent(editorOptions.initialContent)
+    ) {
+      this.editor.options.content = editorOptions.initialContent
+    }
+  }
+})
+
 export const extensions: AnyExtension[] = [
   StarterKit.configure({
     codeBlock: false,
@@ -250,8 +292,8 @@ export const extensions: AnyExtension[] = [
     mode: 'shallowest',
   }),
 
-  // Markdown Paste & Formatting Support
-  Markdown.configure({
+  // Markdown Paste & Formatting Support with HTML safety guard
+  SafeMarkdown.configure({
     html: true,
     tightLists: true,
     tightListClass: 'normal',

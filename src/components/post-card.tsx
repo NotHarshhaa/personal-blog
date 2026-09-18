@@ -2,9 +2,10 @@
 
 import type { Like, Post, User } from '@/db/schema'
 
-import { EyeIcon, HeartIcon } from 'lucide-react'
+import { ClockIcon, EyeIcon, HeartIcon } from 'lucide-react'
 import Link from 'next/link'
 import { memo } from 'react'
+import readingTime from 'reading-time'
 
 import { HoverMark } from '@/components/hover-mark'
 import { cn } from '@/utils'
@@ -18,6 +19,7 @@ export type PostCardProps = {
     tags?: string[]
     likes: Array<Pick<Like, 'id'>>
     likeCount: number
+    content?: string | null
   } & {
     user: Pick<User, 'name' | 'image' | 'id'>
   }
@@ -34,6 +36,7 @@ const PostCard = memo((props: PostCardProps) => {
 
   const href = `/${published ? 'posts' : 'editor'}/${id}`
   const actionLabel = published ? 'Read article' : 'Edit draft'
+  const readTime = readingTime(description ?? title).text
 
   return (
     <HoverMark
@@ -144,6 +147,8 @@ const PostCard = memo((props: PostCardProps) => {
             })}
           </div>
         )}
+
+        {/* Enhanced engagement metrics bar */}
         <div className="mt-4 flex items-center gap-4 text-xs text-muted-foreground">
           <span
             className="inline-flex items-center gap-1.5"
@@ -158,6 +163,10 @@ const PostCard = memo((props: PostCardProps) => {
           >
             <HeartIcon className="size-3.5" aria-hidden />
             <span>{likeCount.toLocaleString()}</span>
+          </span>
+          <span className="ml-auto inline-flex items-center gap-1.5 font-mono text-[10px] tracking-wider text-muted-foreground/70">
+            <ClockIcon className="size-3" aria-hidden />
+            <span>{readTime}</span>
           </span>
         </div>
       </Link>

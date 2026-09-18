@@ -226,38 +226,69 @@ const PostPage = async (props: PostPageProps) => {
               <TableOfContents content={content ?? ''} />
             </div>
 
-            <div className="mt-10 flex flex-col items-start justify-between gap-4 border-t border-border pt-6 sm:flex-row sm:items-center">
-              <div className="flex items-center gap-3">
-                <LikeButton
-                  likes={likes}
-                  likeCount={likeCount}
-                  user={
-                    user
-                      ? {
-                          ...user,
-                          createdAt: new Date(user.createdAt),
-                          updatedAt: new Date(user.updatedAt)
-                        }
-                      : null
-                  }
+            <div className="mt-12 space-y-4 border-t border-border pt-6">
+              {/* Author attribution */}
+              <div className="flex items-center gap-3 border border-border bg-muted/30 p-3 sm:p-4">
+                <Link
+                  href={`/users/${author.id}`}
+                  className="shrink-0"
+                >
+                  <UserAvatar
+                    width={40}
+                    height={40}
+                    src={author.image}
+                    alt={author.name}
+                    userId={author.id}
+                    className="size-10 border border-border"
+                  />
+                </Link>
+                <div className="min-w-0 flex-1">
+                  <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                    Written by
+                  </p>
+                  <Link
+                    href={`/users/${author.id}`}
+                    className="text-sm font-semibold tracking-tight text-foreground hover:underline"
+                  >
+                    {author.name}
+                  </Link>
+                </div>
+              </div>
+
+              {/* Engagement actions */}
+              <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+                <div className="flex items-center gap-3">
+                  <LikeButton
+                    likes={likes}
+                    likeCount={likeCount}
+                    user={
+                      user
+                        ? {
+                            ...user,
+                            createdAt: new Date(user.createdAt),
+                            updatedAt: new Date(user.updatedAt)
+                          }
+                        : null
+                    }
+                    postId={id}
+                  />
+                  <BookmarkButton
+                    post={{
+                      id,
+                      title,
+                      description,
+                      createdAt,
+                      tags
+                    }}
+                    userId={user?.id}
+                  />
+                </div>
+                <ShareButtons
+                  title={title}
+                  description={description ?? undefined}
                   postId={id}
                 />
-                <BookmarkButton
-                  post={{
-                    id,
-                    title,
-                    description,
-                    createdAt,
-                    tags
-                  }}
-                  userId={user?.id}
-                />
               </div>
-              <ShareButtons
-                title={title}
-                description={description ?? undefined}
-                postId={id}
-              />
             </div>
           </FrameBody>
         </Frame>
