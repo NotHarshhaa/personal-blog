@@ -4,12 +4,15 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import readingTime from 'reading-time'
 
+import BookmarkButton from '@/components/bookmark-button'
 import Editor from '@/components/editor'
 import { Frame, FrameBody, FrameHeader } from '@/components/frame'
 import GiscusComments from '@/components/giscus-comments'
+import NewsletterCard from '@/components/newsletter-card'
 import PostViews from '@/components/post-views'
 import ReadingProgress from '@/components/reading-progress'
 import RelatedPosts from '@/components/related-posts'
+import SeriesNavigator from '@/components/series-navigator'
 import ShareButtons from '@/components/share-buttons'
 import TableOfContents from '@/components/table-of-contents'
 import UserAvatar from '@/components/user-avatar'
@@ -201,6 +204,14 @@ const PostPage = async (props: PostPageProps) => {
           </FrameBody>
         </Frame>
 
+        {post.series && (
+          <SeriesNavigator
+            series={post.series}
+            currentPostId={id}
+            currentOrder={post.seriesOrder}
+          />
+        )}
+
         <Frame>
           <FrameHeader label="Content" />
           <FrameBody>
@@ -212,20 +223,32 @@ const PostPage = async (props: PostPageProps) => {
             </div>
 
             <div className="mt-10 flex flex-col items-start justify-between gap-4 border-t border-border pt-6 sm:flex-row sm:items-center">
-              <LikeButton
-                likes={likes}
-                likeCount={likeCount}
-                user={
-                  user
-                    ? {
-                        ...user,
-                        createdAt: new Date(user.createdAt),
-                        updatedAt: new Date(user.updatedAt)
-                      }
-                    : null
-                }
-                postId={id}
-              />
+              <div className="flex items-center gap-3">
+                <LikeButton
+                  likes={likes}
+                  likeCount={likeCount}
+                  user={
+                    user
+                      ? {
+                          ...user,
+                          createdAt: new Date(user.createdAt),
+                          updatedAt: new Date(user.updatedAt)
+                        }
+                      : null
+                  }
+                  postId={id}
+                />
+                <BookmarkButton
+                  post={{
+                    id,
+                    title,
+                    description,
+                    createdAt,
+                    tags
+                  }}
+                  userId={user?.id}
+                />
+              </div>
               <ShareButtons
                 title={title}
                 description={description ?? undefined}
@@ -234,6 +257,8 @@ const PostPage = async (props: PostPageProps) => {
             </div>
           </FrameBody>
         </Frame>
+
+        <NewsletterCard />
 
         <GiscusComments postId={id} postTitle={title} />
 

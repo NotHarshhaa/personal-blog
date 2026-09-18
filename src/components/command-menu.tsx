@@ -1,12 +1,14 @@
 'use client'
 
 import {
+  BookmarkIcon,
   CheckIcon,
   CompassIcon,
   CopyIcon,
   FileTextIcon,
   HomeIcon,
   LaptopIcon,
+  MailIcon,
   MoonIcon,
   RssIcon,
   SettingsIcon,
@@ -238,6 +240,42 @@ export const CommandMenu = ({
             >
               <HomeIcon className="size-4 shrink-0 text-muted-foreground" />
               <span>Home</span>
+            </CommandItem>
+
+            <CommandItem
+              value="roadmaps series learning tracks guides devops ai"
+              onSelect={() => runCommand(() => router.push('/roadmaps'))}
+              className="cursor-pointer"
+            >
+              <CompassIcon className="size-4 shrink-0 text-muted-foreground" />
+              <span>Learning Roadmaps & Series</span>
+              <CommandShortcut className="font-mono text-[10px]">
+                Roadmaps
+              </CommandShortcut>
+            </CommandItem>
+
+            <CommandItem
+              value="bookmarks read later saved articles favorite"
+              onSelect={() => runCommand(() => router.push('/bookmarks'))}
+              className="cursor-pointer"
+            >
+              <BookmarkIcon className="size-4 shrink-0 text-muted-foreground" />
+              <span>Bookmarks & Read Later</span>
+              <CommandShortcut className="font-mono text-[10px]">
+                Saved
+              </CommandShortcut>
+            </CommandItem>
+
+            <CommandItem
+              value="newsletter dispatch subscribe email notes devops ai"
+              onSelect={() => runCommand(() => router.push('/newsletter'))}
+              className="cursor-pointer"
+            >
+              <MailIcon className="size-4 shrink-0 text-muted-foreground" />
+              <span>DevOps & AI Dispatch</span>
+              <CommandShortcut className="font-mono text-[10px]">
+                Newsletter
+              </CommandShortcut>
             </CommandItem>
 
             {isLoggedIn && (

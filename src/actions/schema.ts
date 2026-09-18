@@ -14,6 +14,10 @@ export const togglePostLikeSchema = z.object({
   postId: z.string()
 })
 
+export const toggleBookmarkSchema = z.object({
+  postId: z.string()
+})
+
 export const updatePostSchema = z.object({
   postId: z.string(),
   title: z.string().min(1).max(100).optional(),

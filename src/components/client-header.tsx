@@ -7,15 +7,17 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
+
 import { SITE_NAME } from '@/lib/constants'
 import { cn } from '@/lib/utils'
+import { formatPostDate } from '@/utils/format-post-date'
 
+import CommandMenu from './command-menu'
 import { CornerBrackets } from './frame'
+import { HoverMark } from './hover-mark'
 import Menu from './menu'
 import NewPostButton from './new-post-button.lazy'
 import ThemeToggle from './theme-toggle'
-import { HoverMark } from './hover-mark'
-import CommandMenu from './command-menu'
 
 type Props = {
   user: Session['user'] | null
@@ -44,24 +46,16 @@ const ClientHeader = ({ user }: Props) => {
   const [loading, setLoading] = useState(false)
   const [showDropdown, setShowDropdown] = useState(false)
   const [showNotifications, setShowNotifications] = useState(false)
-  const [notifications, setNotifications] = useState([
-    {
-      id: '1',
-      postId: 'abc123',
-      title: 'New Post: Learn DevOps by Playing Games',
-      description: 'Check out the latest post on gamified DevOps and platform learning!',
-      read: false,
-      createdAt: new Date().toISOString()
-    },
-    {
-      id: '2',
-      postId: 'def456',
-      title: 'Post Updated: End-to-End DevOps with Azure',
-      description: 'The Azure CI/CD guide has been updated with new tips.',
-      read: false,
-      createdAt: new Date(Date.now() - 1000 * 60 * 60).toISOString()
-    }
-  ])
+  const [notifications, setNotifications] = useState<
+    Array<{
+      id: string
+      postId: string
+      title: string
+      description: string
+      createdAt: string
+    }>
+  >([])
+  const [readIds, setReadIds] = useState<string[]>([])
   const searchRef = useRef<HTMLInputElement>(null)
   const router = useRouter()
   const notificationsRef = useRef<HTMLDivElement>(null)
@@ -72,7 +66,7 @@ const ClientHeader = ({ user }: Props) => {
     let lastScrolled = false
 
     const updateScrolled = () => {
-      const next = window.scrollY > 8
+      const next = globalThis.scrollY > 8
       if (next !== lastScrolled) {
         lastScrolled = next
         setIsScrolled(next)
@@ -87,9 +81,46 @@ const ClientHeader = ({ user }: Props) => {
       }
     }
 
-    window.addEventListener('scroll', handleScroll, { passive: true })
+    globalThis.addEventListener('scroll', handleScroll, { passive: true })
     updateScrolled()
-    return () => window.removeEventListener('scroll', handleScroll)
+    return () => globalThis.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  useEffect(() => {
+    try {
+      const stored = globalThis.localStorage.getItem('read_notifications_v1')
+      if (stored) {
+        const parsed = JSON.parse(stored) as unknown
+        if (Array.isArray(parsed)) {
+          setReadIds(
+            parsed.filter((item): item is string => typeof item === 'string')
+          )
+        }
+      }
+    } catch {
+      // Ignore storage error
+    }
+
+    fetch('/api/notifications')
+      .then((res) => (res.ok ? res.json() : { notifications: [] }))
+      .then(
+        (data: {
+          notifications?: Array<{
+            id: string
+            postId: string
+            title: string
+            description: string
+            createdAt: string
+          }>
+        }) => {
+          if (Array.isArray(data.notifications)) {
+            setNotifications(data.notifications)
+          }
+        }
+      )
+      .catch(() => {
+        // Ignore network error
+      })
   }, [])
 
   useEffect(() => {
@@ -166,50 +197,89 @@ const ClientHeader = ({ user }: Props) => {
   }, [showNotifications])
 
   const handleToggleRead = (notifId: string) => {
-    setNotifications((prev) =>
-      prev.map((n) => (n.id === notifId ? { ...n, read: !n.read } : n))
-    )
+    setReadIds((prev) => {
+      const next = prev.includes(notifId)
+        ? prev.filter((id) => id !== notifId)
+        : [...prev, notifId]
+      try {
+        globalThis.localStorage.setItem(
+          'read_notifications_v1',
+          JSON.stringify(next)
+        )
+      } catch {
+        // Ignore storage error
+      }
+      return next
+    })
   }
 
-  const handleClearAll = () => setNotifications([])
+  const handleClearAll = () => {
+    const allIds = notifications.map((n) => n.id)
+    setReadIds(allIds)
+    try {
+      globalThis.localStorage.setItem(
+        'read_notifications_v1',
+        JSON.stringify(allIds)
+      )
+    } catch {
+      // Ignore storage error
+    }
+  }
 
   const handleNotificationClick = (notifId: string, postId: string) => {
-    handleToggleRead(notifId)
+    if (!readIds.includes(notifId)) {
+      handleToggleRead(notifId)
+    }
     router.push(`/posts/${postId}`)
     setShowNotifications(false)
     setIsMobileMenuOpen(false)
   }
 
-  const unread = notifications.filter((n) => !n.read).length
+  const unread = notifications.filter((n) => !readIds.includes(n.id)).length
 
   const notificationsList = (
     <>
       {notifications.length === 0 ? (
-        <p className="px-4 py-6 text-center text-sm text-muted-foreground">
+        <p className="px-4 py-6 text-center font-mono text-xs text-muted-foreground">
           No notifications yet
         </p>
       ) : (
-        notifications.map((notif) => (
-          <HoverMark
-            key={notif.id}
-            label="Open"
-            className={cn(
-              'border-b border-border last:border-0',
-              !notif.read && 'bg-muted/20'
-            )}
-          >
-            <button
-              type="button"
-              onClick={() => handleNotificationClick(notif.id, notif.postId)}
-              className="flex w-full flex-col gap-1 px-4 py-3 text-left"
+        notifications.map((notif) => {
+          const isRead = readIds.includes(notif.id)
+          return (
+            <HoverMark
+              key={notif.id}
+              label="Open"
+              className={cn(
+                'border-b border-border last:border-0 transition-colors',
+                !isRead && 'bg-muted/30'
+              )}
             >
-              <span className="line-clamp-2 text-sm font-medium">{notif.title}</span>
-              <span className="line-clamp-2 text-xs text-muted-foreground">
-                {notif.description}
-              </span>
-            </button>
-          </HoverMark>
-        ))
+              <button
+                type="button"
+                onClick={() => handleNotificationClick(notif.id, notif.postId)}
+                className="flex w-full flex-col gap-1 px-4 py-3 text-left cursor-pointer"
+              >
+                <div className="flex items-center justify-between gap-2">
+                  <span
+                    className={cn(
+                      'line-clamp-1 text-xs font-semibold',
+                      isRead ? 'text-muted-foreground font-normal' : 'text-foreground'
+                    )}
+                  >
+                    {notif.title}
+                  </span>
+                  <span className="shrink-0 font-mono text-[10px] text-muted-foreground">
+                    {formatPostDate(notif.createdAt, { relative: true })}
+                  </span>
+                </div>
+                <span className="line-clamp-2 text-xs text-muted-foreground">
+                  {notif.description}
+                </span>
+              </button>
+            </HoverMark>
+          )
+        })
       )}
     </>
   )
@@ -349,31 +419,56 @@ const ClientHeader = ({ user }: Props) => {
               </kbd>
             </button>
 
-          {user && (
-            <div className="relative">
-              <button
-                ref={notificationButtonRef}
-                type="button"
-                onClick={() => setShowNotifications(!showNotifications)}
-                className="relative flex size-9 items-center justify-center border border-transparent text-muted-foreground hover:border-border hover:bg-muted hover:text-foreground"
-                aria-label="Show notifications"
-              >
-                <Bell className="size-4" />
-                {unread > 0 && (
-                  <span className="absolute top-1.5 right-1.5 size-1.5 rounded-full bg-foreground" />
-                )}
-              </button>
+          <nav className="hidden items-center gap-1 sm:flex md:gap-1.5" aria-label="Main Navigation">
+            <Link
+              href="/"
+              className="border border-transparent px-2 py-1 font-mono text-xs text-muted-foreground transition-colors hover:border-border hover:bg-muted/50 hover:text-foreground"
+            >
+              [posts]
+            </Link>
+            <Link
+              href="/roadmaps"
+              className="border border-transparent px-2 py-1 font-mono text-xs text-muted-foreground transition-colors hover:border-border hover:bg-muted/50 hover:text-foreground"
+            >
+              [roadmaps]
+            </Link>
+            <Link
+              href="/bookmarks"
+              className="border border-transparent px-2 py-1 font-mono text-xs text-muted-foreground transition-colors hover:border-border hover:bg-muted/50 hover:text-foreground"
+            >
+              [bookmarks]
+            </Link>
+            <Link
+              href="/newsletter"
+              className="border border-transparent px-2 py-1 font-mono text-xs text-muted-foreground transition-colors hover:border-border hover:bg-muted/50 hover:text-foreground"
+            >
+              [dispatch]
+            </Link>
+          </nav>
 
-              {showNotifications && (
-                <div
-                  ref={notificationsRef}
-                  className="absolute right-0 z-50 mt-2 w-80 max-w-[calc(100vw-2rem)]"
-                >
-                  {notificationsPanel}
-                </div>
+          <div className="relative">
+            <button
+              ref={notificationButtonRef}
+              type="button"
+              onClick={() => setShowNotifications(!showNotifications)}
+              className="relative flex size-9 items-center justify-center border border-transparent text-muted-foreground hover:border-border hover:bg-muted hover:text-foreground cursor-pointer"
+              aria-label="Show notifications"
+            >
+              <Bell className="size-4" />
+              {unread > 0 && (
+                <span className="absolute top-1.5 right-1.5 size-1.5 rounded-full bg-foreground" />
               )}
-            </div>
-          )}
+            </button>
+
+            {showNotifications && (
+              <div
+                ref={notificationsRef}
+                className="absolute right-0 z-50 mt-2 w-80 max-w-[calc(100vw-2rem)]"
+              >
+                {notificationsPanel}
+              </div>
+            )}
+          </div>
 
           {user?.role === 'admin' && <NewPostButton />}
           <ThemeToggle />
@@ -462,34 +557,70 @@ const ClientHeader = ({ user }: Props) => {
 
                 <div className="h-px w-full bg-border" />
 
-                {user && (
-                  <div>
-                    <div className="mb-2 flex items-center justify-between">
-                      <p className="text-[10px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
-                        Notifications
-                      </p>
-                      {unread > 0 && (
-                        <span className="border border-border px-2 py-0.5 text-[10px] font-medium">
-                          {unread} new
-                        </span>
-                      )}
-                    </div>
-                    <div className="border border-border bg-background">
-                      <div className="max-h-48 overflow-y-auto">{notificationsList}</div>
-                      {notifications.length > 0 && (
-                        <div className="border-t border-border p-2">
-                          <button
-                            type="button"
-                            onClick={handleClearAll}
-                            className="w-full border border-border px-3 py-2 text-xs text-muted-foreground hover:bg-muted hover:text-foreground"
-                          >
-                            Clear all
-                          </button>
-                        </div>
-                      )}
-                    </div>
+                <div className="space-y-1.5">
+                  <p className="text-[10px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
+                    Navigation
+                  </p>
+                  <div className="grid grid-cols-2 gap-2 font-mono text-xs">
+                    <Link
+                      href="/"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="border border-border bg-background p-2.5 transition-colors hover:bg-muted"
+                    >
+                      [posts]
+                    </Link>
+                    <Link
+                      href="/roadmaps"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="border border-border bg-background p-2.5 transition-colors hover:bg-muted"
+                    >
+                      [roadmaps]
+                    </Link>
+                    <Link
+                      href="/bookmarks"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="border border-border bg-background p-2.5 transition-colors hover:bg-muted"
+                    >
+                      [bookmarks]
+                    </Link>
+                    <Link
+                      href="/newsletter"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="border border-border bg-background p-2.5 transition-colors hover:bg-muted"
+                    >
+                      [dispatch]
+                    </Link>
                   </div>
-                )}
+                </div>
+
+                <div className="h-px w-full bg-border" />
+
+                <div>
+                  <div className="mb-2 flex items-center justify-between">
+                    <p className="text-[10px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
+                      Notifications
+                    </p>
+                    {unread > 0 && (
+                      <span className="border border-border px-2 py-0.5 text-[10px] font-medium">
+                        {unread} new
+                      </span>
+                    )}
+                  </div>
+                  <div className="border border-border bg-background">
+                    <div className="max-h-48 overflow-y-auto">{notificationsList}</div>
+                    {notifications.length > 0 && (
+                      <div className="border-t border-border p-2">
+                        <button
+                          type="button"
+                          onClick={handleClearAll}
+                          className="w-full border border-border px-3 py-2 text-xs text-muted-foreground hover:bg-muted hover:text-foreground cursor-pointer"
+                        >
+                          Clear all
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
 
                 <div className="h-px w-full bg-border" />
 

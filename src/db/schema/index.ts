@@ -1,3 +1,6 @@
 export * from './auth'
+export * from './bookmark'
 export * from './like'
+export * from './newsletter'
 export * from './post'
+export * from './series'

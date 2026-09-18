@@ -3,6 +3,21 @@
 import type { User } from "@/db/schema";
 
 import {
+  BadgeCheck,
+  Bookmark,
+  Compass,
+  FileText,
+  LogOut,
+  Mail,
+  Settings,
+  ShieldCheck,
+  UserIcon,
+} from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { signOut } from "next-auth/react";
+
+import {
   Avatar,
   AvatarFallback,
   AvatarImage,
@@ -13,18 +28,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui";
-import {
-  UserIcon,
-  LogOut,
-  Settings,
-  FileText,
-  BadgeCheck,
-  ShieldCheck,
-} from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { signOut } from "next-auth/react";
-
 import { cn } from "@/lib/utils";
 
 type MenuProps = {
@@ -45,9 +48,8 @@ const Menu = ({ user }: MenuProps) => {
     );
   }
 
-  const { id, email = "", role, name: rawName, image: rawImage } = user;
-  const name = rawName || "User";
-  const image = rawImage || "";
+  const { id, email, role, name, image: rawImage } = user;
+  const image = rawImage ?? "";
 
   return (
     <DropdownMenu>
@@ -104,6 +106,24 @@ const Menu = ({ user }: MenuProps) => {
             <Link href="/me/posts" className="gap-2">
               <FileText className="size-4" />
               My Posts
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/bookmarks" className="gap-2">
+              <Bookmark className="size-4" />
+              Bookmarks
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/roadmaps" className="gap-2">
+              <Compass className="size-4" />
+              Roadmaps
+            </Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem asChild>
+            <Link href="/newsletter" className="gap-2">
+              <Mail className="size-4" />
+              Newsletter
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>

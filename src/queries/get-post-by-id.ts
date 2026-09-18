@@ -16,7 +16,9 @@ export const getPostById = async (id: string) => {
       views: true,
       baselineViews: true,
       baselineLikes: true,
-      tags: true
+      tags: true,
+      seriesId: true,
+      seriesOrder: true
     },
     with: {
       user: {
@@ -31,6 +33,29 @@ export const getPostById = async (id: string) => {
           id: true,
           userId: true,
           postId: true
+        }
+      },
+      bookmarks: {
+        columns: {
+          id: true,
+          userId: true
+        }
+      },
+      series: {
+        columns: {
+          id: true,
+          title: true,
+          slug: true,
+          description: true
+        },
+        with: {
+          posts: {
+            columns: {
+              id: true,
+              title: true,
+              seriesOrder: true
+            }
+          }
         }
       }
     }

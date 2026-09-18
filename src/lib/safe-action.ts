@@ -4,7 +4,7 @@ import { getCurrentUser } from './auth'
 
 class ActionError extends Error {}
 
-const actionClient = createSafeActionClient({
+export const actionClient = createSafeActionClient({
   handleServerError: (error) => {
     if (error instanceof ActionError) {
       return error.message
@@ -13,6 +13,8 @@ const actionClient = createSafeActionClient({
     return 'Something went wrong. Please try again.'
   }
 })
+
+export const unauthenticatedActionClient = actionClient
 
 export const authenticatedActionClient = actionClient.use(async ({ next }) => {
   const currentUser = await getCurrentUser()
