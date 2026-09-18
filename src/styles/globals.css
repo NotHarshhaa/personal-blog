@@ -256,6 +256,97 @@ a:not([class]):hover {
   opacity: 0.8;
 }
 
+/* Sonner Blueprint Toast Preset */
+[data-sonner-toaster] {
+  font-family: var(--font-sans);
+}
+
+[data-sonner-toaster] [data-sonner-toast] {
+  border-radius: 0 !important;
+  border: 1px solid var(--border) !important;
+  background: var(--card) !important;
+  color: var(--foreground) !important;
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.16) !important;
+  padding: 14px 16px !important;
+  position: relative;
+  overflow: visible !important;
+}
+
+/* Signature Blueprint Corner L-Brackets */
+[data-sonner-toaster] [data-sonner-toast]::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--foreground), var(--foreground)) left top / 7px 1.5px no-repeat,
+    linear-gradient(var(--foreground), var(--foreground)) left top / 1.5px 7px no-repeat,
+    linear-gradient(var(--foreground), var(--foreground)) right top / 7px 1.5px no-repeat,
+    linear-gradient(var(--foreground), var(--foreground)) right top / 1.5px 7px no-repeat,
+    linear-gradient(var(--foreground), var(--foreground)) left bottom / 7px 1.5px no-repeat,
+    linear-gradient(var(--foreground), var(--foreground)) left bottom / 1.5px 7px no-repeat,
+    linear-gradient(var(--foreground), var(--foreground)) right bottom / 7px 1.5px no-repeat,
+    linear-gradient(var(--foreground), var(--foreground)) right bottom / 1.5px 7px no-repeat;
+  opacity: 0.55;
+  z-index: 10;
+}
+
+[data-sonner-toaster] [data-sonner-toast] [data-title] {
+  font-size: 0.8125rem !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em;
+  color: var(--foreground) !important;
+}
+
+[data-sonner-toaster] [data-sonner-toast] [data-description] {
+  font-size: 0.75rem !important;
+  color: var(--muted-foreground) !important;
+  margin-top: 3px;
+  line-height: 1.45;
+}
+
+[data-sonner-toaster] [data-sonner-toast] [data-button] {
+  border-radius: 0 !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.6875rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
+  padding: 6px 12px !important;
+  height: auto !important;
+  border: 1px solid var(--foreground) !important;
+  background: var(--foreground) !important;
+  color: var(--background) !important;
+  transition: all 0.15s ease !important;
+  cursor: pointer !important;
+}
+
+[data-sonner-toaster] [data-sonner-toast] [data-button]:hover {
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+}
+
+[data-sonner-toaster] [data-sonner-toast] [data-cancel-button] {
+  border-radius: 0 !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.6875rem !important;
+  font-weight: 500 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  padding: 6px 10px !important;
+  border: 1px solid var(--border) !important;
+  background: var(--background) !important;
+  color: var(--muted-foreground) !important;
+  cursor: pointer !important;
+}
+
+[data-sonner-toaster] [data-sonner-toast] [data-close-button] {
+  border-radius: 0 !important;
+  border: 1px solid var(--border) !important;
+  background: var(--background) !important;
+  color: var(--foreground) !important;
+}
+
 .hljs {
   display: block;
   overflow-x: auto;

@@ -91,7 +91,7 @@ export const ReadingResume = ({ postId }: ReadingResumeProps) => {
 
       // Small delay for a smooth UX after page load
       const timer = setTimeout(() => {
-        toast(`You were ${percent}% through this article`, {
+        toast(`Reading Progress: ${percent}%`, {
           description: 'Pick up where you left off?',
           action: {
             label: 'Resume',
