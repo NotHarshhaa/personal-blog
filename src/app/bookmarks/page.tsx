@@ -37,7 +37,7 @@ const BookmarksPage = async () => {
         <FrameHeader label="LIBRARY // ARCHIVAL VAULT">
           <div className="flex items-center gap-2 font-mono text-[10px] text-muted-foreground">
             <span className="inline-flex items-center gap-1 border border-border/80 bg-muted/30 px-1.5 py-0.5">
-              <span className="size-1.5 rounded-full bg-emerald-500" />
+              <span className="size-1.5 rounded-full bg-foreground" />
               <span>SYNC: {user ? 'CLOUD_CONNECTED' : 'LOCAL_STORAGE'}</span>
             </span>
           </div>

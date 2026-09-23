@@ -16,7 +16,7 @@ const TrendingPosts = async () => {
     <Frame as="section" aria-label="Trending articles">
       <FrameHeader label="Trending">
         <div className="flex items-center gap-2 font-mono text-xs text-muted-foreground">
-          <FlameIcon className="size-3.5 text-amber-500" />
+          <FlameIcon className="size-3.5 text-foreground" />
           <span>Top this week</span>
         </div>
       </FrameHeader>

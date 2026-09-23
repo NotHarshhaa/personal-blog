@@ -4,11 +4,13 @@ import '@/styles/globals.css'
 
 import { Toaster } from '@/components/ui/toaster'
 import { cn } from '@/utils'
-import { Instrument_Sans } from 'next/font/google'
+import { Instrument_Sans, Space_Grotesk } from 'next/font/google'
 
 import Footer from '@/components/footer'
 import Header from '@/components/header'
+import HudFooter from '@/components/hud-footer'
 import ScrollToTop from '@/components/scroll-to-top'
+import TopTicker from '@/components/top-ticker'
 import {
   SITE_DESCRIPTION,
   SITE_KEYWORDS,
@@ -22,6 +24,11 @@ import Providers from './providers'
 const instrumentSans = Instrument_Sans({
   subsets: ['latin'],
   variable: '--font-instrument-sans'
+})
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-space-grotesk'
 })
 
 type RootLayoutProps = {
@@ -122,8 +129,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#fafaf8' },
-    { media: '(prefers-color-scheme: dark)', color: '#1c1c1a' }
+    { media: '(prefers-color-scheme: light)', color: '#f3f2e8' },
+    { media: '(prefers-color-scheme: dark)', color: '#09090b' }
   ]
 }
 
@@ -153,7 +160,11 @@ const RootLayout = (props: RootLayoutProps) => {
   return (
     <html
       lang="en-US"
-      className={cn('min-h-screen font-sans antialiased', instrumentSans.variable)}
+      className={cn(
+        'min-h-screen font-sans antialiased',
+        instrumentSans.variable,
+        spaceGrotesk.variable
+      )}
       suppressHydrationWarning
     >
       <head>
@@ -167,19 +178,21 @@ const RootLayout = (props: RootLayoutProps) => {
         <a href="#main-content" className="skip-link">
           Skip to main content
         </a>
+        <TopTicker />
         <Providers>
           <div className="px-4 pt-3 sm:px-6 sm:pt-5 lg:px-8">
             <Header />
           </div>
           <main
             id="main-content"
-            className="mx-auto min-h-[calc(100vh-14rem)] w-full max-w-[90rem] px-4 pt-10 pb-16 sm:px-6 sm:pt-14 lg:px-8"
+            className="mx-auto min-h-[calc(100vh-14rem)] w-full max-w-[90rem] px-4 pt-6 pb-20 sm:px-6 sm:pt-10 sm:pb-24 lg:px-8"
           >
             {children}
           </main>
           <Toaster />
           <ScrollToTop />
           <Footer />
+          <HudFooter />
         </Providers>
       </body>
     </html>

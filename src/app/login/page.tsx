@@ -54,7 +54,7 @@ const LoginPage = async () => {
 
           {/* Security Badge */}
           <div className="inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-muted/40 px-3 py-1 text-[11px] text-muted-foreground">
-            <ShieldCheckIcon className="size-3.5 text-emerald-500" />
+            <ShieldCheckIcon className="size-3.5 text-foreground" />
             <span>Secure & fast authentication via OAuth 2.0</span>
           </div>
 

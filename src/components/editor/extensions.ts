@@ -133,7 +133,7 @@ export const extensions: AnyExtension[] = [
   Highlight.configure({
     multicolor: true,
     HTMLAttributes: {
-      class: 'rounded-sm bg-yellow-200/40 dark:bg-yellow-500/30 px-1 py-0.5',
+      class: 'rounded-none bg-foreground/15 text-foreground px-1 py-0.5 border-b border-foreground/40',
     },
   }),
   Underline,

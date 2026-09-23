@@ -106,8 +106,8 @@ export const CodeBlockNodeView = (props: ReactNodeViewProps) => {
             </select>
           ) : (
             <div className="flex items-center gap-1.5 border border-border bg-background px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
-              {isTerminal && <TerminalIcon className="size-3 text-emerald-500" />}
-              {isDiff && <GitCompareIcon className="size-3 text-amber-500" />}
+              {isTerminal && <TerminalIcon className="size-3 text-foreground" />}
+              {isDiff && <GitCompareIcon className="size-3 text-foreground" />}
               {!isTerminal && !isDiff && (
                 <FileCodeIcon className="size-3 text-foreground/70" />
               )}
@@ -154,8 +154,8 @@ export const CodeBlockNodeView = (props: ReactNodeViewProps) => {
           >
             {copied ? (
               <>
-                <CheckIcon className="size-3 text-emerald-500" />
-                <span className="font-semibold text-emerald-600 dark:text-emerald-400">
+                <CheckIcon className="size-3 text-foreground" />
+                <span className="font-semibold text-foreground">
                   COPIED
                 </span>
               </>

@@ -53,9 +53,9 @@ export const NewsletterCard = () => {
         </div>
 
         {subscribed ? (
-          <div className="flex items-center gap-2 border border-emerald-500/30 bg-emerald-500/10 p-3 text-sm text-emerald-600 dark:text-emerald-400">
+          <div className="flex items-center gap-2 border border-foreground/30 bg-foreground/5 p-3 text-sm text-foreground">
             <CheckCircleIcon className="size-4 shrink-0" />
-            <span className="font-mono text-xs">
+            <span className="font-mono text-xs font-medium">
               Subscription verified! You are on the dispatch list.
             </span>
           </div>

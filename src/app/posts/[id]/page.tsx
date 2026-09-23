@@ -189,7 +189,7 @@ const PostPage = async (props: PostPageProps) => {
           <FrameHeader label="Technical Guide">
             <div className="flex items-center gap-2 font-mono text-[10px] uppercase text-muted-foreground">
               <span className="hidden sm:inline-flex items-center gap-1 text-foreground/80 font-medium">
-                <Sparkles className="size-3 text-amber-500" />
+                <Sparkles className="size-3 text-foreground" />
                 {technicalDepth}
               </span>
               <span className="hidden sm:inline" aria-hidden>·</span>

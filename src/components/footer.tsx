@@ -97,8 +97,8 @@ const Footer = () => {
             <div className="flex items-center gap-3 font-mono text-[10px] text-muted-foreground">
               <span className="hidden sm:inline-flex items-center gap-1.5">
                 <span className="relative flex size-1.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex size-1.5 rounded-full bg-emerald-500" />
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-foreground/50 opacity-75" />
+                  <span className="relative inline-flex size-1.5 rounded-full bg-foreground" />
                 </span>
                 <span className="text-foreground font-semibold uppercase">ALL_SYSTEMS_OPERATIONAL</span>
               </span>
@@ -139,7 +139,7 @@ const Footer = () => {
                 </p>
 
                 {isSubscribed ? (
-                  <div className="flex items-center gap-2 border border-emerald-500/30 bg-emerald-500/10 p-3 text-emerald-600 dark:text-emerald-400">
+                  <div className="flex items-center gap-2 border border-foreground/30 bg-foreground/5 p-3 text-foreground font-medium">
                     <CheckCircleIcon className="size-4 shrink-0" />
                     <span className="font-mono text-xs">
                       Subscription verified! You are on the dispatch list.
@@ -244,7 +244,7 @@ const Footer = () => {
                   </div>
                   <div className="flex justify-between text-muted-foreground">
                     <span>AVAILABILITY</span>
-                    <span className="text-emerald-500 font-semibold">99.98% UPTIME</span>
+                    <span className="text-foreground font-semibold">99.98% UPTIME</span>
                   </div>
                 </div>
               </div>
@@ -267,7 +267,7 @@ const Footer = () => {
                 rel="noopener noreferrer"
                 className="hover:text-foreground transition-colors inline-flex items-center gap-1"
               >
-                <RssIcon className="size-3 text-amber-500" />
+                <RssIcon className="size-3 text-foreground" />
                 RSS
               </a>
               <span className="text-border">•</span>

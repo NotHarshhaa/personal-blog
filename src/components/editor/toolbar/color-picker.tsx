@@ -18,26 +18,26 @@ type ColorPickerProps = {
 
 const TEXT_COLORS = [
   { label: 'Default', value: '' },
-  { label: 'Slate', value: '#64748b' },
-  { label: 'Red', value: '#ef4444' },
-  { label: 'Orange', value: '#f97316' },
-  { label: 'Amber', value: '#f59e0b' },
-  { label: 'Emerald', value: '#10b981' },
-  { label: 'Blue', value: '#3b82f6' },
-  { label: 'Indigo', value: '#6366f1' },
-  { label: 'Violet', value: '#8b5cf6' },
-  { label: 'Pink', value: '#ec4899' }
+  { label: 'Black', value: '#000000' },
+  { label: 'Carbon', value: '#171717' },
+  { label: 'Graphite', value: '#262626' },
+  { label: 'Steel', value: '#404040' },
+  { label: 'Gray', value: '#525252' },
+  { label: 'Ash', value: '#737373' },
+  { label: 'Silver', value: '#a3a3a3' },
+  { label: 'Platinum', value: '#d4d4d4' },
+  { label: 'White', value: '#ffffff' }
 ]
 
 const HIGHLIGHT_COLORS = [
   { label: 'None', value: '' },
-  { label: 'Yellow', value: '#fef08a' },
-  { label: 'Green', value: '#bbf7d0' },
-  { label: 'Blue', value: '#bfdbfe' },
-  { label: 'Purple', value: '#e9d5ff' },
-  { label: 'Pink', value: '#fbcfe8' },
-  { label: 'Orange', value: '#fed7aa' },
-  { label: 'Red', value: '#fecaca' }
+  { label: 'Dark', value: '#262626' },
+  { label: 'Medium', value: '#525252' },
+  { label: 'Muted', value: '#737373' },
+  { label: 'Silver', value: '#a3a3a3' },
+  { label: 'Light', value: '#d4d4d4' },
+  { label: 'Ghost', value: '#e5e5e5' },
+  { label: 'Subtle', value: '#f5f5f5' }
 ]
 
 export const ColorPicker = ({ editor }: ColorPickerProps) => {

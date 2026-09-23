@@ -297,7 +297,7 @@ const ClientHeader = ({ user }: Props) => {
       <CornerBrackets />
       <div className="flex items-center justify-between border-b border-border bg-muted/30 px-3.5 py-2 font-mono">
         <div className="flex items-center gap-2">
-          <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="size-1.5 rounded-full bg-foreground animate-pulse" />
           <h2 className="text-[11px] font-bold uppercase tracking-wider text-foreground">
             // DISPATCHES
           </h2>
@@ -425,8 +425,8 @@ const ClientHeader = ({ user }: Props) => {
 
           <div className="hidden xl:flex items-center gap-1.5 border border-border/70 bg-muted/40 px-2 py-0.5 font-mono text-[9px] text-muted-foreground uppercase tracking-wider">
             <span className="relative flex size-1.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-              <span className="relative inline-flex size-1.5 rounded-full bg-emerald-500" />
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-foreground/50 opacity-75" />
+              <span className="relative inline-flex size-1.5 rounded-full bg-foreground" />
             </span>
             <span>SYS:OK</span>
           </div>

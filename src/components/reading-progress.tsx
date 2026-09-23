@@ -51,7 +51,7 @@ export const ReadingProgress = () => {
       className="pointer-events-none fixed inset-x-0 top-0 z-50 h-[3px] w-full bg-transparent"
     >
       <div
-        className="h-full bg-gradient-to-r from-cyan-500 via-blue-500 to-indigo-500 shadow-[0_0_8px_rgba(6,182,212,0.6)] transition-[width] duration-75 ease-out"
+        className="h-full bg-foreground shadow-[0_0_6px_var(--foreground)] transition-[width] duration-75 ease-out"
         style={{ width: `${progress}%` }}
       />
     </div>

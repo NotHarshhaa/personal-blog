@@ -142,7 +142,7 @@ const RoadmapsPage = async () => {
         <FrameHeader label="CURRICULUM // ENGINEERING SYLLABUS">
           <div className="flex items-center gap-2 font-mono text-[10px] text-muted-foreground">
             <span className="inline-flex items-center gap-1 border border-border/80 bg-muted/30 px-1.5 py-0.5">
-              <span className="size-1.5 rounded-full bg-emerald-500" />
+              <span className="size-1.5 rounded-full bg-foreground" />
               <span>{tracks.length} PRODUCTION TRACKS ACTIVE</span>
             </span>
           </div>
@@ -238,7 +238,7 @@ const RoadmapsPage = async () => {
                           key={comp}
                           className="flex items-start gap-2 border border-border/70 bg-muted/20 p-2.5 font-mono text-xs text-muted-foreground"
                         >
-                          <CheckCircle2Icon className="size-3.5 text-emerald-500 shrink-0 mt-0.5" />
+                          <CheckCircle2Icon className="size-3.5 text-foreground shrink-0 mt-0.5" />
                           <span>{comp}</span>
                         </div>
                       ))}
@@ -349,7 +349,7 @@ const RoadmapsPage = async () => {
             <div className="grid gap-3 sm:grid-cols-3 font-mono text-xs">
               <div className="border border-border/80 bg-muted/20 p-3.5 space-y-2">
                 <div className="flex items-center gap-2 text-foreground font-bold">
-                  <LayersIcon className="size-4 text-cyan-500" />
+                  <LayersIcon className="size-4 text-foreground" />
                   <span>KIND / K3D</span>
                 </div>
                 <p className="text-[11px] text-muted-foreground leading-relaxed">
@@ -362,7 +362,7 @@ const RoadmapsPage = async () => {
 
               <div className="border border-border/80 bg-muted/20 p-3.5 space-y-2">
                 <div className="flex items-center gap-2 text-foreground font-bold">
-                  <FileCodeIcon className="size-4 text-emerald-500" />
+                  <FileCodeIcon className="size-4 text-foreground" />
                   <span>LOCALSTACK</span>
                 </div>
                 <p className="text-[11px] text-muted-foreground leading-relaxed">
@@ -375,7 +375,7 @@ const RoadmapsPage = async () => {
 
               <div className="border border-border/80 bg-muted/20 p-3.5 space-y-2">
                 <div className="flex items-center gap-2 text-foreground font-bold">
-                  <CpuIcon className="size-4 text-purple-500" />
+                  <CpuIcon className="size-4 text-foreground" />
                   <span>OLLAMA / vLLM</span>
                 </div>
                 <p className="text-[11px] text-muted-foreground leading-relaxed">

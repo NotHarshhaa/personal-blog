@@ -319,7 +319,7 @@ export const CommandMenu = ({
               onSelect={() => runCommand(() => router.push('/feed.xml'))}
               className="cursor-pointer"
             >
-              <RssIcon className="size-4 shrink-0 text-amber-500" />
+              <RssIcon className="size-4 shrink-0 text-foreground" />
               <span>RSS Feed (/feed.xml)</span>
               <CommandShortcut className="font-mono text-[10px]">
                 XML
@@ -345,7 +345,7 @@ export const CommandMenu = ({
               onSelect={() => runCommand(() => setTheme('light'))}
               className="cursor-pointer"
             >
-              <SunIcon className="size-4 shrink-0 text-amber-500" />
+              <SunIcon className="size-4 shrink-0 text-foreground" />
               <span>Switch to Light Theme</span>
             </CommandItem>
 
@@ -354,7 +354,7 @@ export const CommandMenu = ({
               onSelect={() => runCommand(() => setTheme('dark'))}
               className="cursor-pointer"
             >
-              <MoonIcon className="size-4 shrink-0 text-blue-400" />
+              <MoonIcon className="size-4 shrink-0 text-foreground" />
               <span>Switch to Dark Theme</span>
             </CommandItem>
 
@@ -373,7 +373,7 @@ export const CommandMenu = ({
               className="cursor-pointer"
             >
               {copiedUrl ? (
-                <CheckIcon className="size-4 shrink-0 text-emerald-500" />
+                <CheckIcon className="size-4 shrink-0 text-foreground" />
               ) : (
                 <CopyIcon className="size-4 shrink-0 text-muted-foreground" />
               )}
@@ -386,9 +386,9 @@ export const CommandMenu = ({
               className="cursor-pointer"
             >
               {copiedRss ? (
-                <CheckIcon className="size-4 shrink-0 text-emerald-500" />
+                <CheckIcon className="size-4 shrink-0 text-foreground" />
               ) : (
-                <RssIcon className="size-4 shrink-0 text-amber-500" />
+                <RssIcon className="size-4 shrink-0 text-muted-foreground" />
               )}
               <span>Copy RSS Feed Link</span>
             </CommandItem>

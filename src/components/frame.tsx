@@ -11,17 +11,17 @@ type CornerBracketsProps = {
 export function CornerBrackets({ className, visible = true }: CornerBracketsProps) {
   const visibility = visible ? 'opacity-100' : 'opacity-0'
   const sharedClassName = cn(
-    'pointer-events-none absolute size-2.5 border-foreground/45 transition-opacity sm:size-3',
+    'pointer-events-none absolute size-3 border-foreground/70 transition-opacity sm:size-3.5',
     visibility,
     className
   )
 
   return (
     <>
-      <span aria-hidden className={cn(sharedClassName, '-top-px -left-px z-10 border-t-2 border-l-2')} />
-      <span aria-hidden className={cn(sharedClassName, '-top-px -right-px z-10 border-t-2 border-r-2')} />
-      <span aria-hidden className={cn(sharedClassName, '-bottom-px -left-px z-10 border-b-2 border-l-2')} />
-      <span aria-hidden className={cn(sharedClassName, '-right-px -bottom-px z-10 border-b-2 border-r-2')} />
+      <span aria-hidden className={cn(sharedClassName, '-top-px -left-px z-20 border-t-2 border-l-2')} />
+      <span aria-hidden className={cn(sharedClassName, '-top-px -right-px z-20 border-t-2 border-r-2')} />
+      <span aria-hidden className={cn(sharedClassName, '-bottom-px -left-px z-20 border-b-2 border-l-2')} />
+      <span aria-hidden className={cn(sharedClassName, '-right-px -bottom-px z-20 border-b-2 border-r-2')} />
     </>
   )
 }

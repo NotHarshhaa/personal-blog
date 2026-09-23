@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { memo } from 'react'
 import readingTime from 'reading-time'
 
-import { HoverMark } from '@/components/hover-mark'
+import { CornerBrackets } from '@/components/frame'
 import { cn } from '@/utils'
 import { formatPostDate } from '@/utils/format-post-date'
 
@@ -39,138 +39,159 @@ const PostCard = memo((props: PostCardProps) => {
   const readTime = readingTime(description ?? title).text
 
   return (
-    <HoverMark
-      as="article"
-      label={actionLabel}
-      className="relative flex flex-col justify-between"
-    >
-      <div className="flex items-center justify-between border-b border-border bg-muted/40 px-4 py-2 sm:px-5">
-        {showAuthor ? (
-          <Link
-            href={`/users/${author.id}`}
-            className="group/author flex min-w-0 flex-1 items-center gap-2 hover:text-foreground"
-            aria-label={`View posts by ${author.name}`}
-          >
-            <UserAvatar
-              width={20}
-              height={20}
-              src={author.image}
-              alt={author.name}
-              userId={author.id}
-              className="size-5 border border-border"
-            />
-            <div className="flex min-w-0 flex-col gap-0.5 sm:flex-row sm:items-center sm:gap-2">
-              <span className="truncate font-medium">{author.name}</span>
-              <span className="hidden text-muted-foreground sm:inline" aria-hidden>
-                ·
-              </span>
-              <time
-                dateTime={createdAt.toISOString()}
-                className="shrink-0 text-xs text-muted-foreground"
-              >
-                {formatPostDate(createdAt, { relative: true })}
-              </time>
-            </div>
-          </Link>
-        ) : (
-          <time
-            dateTime={createdAt.toISOString()}
-            className="text-xs text-muted-foreground"
-          >
-            {formatPostDate(createdAt, { relative: true })}
-          </time>
-        )}
+    <article className="group/card relative flex flex-col justify-between border border-border bg-card transition-colors duration-150 hover:border-foreground/60">
+      <CornerBrackets className="border-foreground/80 opacity-0 transition-opacity duration-150 group-hover/card:opacity-100" />
 
-        <div className="relative z-20 ml-2 shrink-0">
-          <Controls
-            id={id}
-            user={user}
-            authorId={author.id}
-            postTitle={title}
-          />
-        </div>
-      </div>
-
+      {/* Technical Preview Banner (Hacktron style) */}
       <Link
         href={href}
-        className="block px-4 pt-3 pb-5 focus-visible:outline-none sm:px-5 sm:pb-6"
-        tabIndex={0}
-        aria-label={`${actionLabel}: ${title}`}
+        className="relative block aspect-[16/9] w-full overflow-hidden border-b border-border/80 bg-muted/40 p-4 transition-colors group-hover/card:bg-muted/70"
+        tabIndex={-1}
+        aria-hidden
       >
-        <h2 className="text-lg font-semibold tracking-tight text-balance sm:text-xl">
-          {title}
-        </h2>
-        {description && (
-          <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-muted-foreground sm:text-base">
-            {description}
-          </p>
-        )}
-        {post.tags && post.tags.length > 0 && (
-          <div className="mt-3 flex flex-wrap gap-1.5">
-            {post.tags.map((tag) => {
-              const isSelected =
-                Boolean(activeTag) &&
-                activeTag?.toLowerCase().trim() === tag.toLowerCase().trim()
-
-              return (
-                <button
-                  key={tag}
-                  type="button"
-                  onClick={(e) => {
-                    e.preventDefault()
-                    e.stopPropagation()
-                    if (props.onTagClick) {
-                      props.onTagClick(tag)
-                    } else {
-                      globalThis.location.href = `/?tag=${encodeURIComponent(tag)}`
-                    }
-                  }}
-                  className={cn(
-                    'relative z-20 inline-flex items-center gap-1 border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider transition-all duration-150 cursor-pointer',
-                    isSelected
-                      ? 'border-foreground bg-foreground text-background font-semibold shadow-xs'
-                      : 'border-border/80 bg-background/80 text-muted-foreground hover:border-foreground hover:bg-muted/50 hover:text-foreground'
-                  )}
-                  aria-pressed={isSelected}
-                  aria-label={`Filter by topic: ${tag}`}
-                >
-                  <span
-                    className={
-                      isSelected ? 'text-background/70' : 'text-muted-foreground/60'
-                    }
-                  >
-                    #
-                  </span>
-                  <span>{tag}</span>
-                </button>
-              )
-            })}
-          </div>
-        )}
-
-        {/* Enhanced engagement metrics bar */}
-        <div className="mt-4 flex items-center gap-4 text-xs text-muted-foreground">
-          <span
-            className="inline-flex items-center gap-1.5"
-            aria-label={`${views.toLocaleString()} views`}
-          >
-            <EyeIcon className="size-3.5" aria-hidden />
-            <span>{views.toLocaleString()}</span>
-          </span>
-          <span
-            className="inline-flex items-center gap-1.5"
-            aria-label={`${likeCount.toLocaleString()} likes`}
-          >
-            <HeartIcon className="size-3.5" aria-hidden />
-            <span>{likeCount.toLocaleString()}</span>
-          </span>
-          <span className="ml-auto inline-flex items-center gap-1.5 font-mono text-[10px] tracking-wider text-muted-foreground/70">
-            <ClockIcon className="size-3" aria-hidden />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,var(--color-foreground)/0.04,transparent_70%)]" />
+        <div className="relative flex h-full flex-col justify-between">
+          <div className="flex items-center justify-between font-mono text-[9px] tracking-widest text-muted-foreground uppercase">
+            <span>DOC // {id.slice(0, 8)}</span>
             <span>{readTime}</span>
-          </span>
+          </div>
+
+          <div className="my-auto text-center">
+            <span className="font-heading text-sm font-semibold tracking-tight text-foreground/85 line-clamp-2">
+              {title}
+            </span>
+          </div>
+
+          <div className="flex items-center justify-between font-mono text-[8px] text-muted-foreground/60 uppercase">
+            <span>PLATFORM</span>
+            <span>[ MONO-V2 ]</span>
+          </div>
         </div>
       </Link>
-    </HoverMark>
+
+      {/* Main Content Area */}
+      <div className="flex flex-1 flex-col justify-between p-5">
+        <div>
+          <Link
+            href={href}
+            className="group/title block focus-visible:outline-none"
+            aria-label={`${actionLabel}: ${title}`}
+          >
+            <h2 className="font-heading text-lg font-medium tracking-tight text-foreground transition-colors group-hover/title:underline sm:text-xl">
+              {title}
+            </h2>
+            {description && (
+              <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-muted-foreground sm:text-sm">
+                {description}
+              </p>
+            )}
+          </Link>
+
+          {/* Author Row */}
+          {showAuthor && (
+            <div className="mt-4 flex items-center justify-between gap-2 border-t border-border/60 pt-3">
+              <Link
+                href={`/users/${author.id}`}
+                className="group/author flex min-w-0 flex-1 items-center gap-2 hover:text-foreground"
+                aria-label={`View posts by ${author.name}`}
+              >
+                <UserAvatar
+                  width={20}
+                  height={20}
+                  src={author.image}
+                  alt={author.name}
+                  userId={author.id}
+                  className="size-5 border border-border"
+                />
+                <div className="flex min-w-0 items-center gap-1.5 font-mono text-xs text-muted-foreground">
+                  <span className="truncate text-foreground font-medium">{author.name}</span>
+                  <span aria-hidden>·</span>
+                  <time
+                    dateTime={createdAt.toISOString()}
+                    className="shrink-0 text-[11px]"
+                  >
+                    {formatPostDate(createdAt, { relative: true })}
+                  </time>
+                </div>
+              </Link>
+
+              <div className="relative z-20 ml-2 shrink-0">
+                <Controls
+                  id={id}
+                  user={user}
+                  authorId={author.id}
+                  postTitle={title}
+                />
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Tags + Engagement Footer */}
+        <div className="mt-4 space-y-3 pt-2">
+          {post.tags && post.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {post.tags.map((tag) => {
+                const isSelected =
+                  Boolean(activeTag) &&
+                  activeTag?.toLowerCase().trim() === tag.toLowerCase().trim()
+
+                return (
+                  <button
+                    key={tag}
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      e.stopPropagation()
+                      if (props.onTagClick) {
+                        props.onTagClick(tag)
+                      } else {
+                        globalThis.location.href = `/?tag=${encodeURIComponent(tag)}`
+                      }
+                    }}
+                    className={cn(
+                      'relative z-20 inline-flex items-center gap-1 border px-2 py-0.5 font-mono text-[10px] tracking-wider uppercase transition-all duration-150 cursor-pointer',
+                      isSelected
+                        ? 'border-foreground bg-foreground text-background font-semibold'
+                        : 'border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground'
+                    )}
+                    aria-pressed={isSelected}
+                    aria-label={`Filter by topic: ${tag}`}
+                  >
+                    <span className="text-muted-foreground/60">#</span>
+                    <span>{tag}</span>
+                  </button>
+                )
+              })}
+            </div>
+          )}
+
+          <div className="flex items-center justify-between border-t border-border/60 pt-2.5 font-mono text-[11px] text-muted-foreground">
+            <div className="flex items-center gap-3">
+              <span
+                className="inline-flex items-center gap-1"
+                aria-label={`${views.toLocaleString()} views`}
+              >
+                <EyeIcon className="size-3" aria-hidden />
+                <span>{views.toLocaleString()}</span>
+              </span>
+              <span
+                className="inline-flex items-center gap-1"
+                aria-label={`${likeCount.toLocaleString()} likes`}
+              >
+                <HeartIcon className="size-3" aria-hidden />
+                <span>{likeCount.toLocaleString()}</span>
+              </span>
+            </div>
+
+            <span className="inline-flex items-center gap-1 text-[10px]">
+              <ClockIcon className="size-3" aria-hidden />
+              <span>{readTime}</span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </article>
   )
 })
 

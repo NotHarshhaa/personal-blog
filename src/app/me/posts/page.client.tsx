@@ -204,7 +204,7 @@ export const PostsClient = ({ posts, user }: ContentProps) => {
                   <span className="font-mono text-[10px] uppercase tracking-widest">
                     Published
                   </span>
-                  <FileCheck2 className="size-3.5 text-emerald-500" />
+                  <FileCheck2 className="size-3.5 text-foreground" />
                 </div>
                 <div className="mt-2 flex items-baseline gap-2">
                   <span className="font-mono text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
@@ -231,7 +231,7 @@ export const PostsClient = ({ posts, user }: ContentProps) => {
                   <span className="font-mono text-[10px] uppercase tracking-widest">
                     Drafts
                   </span>
-                  <FileEdit className="size-3.5 text-amber-500" />
+                  <FileEdit className="size-3.5 text-foreground" />
                 </div>
                 <div className="mt-2 flex items-baseline gap-2">
                   <span className="font-mono text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
@@ -249,7 +249,7 @@ export const PostsClient = ({ posts, user }: ContentProps) => {
                   <span className="font-mono text-[10px] uppercase tracking-widest">
                     Total Reads
                   </span>
-                  <Eye className="size-3.5 text-blue-500" />
+                  <Eye className="size-3.5 text-foreground" />
                 </div>
                 <div className="mt-2 flex items-baseline gap-2">
                   <span className="font-mono text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
@@ -446,9 +446,9 @@ export const PostsClient = ({ posts, user }: ContentProps) => {
 
         {/* 3. Drafts Bulk Management Banner (When in drafts tab) */}
         {isAdmin && activeTab === 'drafts' && draftPosts.length > 0 && (
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-amber-500/5 px-4 py-2.5 text-xs text-muted-foreground sm:px-5">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-muted/30 px-4 py-2.5 text-xs text-muted-foreground sm:px-5">
             <div className="flex items-center gap-2">
-              <span className="flex size-2 rounded-full bg-amber-500" aria-hidden />
+              <span className="flex size-2 rounded-full bg-foreground" aria-hidden />
               <span>
                 You have <strong className="text-foreground">{draftPosts.length}</strong>{' '}
                 draft {draftPosts.length === 1 ? 'article' : 'articles'} in progress

@@ -140,7 +140,7 @@ const Menu = ({ user }: MenuProps) => {
           </DropdownMenuItem>
           {role === "admin" && (
             <DropdownMenuItem asChild>
-              <Link href="/admin" className="gap-2 text-amber-600 dark:text-amber-400 cursor-pointer">
+              <Link href="/admin" className="gap-2 text-foreground font-medium cursor-pointer">
                 <ShieldCheck className="size-3.5" />
                 <span>Admin Console</span>
               </Link>

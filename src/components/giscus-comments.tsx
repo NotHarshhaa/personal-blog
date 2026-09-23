@@ -86,7 +86,7 @@ export const GiscusComments = ({ postId, postTitle }: GiscusCommentsProps) => {
           <div className="flex flex-col items-start justify-between gap-4 border border-dashed border-border p-5 sm:flex-row sm:items-center">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <SparklesIcon className="size-4 text-amber-500" />
+                <SparklesIcon className="size-4 text-foreground" />
                 <h3 className="text-sm font-semibold text-foreground">
                   Join the Discussion on {postTitle}
                 </h3>

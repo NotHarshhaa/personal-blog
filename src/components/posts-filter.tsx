@@ -522,7 +522,7 @@ export const PostsFilter = ({ posts, user }: PostsFilterProps) => {
             </div>
           </div>
         ) : (
-          <div className="divide-y divide-border">
+          <div className="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 sm:gap-5 sm:p-5 lg:grid-cols-3">
             {sortedPosts.map((post) => (
               <PostCard
                 key={post.id}

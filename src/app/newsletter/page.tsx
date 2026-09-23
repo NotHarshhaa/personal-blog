@@ -30,7 +30,7 @@ const TOPIC_PILLARS = [
   {
     code: '01',
     title: 'Kubernetes & Bare-Metal Orchestration',
-    icon: <LayersIcon className="size-4 text-cyan-500" />,
+    icon: <LayersIcon className="size-4 text-foreground" />,
     description:
       'In-depth cluster topologies, Cilium eBPF service mesh, multi-tenant RBAC, and high-performance container runtimes for production workloads.',
     tags: ['Cilium', 'eBPF', 'K8s', 'Containerd']
@@ -38,7 +38,7 @@ const TOPIC_PILLARS = [
   {
     code: '02',
     title: 'Infrastructure as Code & GitOps',
-    icon: <FileCode2Icon className="size-4 text-emerald-500" />,
+    icon: <FileCode2Icon className="size-4 text-foreground" />,
     description:
       'Enterprise Terraform and OpenTofu module architecture, zero-drift pipelines, policy-as-code, and automated multi-cluster GitOps with ArgoCD.',
     tags: ['Terraform', 'OpenTofu', 'ArgoCD', 'GitOps']
@@ -46,7 +46,7 @@ const TOPIC_PILLARS = [
   {
     code: '03',
     title: 'Distributed LLMOps & AI Infrastructure',
-    icon: <CpuIcon className="size-4 text-purple-500" />,
+    icon: <CpuIcon className="size-4 text-foreground" />,
     description:
       'High-throughput model serving with vLLM, speculative decoding, KV-cache quantization, TensorRT-LLM, and distributed training cluster setups.',
     tags: ['vLLM', 'Triton', 'GPU Clusters', 'Quantization']
@@ -54,7 +54,7 @@ const TOPIC_PILLARS = [
   {
     code: '04',
     title: 'Production SRE & Outage Post-Mortems',
-    icon: <TerminalIcon className="size-4 text-amber-500" />,
+    icon: <TerminalIcon className="size-4 text-foreground" />,
     description:
       'Raw technical analysis of real-world infrastructure failures, cascading network outages, high-cardinality telemetry, and zero-downtime migrations.',
     tags: ['SRE', 'Post-Mortems', 'Prometheus', 'Resilience']
@@ -114,7 +114,7 @@ const NewsletterPage = () => {
         <FrameHeader label="PUBLICATION // DISPATCH ARCHIVE">
           <div className="flex items-center gap-2 font-mono text-[10px] text-muted-foreground">
             <span className="inline-flex items-center gap-1 border border-border/80 bg-muted/30 px-1.5 py-0.5">
-              <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="size-1.5 rounded-full bg-foreground animate-pulse" />
               <span>FREQ: BI-WEEKLY</span>
             </span>
             <span className="hidden sm:inline text-border">|</span>
@@ -233,7 +233,7 @@ const NewsletterPage = () => {
                 </div>
                 <div className="pt-2 border-t border-border/60">
                   <span className="font-mono text-[10px] text-muted-foreground flex items-center gap-1">
-                    <CheckCircle2Icon className="size-3 text-emerald-500" />
+                    <CheckCircle2Icon className="size-3 text-foreground" />
                     <span>SENT TO ALL ACTIVE SUBSCRIBERS</span>
                   </span>
                 </div>

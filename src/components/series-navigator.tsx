@@ -135,7 +135,7 @@ export const SeriesNavigator = ({
                         </span>
                       )}
                       {!isCurrent && isPast && (
-                        <CheckCircle2Icon className="size-3.5 text-emerald-500" />
+                        <CheckCircle2Icon className="size-3.5 text-foreground" />
                       )}
                     </div>
                   </Link>

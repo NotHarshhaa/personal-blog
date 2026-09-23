@@ -158,7 +158,7 @@ export const BookmarksView = ({
       {!userId && (
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border border-border/80 bg-muted/20 p-4 font-mono text-xs">
           <div className="flex items-center gap-2">
-            <span className="size-2 rounded-full bg-amber-500" />
+            <span className="size-2 rounded-full bg-foreground" />
             <span className="text-muted-foreground">
               [OFFLINE_LOCAL_STORAGE] Bookmarks are stored in this browser. Sign in to synchronize your vault across devices.
             </span>

@@ -14,7 +14,8 @@
 
   --font-sans: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  --font-heading: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-space-grotesk), var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-space-grotesk), var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
 /* Performance optimizations */
@@ -404,6 +405,8 @@ a:not([class]):hover {
 .hljs-comment,
 .hljs-punctuation {
   color: var(--muted-foreground);
+  font-style: italic;
+  opacity: 0.85;
 }
 
 .hljs-attr,
@@ -412,14 +415,15 @@ a:not([class]):hover {
 .hljs-selector-attr,
 .hljs-selector-class,
 .hljs-selector-id {
-  color: color-mix(in oklch, var(--foreground) 72%, oklch(0.45 0.12 250));
+  color: color-mix(in oklch, var(--foreground) 80%, transparent);
 }
 
 .hljs-variable,
 .hljs-literal,
 .hljs-number,
 .hljs-doctag {
-  color: color-mix(in oklch, var(--foreground) 65%, oklch(0.55 0.14 55));
+  color: color-mix(in oklch, var(--foreground) 75%, transparent);
+  font-variant-numeric: tabular-nums;
 }
 
 .hljs-params {
@@ -427,14 +431,16 @@ a:not([class]):hover {
 }
 
 .hljs-function {
-  color: color-mix(in oklch, var(--foreground) 70%, oklch(0.5 0.12 300));
+  color: var(--foreground);
+  font-weight: 500;
 }
 
 .hljs-class,
 .hljs-tag,
 .hljs-title,
 .hljs-built_in {
-  color: color-mix(in oklch, var(--foreground) 65%, oklch(0.5 0.12 145));
+  color: var(--foreground);
+  font-weight: 600;
 }
 
 .hljs-keyword,
@@ -443,28 +449,29 @@ a:not([class]):hover {
 .hljs-meta-keyword,
 .hljs-template-tag,
 .hljs-template-variable {
-  color: color-mix(in oklch, var(--foreground) 60%, oklch(0.55 0.16 25));
+  color: var(--foreground);
+  font-weight: 600;
 }
 
 .hljs-string,
 .hljs-undefined {
-  color: color-mix(in oklch, var(--foreground) 68%, oklch(0.45 0.1 230));
+  color: color-mix(in oklch, var(--foreground) 85%, transparent);
 }
 
 .hljs-regexp {
-  color: color-mix(in oklch, var(--foreground) 68%, oklch(0.45 0.1 230));
+  color: color-mix(in oklch, var(--foreground) 80%, transparent);
 }
 
 .hljs-symbol {
-  color: color-mix(in oklch, var(--foreground) 72%, oklch(0.45 0.12 250));
+  color: color-mix(in oklch, var(--foreground) 75%, transparent);
 }
 
 .hljs-bullet {
-  color: color-mix(in oklch, var(--foreground) 65%, oklch(0.55 0.14 55));
+  color: color-mix(in oklch, var(--foreground) 75%, transparent);
 }
 
 .hljs-section {
-  color: color-mix(in oklch, var(--foreground) 72%, oklch(0.45 0.12 250));
+  color: var(--foreground);
   font-weight: bold;
 }
 
@@ -472,30 +479,35 @@ a:not([class]):hover {
 .hljs-name,
 .hljs-selector-tag,
 .hljs-selector-pseudo {
-  color: color-mix(in oklch, var(--foreground) 65%, oklch(0.5 0.12 145));
+  color: var(--foreground);
+  font-weight: 500;
 }
 
 .hljs-emphasis {
-  color: color-mix(in oklch, var(--foreground) 65%, oklch(0.55 0.14 55));
+  color: color-mix(in oklch, var(--foreground) 85%, transparent);
   font-style: italic;
 }
 
 .hljs-strong {
-  color: color-mix(in oklch, var(--foreground) 65%, oklch(0.55 0.14 55));
+  color: var(--foreground);
   font-weight: bold;
 }
 
 .hljs-deletion {
-  color: color-mix(in oklch, var(--foreground) 50%, oklch(0.55 0.2 25));
-  background-color: color-mix(in oklch, oklch(0.55 0.2 25) 12%, transparent);
+  color: var(--muted-foreground);
+  text-decoration: line-through;
+  opacity: 0.7;
+  background-color: color-mix(in oklch, var(--foreground) 6%, transparent);
 }
 
 .hljs-addition {
-  color: color-mix(in oklch, var(--foreground) 50%, oklch(0.5 0.14 145));
-  background-color: color-mix(in oklch, oklch(0.5 0.14 145) 12%, transparent);
+  color: var(--foreground);
+  font-weight: 600;
+  background-color: color-mix(in oklch, var(--foreground) 10%, transparent);
 }
 
 .hljs-link {
-  color: color-mix(in oklch, var(--foreground) 68%, oklch(0.45 0.1 230));
+  color: var(--foreground);
   text-decoration: underline;
+  text-underline-offset: 2px;
 }

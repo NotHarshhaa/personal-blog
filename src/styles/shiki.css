@@ -1,8 +1,8 @@
 @theme {
-  --color-diff-remove: rgba(244, 63, 94, 0.16);
-  --color-diff-add: rgba(16, 185, 129, 0.16);
-  --color-diff-remove-symbol: rgb(203, 118, 118);
-  --color-diff-add-symbol: rgb(61, 214, 140);
+  --color-diff-remove: color-mix(in oklch, var(--foreground) 7%, transparent);
+  --color-diff-add: color-mix(in oklch, var(--foreground) 12%, transparent);
+  --color-diff-remove-symbol: var(--muted-foreground);
+  --color-diff-add-symbol: var(--foreground);
 }
 
 .shiki span {
@@ -76,15 +76,17 @@ pre.shiki .highlighted {
 
 /* Lowlight / Highlight.js Diff Support */
 .hljs-addition {
-  background-color: rgba(16, 185, 129, 0.15) !important;
-  color: rgb(34, 197, 94) !important;
+  background-color: color-mix(in oklch, var(--foreground) 10%, transparent) !important;
+  color: var(--foreground) !important;
+  font-weight: 600;
   display: inline-block;
   width: 100%;
 }
 
 .hljs-deletion {
-  background-color: rgba(244, 63, 94, 0.15) !important;
-  color: rgb(244, 63, 94) !important;
+  background-color: color-mix(in oklch, var(--foreground) 6%, transparent) !important;
+  color: var(--muted-foreground) !important;
+  text-decoration: line-through;
   display: inline-block;
   width: 100%;
 }
