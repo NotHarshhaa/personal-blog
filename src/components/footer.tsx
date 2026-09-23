@@ -91,7 +91,7 @@ const Footer = () => {
 
   return (
     <footer className="relative z-10 mt-auto">
-      <div className="mx-auto max-w-[90rem] px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
+      <div className="mx-auto max-w-[90rem] px-4 pt-8 pb-4 sm:px-6 sm:py-14 lg:px-8">
         <Frame>
           <FrameHeader label="SYSTEM ARCHITECTURE & FOOTER // v2.4">
             <div className="flex items-center gap-3 font-mono text-[10px] text-muted-foreground">

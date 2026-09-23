@@ -41,7 +41,7 @@ const Menu = ({ user }: MenuProps) => {
     return (
       <Link
         href={`/login?redirect=${pathname}`}
-        className={cn(buttonVariants({ variant: "outline", size: "sm" }))}
+        className={cn(buttonVariants({ variant: "outline", size: "sm" }), "px-2.5 text-xs")}
       >
         Log in
       </Link>

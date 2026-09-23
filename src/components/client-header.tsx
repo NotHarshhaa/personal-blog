@@ -398,11 +398,11 @@ const ClientHeader = ({ user }: Props) => {
       )}
     >
       <CornerBrackets />
-      <div className="mx-auto flex min-h-14 max-w-[90rem] items-center justify-between gap-3 px-4 py-2 sm:px-6 lg:px-8">
+      <div className="mx-auto flex min-h-14 max-w-[90rem] items-center justify-between gap-2 px-3 py-2 sm:gap-3 sm:px-6 lg:px-8">
         <div className="flex items-center gap-2.5 min-w-0 flex-1 sm:flex-none">
           <Link
             href="/"
-            className="bracket-title group flex min-w-0 items-center gap-2.5 pr-2 sm:pr-0"
+            className="bracket-title group flex min-w-0 items-center gap-1.5 p-0 sm:gap-2.5 sm:px-2 sm:pr-2"
           >
             <Image
               src="/logo.svg"
@@ -412,7 +412,7 @@ const ClientHeader = ({ user }: Props) => {
               className="size-7 shrink-0 border border-border transition-transform group-hover:scale-105"
             />
             <div className="min-w-0 leading-tight">
-              <p className="text-[13px] font-bold tracking-tight sm:text-sm truncate">
+              <p className="text-[12px] font-bold tracking-tight sm:text-sm truncate">
                 <span className="bg-gradient-to-r from-foreground via-foreground to-muted-foreground bg-clip-text text-transparent">
                   {SITE_NAME}
                 </span>
@@ -508,7 +508,7 @@ const ClientHeader = ({ user }: Props) => {
           <button
             type="button"
             onClick={() => setIsCommandOpen(true)}
-            className="flex size-9 items-center justify-center border border-border text-muted-foreground hover:bg-muted hover:text-foreground md:hidden cursor-pointer"
+            className="hidden size-9 items-center justify-center border border-border text-muted-foreground hover:bg-muted hover:text-foreground sm:flex md:hidden cursor-pointer"
             aria-label="Open search command palette"
           >
             <Search className="size-4" />
@@ -530,7 +530,7 @@ const ClientHeader = ({ user }: Props) => {
           <button
             type="button"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="flex size-9 items-center justify-center border border-border text-muted-foreground hover:bg-muted hover:text-foreground md:hidden"
+            className="flex size-8 items-center justify-center border border-border text-muted-foreground hover:bg-muted hover:text-foreground sm:size-9 md:hidden"
             aria-label="Toggle menu"
             aria-expanded={isMobileMenuOpen}
           >
