@@ -37,6 +37,8 @@ const PostCard = memo((props: PostCardProps) => {
   const href = `/${published ? 'posts' : 'editor'}/${id}`
   const actionLabel = published ? 'Read article' : 'Edit draft'
   const readTime = readingTime(description ?? title).text
+  const isNew =
+    published && Date.now() - createdAt.getTime() < 7 * 24 * 60 * 60 * 1000
 
   return (
     <article className="hover-fill group/card relative flex flex-col justify-between border border-border bg-card transition-colors duration-150 hover:border-foreground/60">
@@ -79,6 +81,14 @@ const PostCard = memo((props: PostCardProps) => {
           >
             <h2 className="font-heading text-lg font-medium tracking-tight text-foreground transition-colors group-hover/title:underline sm:text-xl">
               {title}
+              {isNew && (
+                <span
+                  className="ml-2 inline-block translate-y-[-1px] border border-foreground bg-foreground px-1 py-px align-middle font-mono text-[9px] font-semibold tracking-widest text-background"
+                  aria-label="Published within the last week"
+                >
+                  NEW
+                </span>
+              )}
             </h2>
             {description && (
               <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-muted-foreground sm:text-sm">
