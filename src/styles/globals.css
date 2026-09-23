@@ -151,8 +151,9 @@ h6:not([data-slot*='title'])::after,
 /* Skip link for accessibility */
 .skip-link {
   position: absolute;
-  top: -40px;
+  top: 0;
   left: 6px;
+  transform: translateY(-110%);
   background: var(--primary);
   color: var(--primary-foreground);
   padding: 8px;
@@ -161,7 +162,7 @@ h6:not([data-slot*='title'])::after,
 }
 
 .skip-link:focus {
-  top: 6px;
+  transform: translateY(6px);
 }
 
 /* Fix prose spacing for better readability */
