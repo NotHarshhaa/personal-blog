@@ -287,8 +287,8 @@ const PostPage = async (props: PostPageProps) => {
           </FrameHeader>
 
           <FrameBody>
-            <div className="flex flex-col lg:flex-row gap-8 xl:gap-12 items-start">
-              <div className="prose dark:prose-invert max-w-none min-w-0 flex-1">
+            <div className="flex flex-col lg:flex-row lg:items-start gap-8 xl:gap-12">
+              <div className="prose dark:prose-invert w-full max-w-full min-w-0 flex-1">
                 <Editor options={{ content, editable: false }} />
               </div>
               <TableOfContents content={content ?? ''} />

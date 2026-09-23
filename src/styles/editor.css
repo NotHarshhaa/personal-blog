@@ -12,6 +12,26 @@
   outline: none;
 }
 
+/* —— Tiptap React node wrappers must never size the page wider than the viewport —— */
+.react-renderer {
+  max-width: 100%;
+}
+
+.react-renderer.node-codeBlock {
+  display: block;
+  width: 100%;
+}
+
+.ProseMirror {
+  overflow-wrap: break-word;
+  min-width: 0;
+}
+
+.prose .table-wrapper,
+.tableWrapper {
+  max-width: 100%;
+}
+
 .ProseMirror:not([contenteditable='true']) {
   min-height: 0 !important;
 }
