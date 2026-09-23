@@ -65,7 +65,8 @@ const RelatedPosts = async ({
             <Link
               key={post.id}
               href={`/posts/${post.id}`}
-              className="group/related flex items-center gap-3.5 p-4 transition-colors hover:bg-muted/30 sm:gap-4 sm:p-5"
+              data-hover-label="Read"
+              className="hover-hatch group/related flex items-center gap-3.5 p-4 transition-colors sm:gap-4 sm:p-5"
             >
               {/* Compact technical preview banner */}
               <div className="flex aspect-[16/9] w-24 shrink-0 flex-col justify-between overflow-hidden border border-border/80 bg-muted/40 p-1.5 font-mono text-[8px] tracking-widest text-muted-foreground uppercase transition-colors group-hover/related:bg-muted/70 sm:w-36 sm:p-2">

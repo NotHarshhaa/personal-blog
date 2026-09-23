@@ -257,7 +257,11 @@ const Footer = () => {
               <span>© {new Date().getFullYear()} HARSHHAA REDDY. ALL RIGHTS RESERVED.</span>
             </div>
             <div className="flex items-center gap-3 sm:gap-4">
-              <Link href="/privacy" className="hover:text-foreground transition-colors underline underline-offset-4">
+              <Link
+                href="/privacy"
+                data-hover-label="Open"
+                className="hover-hatch px-1 py-0.5 hover:text-foreground transition-colors underline underline-offset-4"
+              >
                 Privacy Policy
               </Link>
               <span className="text-border">•</span>
@@ -265,7 +269,8 @@ const Footer = () => {
                 href="/feed.xml"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-foreground transition-colors inline-flex items-center gap-1"
+                data-hover-label="Open"
+                className="hover-hatch px-1 py-0.5 hover:text-foreground transition-colors inline-flex items-center gap-1"
               >
                 <RssIcon className="size-3 text-foreground" />
                 RSS
@@ -274,7 +279,8 @@ const Footer = () => {
               <button
                 type="button"
                 onClick={scrollToTop}
-                className="inline-flex items-center gap-1 text-foreground hover:underline cursor-pointer"
+                data-hover-label="Top"
+                className="hover-hatch inline-flex items-center gap-1 px-1 py-0.5 text-foreground hover:underline cursor-pointer"
               >
                 <span>TOP</span>
                 <ArrowUp className="size-3" />

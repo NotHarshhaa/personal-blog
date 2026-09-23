@@ -399,7 +399,7 @@ const ClientHeader = ({ user }: Props) => {
     >
       <CornerBrackets />
       <div className="mx-auto flex min-h-14 max-w-[90rem] items-center justify-between gap-2 px-3 py-2 sm:gap-3 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-2.5 min-w-0 flex-1 sm:flex-none">
+        <div className="flex items-center gap-2.5 min-w-0 flex-1">
           <Link
             href="/"
             className="bracket-title group flex min-w-0 items-center gap-1.5 p-0 sm:gap-2.5 sm:px-2 sm:pr-2"
@@ -437,33 +437,35 @@ const ClientHeader = ({ user }: Props) => {
             <button
               type="button"
               onClick={() => setIsCommandOpen(true)}
-              className="flex items-center gap-2 border border-border/80 bg-background/60 px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:border-foreground hover:bg-muted/50 hover:text-foreground cursor-pointer"
+              data-hover-label="Search"
+              className="hover-hatch hidden lg:flex items-center gap-2 border border-border/80 bg-background/60 px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:border-foreground hover:bg-muted/50 hover:text-foreground cursor-pointer"
               aria-label="Search articles and run commands (Cmd+K)"
               title="Quick Search (⌘K)"
             >
               <Search className="size-3.5" />
-              <span className="hidden lg:inline font-mono text-xs">Search...</span>
+              <span className="hidden xl:inline font-mono text-xs">Search...</span>
               <kbd className="rounded-none border border-border bg-muted px-1.5 py-0.5 font-mono text-[10px] font-semibold text-muted-foreground">
                 ⌘K
               </kbd>
             </button>
 
-            <nav className="hidden items-center gap-1 sm:flex md:gap-1.5" aria-label="Main Navigation">
+            <nav className="hidden items-center gap-1 md:gap-1.5 lg:flex" aria-label="Main Navigation">
               {NAV_ITEMS.map((item) => {
                 const isActive = item.match(pathname)
                 return (
                   <Link
-                    key={item.href}
-                    href={item.href}
-                    className={cn(
-                      'border px-2.5 py-1 font-mono text-xs transition-colors duration-150',
-                      isActive
-                        ? 'border-foreground/80 bg-foreground text-background font-semibold shadow-2xs'
-                        : 'border-transparent text-muted-foreground hover:border-border hover:bg-muted/60 hover:text-foreground'
-                    )}
-                  >
-                    {item.label}
-                  </Link>
+                      key={item.href}
+                      href={item.href}
+                      data-hover-label="Navigate"
+                      className={cn(
+                        'hover-hatch border px-2 py-1 font-mono text-xs transition-colors duration-150 xl:px-2.5',
+                        isActive
+                          ? 'border-foreground/80 bg-foreground text-background font-semibold shadow-2xs'
+                          : 'border-transparent text-muted-foreground hover:border-border hover:bg-muted/60 hover:text-foreground'
+                      )}
+                    >
+                      {item.label}
+                    </Link>
                 )
               })}
             </nav>
@@ -473,8 +475,9 @@ const ClientHeader = ({ user }: Props) => {
                 ref={notificationButtonRef}
                 type="button"
                 onClick={() => setShowNotifications(!showNotifications)}
+                data-hover-label="Open"
                 className={cn(
-                  'relative flex size-9 items-center justify-center border text-muted-foreground hover:border-border hover:bg-muted hover:text-foreground cursor-pointer transition-colors',
+                  'hover-hatch relative flex size-9 items-center justify-center border text-muted-foreground hover:border-border hover:bg-muted hover:text-foreground cursor-pointer transition-colors',
                   showNotifications ? 'border-border bg-muted text-foreground' : 'border-transparent'
                 )}
                 aria-label="Show notifications"
@@ -508,7 +511,8 @@ const ClientHeader = ({ user }: Props) => {
           <button
             type="button"
             onClick={() => setIsCommandOpen(true)}
-            className="hidden size-9 items-center justify-center border border-border text-muted-foreground hover:bg-muted hover:text-foreground sm:flex md:hidden cursor-pointer"
+            data-hover-label="Search"
+            className="hover-hatch hidden size-9 items-center justify-center border border-border text-muted-foreground hover:bg-muted hover:text-foreground sm:flex lg:hidden cursor-pointer"
             aria-label="Open search command palette"
           >
             <Search className="size-4" />
@@ -530,7 +534,8 @@ const ClientHeader = ({ user }: Props) => {
           <button
             type="button"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="flex size-8 items-center justify-center border border-border text-muted-foreground hover:bg-muted hover:text-foreground sm:size-9 md:hidden"
+            data-hover-label="Menu"
+            className="hover-hatch flex size-8 items-center justify-center border border-border text-muted-foreground hover:bg-muted hover:text-foreground sm:size-9 lg:hidden"
             aria-label="Toggle menu"
             aria-expanded={isMobileMenuOpen}
           >
@@ -552,7 +557,7 @@ const ClientHeader = ({ user }: Props) => {
       )}
 
       {isMobileMenuOpen && (
-        <div className="border-t border-border md:hidden">
+        <div className="border-t border-border lg:hidden">
           <div className="relative mx-auto max-w-[90rem] px-4 py-4 sm:px-6">
             <div className="relative border border-border bg-card">
               <span
@@ -595,7 +600,7 @@ const ClientHeader = ({ user }: Props) => {
                           href={item.href}
                           onClick={() => setIsMobileMenuOpen(false)}
                           className={cn(
-                            'flex items-center justify-between border p-2.5 transition-colors',
+                            'hover-fill flex items-center justify-between border p-2.5 transition-colors',
                             isActive
                               ? 'border-foreground bg-foreground text-background font-semibold'
                               : 'border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground'

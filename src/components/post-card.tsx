@@ -39,7 +39,7 @@ const PostCard = memo((props: PostCardProps) => {
   const readTime = readingTime(description ?? title).text
 
   return (
-    <article className="group/card relative flex flex-col justify-between border border-border bg-card transition-colors duration-150 hover:border-foreground/60">
+    <article className="hover-fill group/card relative flex flex-col justify-between border border-border bg-card transition-colors duration-150 hover:border-foreground/60">
       <CornerBrackets className="border-foreground/80 opacity-0 transition-opacity duration-150 group-hover/card:opacity-100" />
 
       {/* Technical Preview Banner (Hacktron style) */}
@@ -150,7 +150,7 @@ const PostCard = memo((props: PostCardProps) => {
                       }
                     }}
                     className={cn(
-                      'relative z-20 inline-flex items-center gap-1 border px-2 py-0.5 font-mono text-[10px] tracking-wider uppercase transition-all duration-150 cursor-pointer',
+                      'hover-fill relative z-20 inline-flex items-center gap-1 border px-2 py-0.5 font-mono text-[10px] tracking-wider uppercase transition-all duration-150 cursor-pointer',
                       isSelected
                         ? 'border-foreground bg-foreground text-background font-semibold'
                         : 'border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground'
