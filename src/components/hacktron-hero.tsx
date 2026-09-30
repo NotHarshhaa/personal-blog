@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { RssIcon } from 'lucide-react'
 import { CornerBrackets } from '@/components/frame'
 import TypingAnimation from '@/components/typing-animation'
+import { ViewsBadge } from '@/components/views-badge'
 import { SITE_NAME, SITE_TOPICS } from '@/lib/constants'
 
 const TYPING_WORDS = [
@@ -27,9 +28,7 @@ export const HacktronHero = () => {
           <span className="hidden text-border sm:inline">|</span>
           <span className="hidden sm:inline">PLATFORM DISPATCH</span>
         </div>
-        <div className="hidden font-mono text-muted-foreground/60 md:block select-none">
-          % ( . ( )@) / . % ( % . . / @ ) / @ / ,% , % @
-        </div>
+        <ViewsBadge className="shrink-0 normal-case" />
       </div>
 
       {/* Hero Body with Cyber Matrix Dither Backdrop */}

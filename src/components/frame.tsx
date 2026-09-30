@@ -11,17 +11,17 @@ type CornerBracketsProps = {
 export function CornerBrackets({ className, visible = true }: CornerBracketsProps) {
   const visibility = visible ? 'opacity-100' : 'opacity-0'
   const sharedClassName = cn(
-    'pointer-events-none absolute size-3 border-foreground/70 transition-opacity sm:size-3.5',
+    'pointer-events-none absolute size-2 border-muted-foreground/50 transition-opacity',
     visibility,
     className
   )
 
   return (
     <>
-      <span aria-hidden className={cn(sharedClassName, '-top-px -left-px z-20 border-t-2 border-l-2')} />
-      <span aria-hidden className={cn(sharedClassName, '-top-px -right-px z-20 border-t-2 border-r-2')} />
-      <span aria-hidden className={cn(sharedClassName, '-bottom-px -left-px z-20 border-b-2 border-l-2')} />
-      <span aria-hidden className={cn(sharedClassName, '-right-px -bottom-px z-20 border-b-2 border-r-2')} />
+      <span aria-hidden className={cn(sharedClassName, '-top-px -left-px z-20 border-t border-l')} />
+      <span aria-hidden className={cn(sharedClassName, '-top-px -right-px z-20 border-t border-r')} />
+      <span aria-hidden className={cn(sharedClassName, '-bottom-px -left-px z-20 border-b border-l')} />
+      <span aria-hidden className={cn(sharedClassName, '-right-px -bottom-px z-20 border-b border-r')} />
     </>
   )
 }
@@ -74,8 +74,8 @@ export function FrameHeader({
       {...props}
     >
       {label && (
-        <span className="bracket-title text-[11px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
-          {label}
+        <span className="bracket-title px-1.5 py-0.5 font-heading text-xl font-medium tracking-tight text-foreground sm:text-2xl md:text-3xl">
+          {label.endsWith('.') ? label : `${label}.`}
         </span>
       )}
       {children}
@@ -111,26 +111,26 @@ export function FrameGrid({
     <div className={cn('relative grid sm:grid-cols-2', className)}>
       <span
         aria-hidden
-        className="pointer-events-none absolute -top-px -left-px z-20 size-3 border-t-2 border-l-2 border-foreground/45"
+        className="pointer-events-none absolute -top-px -left-px z-20 size-2 border-t border-l border-muted-foreground/50"
       />
       <span
         aria-hidden
-        className="pointer-events-none absolute -top-px -right-px z-20 size-3 border-t-2 border-r-2 border-foreground/45"
+        className="pointer-events-none absolute -top-px -right-px z-20 size-2 border-t border-r border-muted-foreground/50"
       />
       <span
         aria-hidden
-        className="pointer-events-none absolute -bottom-px -left-px z-20 size-3 border-b-2 border-l-2 border-foreground/45"
+        className="pointer-events-none absolute -bottom-px -left-px z-20 size-2 border-b border-l border-muted-foreground/50"
       />
       <span
         aria-hidden
-        className="pointer-events-none absolute -right-px -bottom-px z-20 size-3 border-b-2 border-r-2 border-foreground/45"
+        className="pointer-events-none absolute -right-px -bottom-px z-20 size-2 border-r border-b border-muted-foreground/50"
       />
       <span
         aria-hidden
         className="pointer-events-none absolute top-1/2 left-1/2 z-20 hidden size-3 -translate-x-1/2 -translate-y-1/2 sm:block"
       >
-        <span className="absolute top-1/2 left-0 h-px w-full -translate-y-1/2 bg-foreground/45" />
-        <span className="absolute top-0 left-1/2 h-full w-px -translate-x-1/2 bg-foreground/45" />
+        <span className="absolute top-1/2 left-0 h-px w-full -translate-y-1/2 bg-muted-foreground/50" />
+        <span className="absolute top-0 left-1/2 h-full w-px -translate-x-1/2 bg-muted-foreground/50" />
       </span>
       {children}
     </div>
