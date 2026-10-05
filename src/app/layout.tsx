@@ -2,8 +2,6 @@ import type { Metadata, Viewport } from 'next'
 
 import '@/styles/globals.css'
 
-import { Toaster } from '@/components/ui/toaster'
-import { cn } from '@/utils'
 import { Instrument_Sans, Space_Grotesk } from 'next/font/google'
 
 import Footer from '@/components/footer'
@@ -11,13 +9,10 @@ import Header from '@/components/header'
 import HudFooter from '@/components/hud-footer'
 import ScrollToTop from '@/components/scroll-to-top'
 import TopTicker from '@/components/top-ticker'
-import {
-  SITE_DESCRIPTION,
-  SITE_KEYWORDS,
-  SITE_NAME,
-  SITE_TITLE,
-  SITE_URL
-} from '@/lib/constants'
+import { Toaster } from '@/components/ui/toaster'
+import { env } from '@/env'
+import { SITE_DESCRIPTION, SITE_KEYWORDS, SITE_NAME, SITE_TITLE, SITE_URL } from '@/lib/constants'
+import { cn } from '@/utils'
 
 import Providers from './providers'
 
@@ -121,9 +116,9 @@ export const metadata: Metadata = {
     ]
   },
   verification: {
-    google: process.env.GOOGLE_SITE_VERIFICATION,
-    yandex: process.env.YANDEX_VERIFICATION,
-    yahoo: process.env.YAHOO_VERIFICATION
+    google: env.GOOGLE_SITE_VERIFICATION,
+    yandex: env.YANDEX_VERIFICATION,
+    yahoo: env.YAHOO_VERIFICATION
   }
 }
 
@@ -159,7 +154,7 @@ const RootLayout = (props: RootLayoutProps) => {
 
   return (
     <html
-      lang="en-US"
+      lang='en-US'
       className={cn(
         'min-h-screen font-sans antialiased',
         instrumentSans.variable,
@@ -169,23 +164,22 @@ const RootLayout = (props: RootLayoutProps) => {
     >
       <head>
         <script
-          type="application/ld+json"
-          // @ts-ignore: JSON is available in the browser environment
-          dangerouslySetInnerHTML={{ __html: globalThis.JSON.stringify(structuredData) }}
+          type='application/ld+json'
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
       </head>
-      <body className="font-sans antialiased">
-        <a href="#main-content" className="skip-link">
+      <body className='font-sans antialiased'>
+        <a href='#main-content' className='skip-link'>
           Skip to main content
         </a>
         <TopTicker />
         <Providers>
-          <div className="px-4 pt-3 sm:px-6 sm:pt-5 lg:px-8">
+          <div className='px-4 pt-3 sm:px-6 sm:pt-5 lg:px-8'>
             <Header />
           </div>
           <main
-            id="main-content"
-            className="mx-auto min-h-[calc(100vh-14rem)] w-full max-w-[90rem] px-4 pt-6 pb-20 sm:px-6 sm:pt-10 sm:pb-24 lg:px-8"
+            id='main-content'
+            className='mx-auto min-h-[calc(100vh-14rem)] w-full max-w-[90rem] px-4 pt-6 pb-20 sm:px-6 sm:pt-10 sm:pb-24 lg:px-8'
           >
             {children}
           </main>

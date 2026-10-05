@@ -9,7 +9,11 @@ export const env = createEnv({
     DATABASE_URL: z.string().url(),
     GOOGLE_CLIENT_ID: z.string().min(1),
     GOOGLE_CLIENT_SECRET: z.string().min(1),
-    AUTH_SECRET: z.string().min(1)
+    AUTH_SECRET: z.string().min(1),
+    // Optional search-engine ownership verification tokens
+    GOOGLE_SITE_VERIFICATION: z.string().min(1).optional(),
+    YANDEX_VERIFICATION: z.string().min(1).optional(),
+    YAHOO_VERIFICATION: z.string().min(1).optional()
   },
   experimental__runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV
