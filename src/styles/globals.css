@@ -14,8 +14,10 @@
 
   --font-sans: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  --font-heading: var(--font-space-grotesk), var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-display: var(--font-space-grotesk), var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-heading:
+    var(--font-space-grotesk), var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display:
+    var(--font-space-grotesk), var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
 /* Performance optimizations */
@@ -50,7 +52,9 @@ body,
   background-color: color-mix(in oklch, var(--foreground) 24%, transparent);
   border: 1px solid var(--border);
   border-radius: 0px !important;
-  transition: background-color 0.15s ease, border-color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -117,14 +121,46 @@ h6:not([data-slot*='title'])::before,
   content: '';
   pointer-events: none;
   background:
-    linear-gradient(color-mix(in oklch, var(--foreground) 48%, transparent), color-mix(in oklch, var(--foreground) 48%, transparent)) left top / 0.45rem 1px no-repeat,
-    linear-gradient(color-mix(in oklch, var(--foreground) 48%, transparent), color-mix(in oklch, var(--foreground) 48%, transparent)) left top / 1px 0.45rem no-repeat,
-    linear-gradient(color-mix(in oklch, var(--foreground) 48%, transparent), color-mix(in oklch, var(--foreground) 48%, transparent)) right top / 0.45rem 1px no-repeat,
-    linear-gradient(color-mix(in oklch, var(--foreground) 48%, transparent), color-mix(in oklch, var(--foreground) 48%, transparent)) right top / 1px 0.45rem no-repeat,
-    linear-gradient(color-mix(in oklch, var(--foreground) 48%, transparent), color-mix(in oklch, var(--foreground) 48%, transparent)) left bottom / 0.45rem 1px no-repeat,
-    linear-gradient(color-mix(in oklch, var(--foreground) 48%, transparent), color-mix(in oklch, var(--foreground) 48%, transparent)) left bottom / 1px 0.45rem no-repeat,
-    linear-gradient(color-mix(in oklch, var(--foreground) 48%, transparent), color-mix(in oklch, var(--foreground) 48%, transparent)) right bottom / 0.45rem 1px no-repeat,
-    linear-gradient(color-mix(in oklch, var(--foreground) 48%, transparent), color-mix(in oklch, var(--foreground) 48%, transparent)) right bottom / 1px 0.45rem no-repeat;
+    linear-gradient(
+        color-mix(in oklch, var(--foreground) 48%, transparent),
+        color-mix(in oklch, var(--foreground) 48%, transparent)
+      )
+      left top / 0.45rem 1px no-repeat,
+    linear-gradient(
+        color-mix(in oklch, var(--foreground) 48%, transparent),
+        color-mix(in oklch, var(--foreground) 48%, transparent)
+      )
+      left top / 1px 0.45rem no-repeat,
+    linear-gradient(
+        color-mix(in oklch, var(--foreground) 48%, transparent),
+        color-mix(in oklch, var(--foreground) 48%, transparent)
+      )
+      right top / 0.45rem 1px no-repeat,
+    linear-gradient(
+        color-mix(in oklch, var(--foreground) 48%, transparent),
+        color-mix(in oklch, var(--foreground) 48%, transparent)
+      )
+      right top / 1px 0.45rem no-repeat,
+    linear-gradient(
+        color-mix(in oklch, var(--foreground) 48%, transparent),
+        color-mix(in oklch, var(--foreground) 48%, transparent)
+      )
+      left bottom / 0.45rem 1px no-repeat,
+    linear-gradient(
+        color-mix(in oklch, var(--foreground) 48%, transparent),
+        color-mix(in oklch, var(--foreground) 48%, transparent)
+      )
+      left bottom / 1px 0.45rem no-repeat,
+    linear-gradient(
+        color-mix(in oklch, var(--foreground) 48%, transparent),
+        color-mix(in oklch, var(--foreground) 48%, transparent)
+      )
+      right bottom / 0.45rem 1px no-repeat,
+    linear-gradient(
+        color-mix(in oklch, var(--foreground) 48%, transparent),
+        color-mix(in oklch, var(--foreground) 48%, transparent)
+      )
+      right bottom / 1px 0.45rem no-repeat;
 }
 
 h1:not([data-slot*='title'])::after,
@@ -396,7 +432,7 @@ html {
 @media (max-width: 768px) {
   button,
   a,
-  [role="button"] {
+  [role='button'] {
     min-height: 44px;
     min-width: 44px;
   }
@@ -521,120 +557,159 @@ a:not([class]):hover {
   color: var(--foreground) !important;
 }
 
+/* ── Syntax highlighting (lowlight / highlight.js classes) ──────────────────
+   Dual theme ported from the reference portfolio: GitHub Light in light mode,
+   Vesper (by Rauno Freiberg) in dark mode. Only token colors are themed —
+   surfaces stay on the blog's card/background tokens. */
+
+:root {
+  --code-fg: #1f2328;
+  --code-comment: #6a737d;
+  --code-keyword: #d73a49;
+  --code-string: #032f62;
+  --code-constant: #005cc5;
+  --code-attr: #005cc5;
+  --code-entity: #6f42c1;
+  --code-builtin: #e36209;
+  --code-tag: #22863a;
+  --code-section: #005cc5;
+  --code-bullet: #735c0f;
+  --code-inserted: #22863a;
+  --code-inserted-bg: #f0fff4;
+  --code-deleted: #b31d28;
+  --code-deleted-bg: #ffeef0;
+}
+
+.dark {
+  --code-fg: #ffffff;
+  --code-comment: #8b8b8b;
+  --code-keyword: #a0a0a0;
+  --code-string: #99ffe4;
+  --code-constant: #ffc799;
+  --code-attr: #a0a0a0;
+  --code-entity: #ffc799;
+  --code-builtin: #ffc799;
+  --code-tag: #ffc799;
+  --code-section: #ffc799;
+  --code-bullet: #a0a0a0;
+  --code-inserted: #99ffe4;
+  --code-inserted-bg: rgba(153, 255, 228, 0.08);
+  --code-deleted: #ff8080;
+  --code-deleted-bg: rgba(255, 128, 128, 0.08);
+}
+
 .hljs {
   display: block;
   overflow-x: auto;
   padding: 0;
-  color: var(--foreground);
+  color: var(--code-fg);
   background: transparent !important;
 }
 
 .hljs-comment,
+.hljs-code,
+.hljs-formula,
 .hljs-punctuation {
-  color: var(--muted-foreground);
+  color: var(--code-comment);
   font-style: italic;
-  opacity: 0.85;
 }
 
+/* Keyword / storage / type */
+.hljs-doctag,
+.hljs-keyword,
+.hljs-meta .hljs-keyword,
+.hljs-template-tag,
+.hljs-type,
+.hljs-variable.language_ {
+  color: var(--code-keyword);
+}
+
+/* Entity: functions, methods, classes */
+.hljs-title,
+.hljs-title.class_,
+.hljs-title.class_.inherited__,
+.hljs-title.function_,
+.hljs-function {
+  color: var(--code-entity);
+}
+
+/* Constants: numbers, literals, operators */
+.hljs-literal,
+.hljs-meta,
+.hljs-number,
+.hljs-operator,
+.hljs-params {
+  color: var(--code-constant);
+}
+
+/* Attributes / properties */
 .hljs-attr,
 .hljs-attribute,
-.hljs-meta,
 .hljs-selector-attr,
 .hljs-selector-class,
 .hljs-selector-id {
-  color: color-mix(in oklch, var(--foreground) 80%, transparent);
+  color: var(--code-attr);
 }
 
-.hljs-variable,
-.hljs-literal,
-.hljs-number,
-.hljs-doctag {
-  color: color-mix(in oklch, var(--foreground) 75%, transparent);
-  font-variant-numeric: tabular-nums;
-}
-
-.hljs-params {
-  color: var(--foreground);
-}
-
-.hljs-function {
-  color: var(--foreground);
-  font-weight: 500;
-}
-
-.hljs-class,
-.hljs-tag,
-.hljs-title,
-.hljs-built_in {
-  color: var(--foreground);
-  font-weight: 600;
-}
-
-.hljs-keyword,
-.hljs-type,
-.hljs-builtin-name,
-.hljs-meta-keyword,
-.hljs-template-tag,
-.hljs-template-variable {
-  color: var(--foreground);
-  font-weight: 600;
-}
-
+/* Strings, regexps */
+.hljs-regexp,
 .hljs-string,
-.hljs-undefined {
-  color: color-mix(in oklch, var(--foreground) 85%, transparent);
-}
-
-.hljs-regexp {
-  color: color-mix(in oklch, var(--foreground) 80%, transparent);
-}
-
 .hljs-symbol {
-  color: color-mix(in oklch, var(--foreground) 75%, transparent);
+  color: var(--code-string);
 }
 
-.hljs-bullet {
-  color: color-mix(in oklch, var(--foreground) 75%, transparent);
+/* Built-ins, language variables */
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-class {
+  color: var(--code-builtin);
+}
+
+/* Tags, names, quotes */
+.hljs-name,
+.hljs-quote,
+.hljs-selector-tag,
+.hljs-selector-pseudo {
+  color: var(--code-tag);
 }
 
 .hljs-section {
-  color: var(--foreground);
+  color: var(--code-section);
   font-weight: bold;
 }
 
-.hljs-quote,
-.hljs-name,
-.hljs-selector-tag,
-.hljs-selector-pseudo {
-  color: var(--foreground);
-  font-weight: 500;
+.hljs-bullet {
+  color: var(--code-bullet);
+}
+
+/* Variables */
+.hljs-template-variable,
+.hljs-variable {
+  color: var(--code-fg);
 }
 
 .hljs-emphasis {
-  color: color-mix(in oklch, var(--foreground) 85%, transparent);
+  color: var(--code-fg);
   font-style: italic;
 }
 
 .hljs-strong {
-  color: var(--foreground);
+  color: var(--code-fg);
   font-weight: bold;
 }
 
 .hljs-deletion {
-  color: var(--muted-foreground);
-  text-decoration: line-through;
-  opacity: 0.7;
-  background-color: color-mix(in oklch, var(--foreground) 6%, transparent);
+  color: var(--code-deleted);
+  background-color: var(--code-deleted-bg);
 }
 
 .hljs-addition {
-  color: var(--foreground);
-  font-weight: 600;
-  background-color: color-mix(in oklch, var(--foreground) 10%, transparent);
+  color: var(--code-inserted);
+  background-color: var(--code-inserted-bg);
 }
 
 .hljs-link {
-  color: var(--foreground);
+  color: var(--code-entity);
   text-decoration: underline;
   text-underline-offset: 2px;
 }
