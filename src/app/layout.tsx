@@ -4,6 +4,7 @@ import '@/styles/globals.css'
 
 import { Instrument_Sans, Space_Grotesk } from 'next/font/google'
 
+import BottomBlur from '@/components/bottom-blur'
 import Footer from '@/components/footer'
 import Header from '@/components/header'
 import HudFooter from '@/components/hud-footer'
@@ -186,6 +187,7 @@ const RootLayout = (props: RootLayoutProps) => {
           <Toaster />
           <ScrollToTop />
           <Footer />
+          <BottomBlur />
           <HudFooter />
         </Providers>
       </body>

@@ -437,8 +437,7 @@ const ClientHeader = ({ user }: Props) => {
             <button
               type="button"
               onClick={() => setIsCommandOpen(true)}
-              data-hover-label="Search"
-              className="hover-hatch hidden lg:flex items-center gap-2 border border-border/80 bg-background/60 px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:border-foreground hover:bg-muted/50 hover:text-foreground cursor-pointer"
+              className="hidden lg:flex items-center gap-2 border border-border/80 bg-background/60 px-2.5 py-1 text-xs text-muted-foreground transition-all hover:border-foreground hover:bg-muted/50 hover:text-foreground cursor-pointer"
               aria-label="Search articles and run commands (Cmd+K)"
               title="Quick Search (⌘K)"
             >
@@ -456,9 +455,8 @@ const ClientHeader = ({ user }: Props) => {
                   <Link
                       key={item.href}
                       href={item.href}
-                      data-hover-label="Navigate"
                       className={cn(
-                        'hover-hatch border px-2 py-1 font-mono text-xs transition-colors duration-150 xl:px-2.5',
+                        'border px-2 py-1 font-mono text-xs transition-all duration-150 xl:px-2.5',
                         isActive
                           ? 'border-foreground/80 bg-foreground text-background font-semibold shadow-2xs'
                           : 'border-transparent text-muted-foreground hover:border-border hover:bg-muted/60 hover:text-foreground'
@@ -475,9 +473,8 @@ const ClientHeader = ({ user }: Props) => {
                 ref={notificationButtonRef}
                 type="button"
                 onClick={() => setShowNotifications(!showNotifications)}
-                data-hover-label="Open"
                 className={cn(
-                  'hover-hatch relative flex size-9 items-center justify-center border text-muted-foreground hover:border-border hover:bg-muted hover:text-foreground cursor-pointer transition-colors',
+                  'relative flex size-9 items-center justify-center border text-muted-foreground hover:border-border hover:bg-muted hover:text-foreground cursor-pointer transition-colors',
                   showNotifications ? 'border-border bg-muted text-foreground' : 'border-transparent'
                 )}
                 aria-label="Show notifications"
@@ -511,8 +508,7 @@ const ClientHeader = ({ user }: Props) => {
           <button
             type="button"
             onClick={() => setIsCommandOpen(true)}
-            data-hover-label="Search"
-            className="hover-hatch hidden size-9 items-center justify-center border border-border text-muted-foreground hover:bg-muted hover:text-foreground sm:flex lg:hidden cursor-pointer"
+            className="hidden size-9 items-center justify-center border border-border text-muted-foreground hover:bg-muted hover:text-foreground sm:flex lg:hidden cursor-pointer transition-colors"
             aria-label="Open search command palette"
           >
             <Search className="size-4" />
@@ -534,8 +530,7 @@ const ClientHeader = ({ user }: Props) => {
           <button
             type="button"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            data-hover-label="Menu"
-            className="hover-hatch flex size-8 items-center justify-center border border-border text-muted-foreground hover:bg-muted hover:text-foreground sm:size-9 lg:hidden"
+            className="flex size-8 items-center justify-center border border-border text-muted-foreground hover:bg-muted hover:text-foreground sm:size-9 lg:hidden transition-colors"
             aria-label="Toggle menu"
             aria-expanded={isMobileMenuOpen}
           >

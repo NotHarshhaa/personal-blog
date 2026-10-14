@@ -1,10 +1,12 @@
 import { Suspense } from 'react'
 
 import { Frame, FrameBody, FrameHeader } from '@/components/frame'
+import GithubActivity from '@/components/github-activity'
 import HacktronHero from '@/components/hacktron-hero'
 import Posts from '@/components/posts'
 import PostsPlaceholder from '@/components/posts-placeholder'
 import SiteTelemetry from '@/components/site-telemetry'
+import TechStack from '@/components/tech-stack'
 import TrendingPosts from '@/components/trending-posts'
 import { range } from '@/utils'
 
@@ -25,6 +27,8 @@ const HomePage = () => {
       >
         <SiteTelemetry />
       </Suspense>
+
+      <GithubActivity username="NotHarshhaa" />
 
       <Suspense
         fallback={
@@ -55,6 +59,8 @@ const HomePage = () => {
           <Posts />
         </Suspense>
       </section>
+
+      <TechStack />
     </div>
   )
 }

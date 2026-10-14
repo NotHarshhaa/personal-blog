@@ -51,7 +51,7 @@ const ThemeToggle = ({ className }: { className?: string }) => {
             aria-pressed={active}
             title={label}
             className={cn(
-              'flex size-9 items-center justify-center transition-colors',
+              'flex h-9 min-w-9 items-center justify-center transition-colors cursor-pointer',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-inset',
               active
                 ? 'bg-foreground text-background'

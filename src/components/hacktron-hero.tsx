@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { RssIcon } from 'lucide-react'
+import CipherText from '@/components/cipher-text'
 import { CornerBrackets } from '@/components/frame'
 import TypingAnimation from '@/components/typing-animation'
 import { ViewsBadge } from '@/components/views-badge'
@@ -34,8 +35,10 @@ export const HacktronHero = () => {
       {/* Hero Body with Cyber Matrix Dither Backdrop */}
       <div className="relative flex flex-col justify-between gap-8 p-6 sm:p-8 lg:flex-row lg:items-center lg:p-10">
         <div className="relative z-10 max-w-2xl space-y-4">
-          <h1 className="font-heading text-3xl font-medium tracking-tight text-balance text-foreground sm:text-4xl lg:text-5xl">
-            {SITE_NAME}
+          <h1 className="font-heading text-3xl font-medium tracking-tight text-balance text-foreground sm:text-4xl lg:text-5xl cursor-default">
+            <CipherText scrambleOnHover text={SITE_NAME}>
+              {SITE_NAME}
+            </CipherText>
           </h1>
 
           <p className="font-sans text-sm leading-relaxed text-muted-foreground sm:text-base">

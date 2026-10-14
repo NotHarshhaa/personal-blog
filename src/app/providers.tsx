@@ -3,6 +3,20 @@
 import { SessionProvider } from 'next-auth/react'
 import { ThemeProvider } from 'next-themes'
 
+// Suppress React 19 false-positive warning for next-themes inline theme script
+if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+  const originalConsoleError = console.error
+  console.error = (...args: unknown[]) => {
+    if (
+      typeof args[0] === 'string' &&
+      args[0].includes('Encountered a script tag while rendering React component')
+    ) {
+      return
+    }
+    originalConsoleError.apply(console, args)
+  }
+}
+
 type ProvidesProps = {
   children: React.ReactNode
 }

@@ -96,12 +96,7 @@ img {
   }
 }
 
-h1:not([data-slot*='title']),
-h2:not([data-slot*='title']),
-h3:not([data-slot*='title']),
-h4:not([data-slot*='title']),
-h5:not([data-slot*='title']),
-h6:not([data-slot*='title']) {
+.bracket-title {
   position: relative;
   width: fit-content;
   max-width: 100%;
@@ -109,12 +104,6 @@ h6:not([data-slot*='title']) {
   border: 1px solid transparent;
 }
 
-h1:not([data-slot*='title'])::before,
-h2:not([data-slot*='title'])::before,
-h3:not([data-slot*='title'])::before,
-h4:not([data-slot*='title'])::before,
-h5:not([data-slot*='title'])::before,
-h6:not([data-slot*='title'])::before,
 .bracket-title::before {
   position: absolute;
   inset: -1px;
@@ -163,15 +152,10 @@ h6:not([data-slot*='title'])::before,
       right bottom / 1px 0.45rem no-repeat;
 }
 
-h1:not([data-slot*='title'])::after,
-h2:not([data-slot*='title'])::after,
-h3:not([data-slot*='title'])::after,
-h4:not([data-slot*='title'])::after,
-h5:not([data-slot*='title'])::after,
-h6:not([data-slot*='title'])::after,
 .bracket-title::after {
   display: none;
 }
+
 
 /* —— Route transition + smooth anchor scrolling —— */
 @keyframes page-in {
@@ -299,11 +283,6 @@ html {
   opacity: 1;
 }
 
-.bracket-title {
-  position: relative;
-  padding: 0.3rem 0.55rem;
-}
-
 /* Focus styles for accessibility */
 :focus-visible {
   outline: 2px solid var(--ring);
@@ -428,15 +407,37 @@ html {
   }
 }
 
-/* Better touch targets for mobile */
+/* Accessible touch targets for interactive buttons on mobile without distorting inline links */
 @media (max-width: 768px) {
-  button,
-  a,
-  [role='button'] {
-    min-height: 44px;
-    min-width: 44px;
+  button:not([class*='inline']):not([class*='text-']):not(.prose *):not([role='tab']),
+  input[type='button'],
+  input[type='submit'],
+  input[type='reset'] {
+    min-height: 40px;
   }
 }
+
+/* Ambient bottom blur mask (portfolio-inspired) */
+.bottom-blur {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 80px;
+  z-index: 35;
+  pointer-events: none;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  mask-image: linear-gradient(to bottom, transparent 0%, black 100%);
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 100%);
+}
+
+@media (max-width: 768px) {
+  .bottom-blur {
+    height: 60px;
+  }
+}
+
 
 /* Smooth scrolling improvements */
 html {

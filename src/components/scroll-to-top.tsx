@@ -45,7 +45,7 @@ const ScrollToTop = () => {
       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
       size="icon"
       variant="outline"
-      className="fixed right-4 bottom-24 z-40 size-10 border-border bg-card sm:right-6 sm:bottom-6"
+      className="fixed right-4 bottom-20 z-40 size-10 border-border bg-card shadow-md sm:right-6 sm:bottom-14"
       aria-label={`Scroll to top (${Math.round(progress * 100)}% read)`}
       title={`${Math.round(progress * 100)}% read`}
     >

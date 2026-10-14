@@ -91,7 +91,7 @@ const Footer = () => {
 
   return (
     <footer className="relative z-10 mt-auto">
-      <div className="mx-auto max-w-[90rem] px-4 pt-8 pb-4 sm:px-6 sm:py-14 lg:px-8">
+      <div className="mx-auto max-w-[90rem] px-4 pt-8 pb-12 sm:px-6 sm:pt-14 sm:pb-20 lg:px-8">
         <Frame>
           <FrameHeader label="SYSTEM ARCHITECTURE & FOOTER // v2.4">
             <div className="flex items-center gap-3 font-mono text-[10px] text-muted-foreground">
@@ -259,8 +259,7 @@ const Footer = () => {
             <div className="flex items-center gap-3 sm:gap-4">
               <Link
                 href="/privacy"
-                data-hover-label="Open"
-                className="hover-hatch px-1 py-0.5 hover:text-foreground transition-colors underline underline-offset-4"
+                className="px-1 py-0.5 hover:text-foreground transition-colors underline underline-offset-4"
               >
                 Privacy Policy
               </Link>
@@ -269,8 +268,7 @@ const Footer = () => {
                 href="/feed.xml"
                 target="_blank"
                 rel="noopener noreferrer"
-                data-hover-label="Open"
-                className="hover-hatch px-1 py-0.5 hover:text-foreground transition-colors inline-flex items-center gap-1"
+                className="px-1 py-0.5 hover:text-foreground transition-colors inline-flex items-center gap-1"
               >
                 <RssIcon className="size-3 text-foreground" />
                 RSS
@@ -279,8 +277,7 @@ const Footer = () => {
               <button
                 type="button"
                 onClick={scrollToTop}
-                data-hover-label="Top"
-                className="hover-hatch inline-flex items-center gap-1 px-1 py-0.5 text-foreground hover:underline cursor-pointer"
+                className="inline-flex items-center gap-1 px-1 py-0.5 text-foreground hover:underline cursor-pointer"
               >
                 <span>TOP</span>
                 <ArrowUp className="size-3" />
