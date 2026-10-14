@@ -134,43 +134,14 @@ const Controls = (props: ControlsProps) => {
 
   return (
     <>
-      <div className="hidden items-center gap-1 lg:flex">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => copyUrl(`${SITE_URL}/posts/${id}`)}
-        >
-          <Share2Icon className="size-4" />
-          Share
-        </Button>
-        {isAuthor && (
-          <>
-            <Link
-              href={`/editor/${id}`}
-              className={buttonVariants({ variant: "ghost", size: "sm" })}
-            >
-              <PencilIcon className="size-4" />
-              Edit
-            </Link>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => setIsOpen(true)}
-              className="text-destructive hover:text-destructive"
-            >
-              <Trash2Icon className="size-4" />
-              Delete
-            </Button>
-          </>
-        )}
-      </div>
-      <div className="lg:hidden">
+      <div>
         <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
               size="icon"
-              className="shrink-0"
+              className="size-7 shrink-0 text-muted-foreground hover:text-foreground cursor-pointer transition-colors"
+              aria-label="Post actions"
               onTouchStart={handleTouchStart}
               onTouchEnd={handleTouchEnd}
               onTouchMove={(e) => {
@@ -200,18 +171,19 @@ const Controls = (props: ControlsProps) => {
               <MoreVerticalIcon className="size-4" />
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
+          <DropdownMenuContent align="end" className="w-36 font-mono text-xs">
             <DropdownMenuItem
               onClick={() => copyUrl(`${SITE_URL}/posts/${id}`)}
+              className="cursor-pointer gap-2"
             >
-              <Share2Icon className="mr-2 size-4" />
+              <Share2Icon className="size-3.5" />
               Share
             </DropdownMenuItem>
-            {user && user.id === authorId && (
+            {isAuthor && (
               <>
-                <DropdownMenuItem asChild>
+                <DropdownMenuItem asChild className="cursor-pointer gap-2">
                   <Link href={`/editor/${id}`}>
-                    <PencilIcon className="mr-2 size-4" />
+                    <PencilIcon className="size-3.5" />
                     Edit
                   </Link>
                 </DropdownMenuItem>
@@ -220,8 +192,9 @@ const Controls = (props: ControlsProps) => {
                     setIsOpen(true);
                     setIsDropdownOpen(false);
                   }}
+                  className="cursor-pointer gap-2 text-destructive focus:text-destructive"
                 >
-                  <Trash2Icon className="mr-2 size-4" />
+                  <Trash2Icon className="size-3.5" />
                   Delete
                 </DropdownMenuItem>
               </>

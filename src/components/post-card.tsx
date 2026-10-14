@@ -99,7 +99,7 @@ const PostCard = memo((props: PostCardProps) => {
 
           {/* Author Row */}
           {showAuthor && (
-            <div className="mt-4 flex items-center justify-between gap-2 border-t border-border/60 pt-3">
+            <div className="mt-4 flex items-center justify-between gap-3 border-t border-border/60 pt-3">
               <Link
                 href={`/users/${author.id}`}
                 className="group/author flex min-w-0 flex-1 items-center gap-2 hover:text-foreground"
@@ -111,14 +111,14 @@ const PostCard = memo((props: PostCardProps) => {
                   src={author.image}
                   alt={author.name}
                   userId={author.id}
-                  className="size-5 border border-border"
+                  className="size-5 shrink-0 border border-border"
                 />
                 <div className="flex min-w-0 items-center gap-1.5 font-mono text-xs text-muted-foreground">
-                  <span className="truncate text-foreground font-medium">{author.name}</span>
+                  <span className="font-medium text-foreground whitespace-nowrap">{author.name}</span>
                   <span aria-hidden>·</span>
                   <time
                     dateTime={createdAt.toISOString()}
-                    className="shrink-0 text-[11px]"
+                    className="shrink-0 text-[11px] whitespace-nowrap"
                   >
                     {formatPostDate(createdAt, { relative: true })}
                   </time>
