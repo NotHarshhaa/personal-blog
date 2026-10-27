@@ -7,7 +7,7 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 
 import { subscribeNewsletterAction } from '@/actions/subscribe-newsletter-action'
-import { Frame, FrameGrid, FrameGridCell, FrameHeader } from '@/components/frame'
+import { Frame } from '@/components/frame'
 import { HoverMark } from '@/components/hover-mark'
 
 type Links = Array<{
@@ -18,9 +18,7 @@ type Links = Array<{
 }>
 
 const scrollToTop = () => {
-  if (typeof globalThis.window !== 'undefined') {
-    globalThis.window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
+  window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
 const Footer = () => {
@@ -56,12 +54,12 @@ const Footer = () => {
   ]
 
   const directoryLinks = [
-    { href: '/', code: '01', label: 'Engineering Articles', path: '/posts' },
-    { href: '/snippets', code: '02', label: 'Snippet Vault / TIL', path: '/snippets' },
-    { href: '/roadmaps', code: '03', label: 'DevOps Roadmaps', path: '/roadmaps' },
-    { href: '/bookmarks', code: '04', label: 'Reading Bookmarks', path: '/bookmarks' },
-    { href: '/newsletter', code: '05', label: 'Bi-Weekly Notes', path: '/newsletter' },
-    { href: '/feed.xml', code: '06', label: 'RSS 2.0 Feed', path: '/feed.xml', external: true }
+    { href: '/', code: '01', label: 'Engineering Articles' },
+    { href: '/snippets', code: '02', label: 'Snippet Vault / TIL' },
+    { href: '/roadmaps', code: '03', label: 'DevOps Roadmaps' },
+    { href: '/bookmarks', code: '04', label: 'Reading Bookmarks' },
+    { href: '/newsletter', code: '05', label: 'Bi-Weekly Notes' },
+    { href: '/feed.xml', code: '06', label: 'RSS 2.0 Feed', external: true }
   ]
 
   const handleSubscribe = async (e: React.SyntheticEvent) => {
@@ -89,103 +87,102 @@ const Footer = () => {
     <footer className='relative z-10 mt-auto'>
       <div className='mx-auto max-w-[90rem] px-4 pt-8 pb-12 sm:px-6 sm:pt-14 sm:pb-20 lg:px-8'>
         <Frame>
-          <FrameHeader label='SYSTEM ARCHITECTURE & FOOTER // v2.4'>
-            <div className='text-muted-foreground flex items-center gap-3 font-mono text-[10px]'>
-              <span className='hidden items-center gap-1.5 sm:inline-flex'>
+          {/* Blueprint status strip */}
+          <div className='border-border/80 bg-muted/30 relative overflow-hidden border-b'>
+            <div
+              aria-hidden
+              className='absolute inset-0 [background-image:linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] [mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_80%)] [background-size:14px_14px] opacity-50'
+            />
+            <div className='text-muted-foreground relative flex items-center justify-between gap-2 px-4 py-2 font-mono text-[9px] tracking-widest uppercase sm:px-5'>
+              <span className='inline-flex items-center gap-1.5'>
                 <span className='relative flex size-1.5'>
                   <span className='bg-foreground/50 absolute inline-flex h-full w-full animate-ping rounded-full opacity-75' />
                   <span className='bg-foreground relative inline-flex size-1.5 rounded-full' />
                 </span>
-                <span className='text-foreground font-semibold uppercase'>
-                  ALL_SYSTEMS_OPERATIONAL
-                </span>
+                <span className='text-foreground font-semibold'>All systems operational</span>
               </span>
-              <span className='text-border hidden md:inline'>|</span>
-              <span className='hidden md:inline'>REGION: GLOBAL_EDGE</span>
+              <span className='hidden sm:inline'>Region: global_edge // build v2.4</span>
             </div>
-          </FrameHeader>
+          </div>
 
-          <FrameGrid className='border-t-0'>
+          {/* Main grid */}
+          <div className='grid grid-cols-1 lg:grid-cols-12'>
             {/* CELL 1: ABOUT */}
-            <FrameGridCell
-              label='// 01: ARCHITECTURE'
-              className='border-border border-b p-5 sm:border-r sm:border-b'
-            >
-              <div className='space-y-3'>
-                <p className='text-muted-foreground text-xs leading-relaxed sm:text-sm'>
-                  Production-grade tutorials, architecture blueprints, and field notes on DevOps,
-                  Kubernetes, Terraform, Platform Engineering, AI/ML, and LLMOps. Built for
-                  engineers deploying systems at scale.
-                </p>
-                <div className='flex flex-wrap gap-1.5 font-mono text-[10px]'>
-                  {['K8S', 'TERRAFORM', 'GITOPS', 'LLMOps', 'AI_INFRA', 'AWS', 'DOCKER'].map(
-                    (tag) => (
-                      <span
-                        key={tag}
-                        className='border-border/80 bg-muted/40 text-muted-foreground border px-1.5 py-0.5'
-                      >
-                        #{tag}
-                      </span>
-                    )
-                  )}
-                </div>
-                <p className='text-muted-foreground pt-1 font-mono text-[11px]'>
-                  Author & Maintainer:{' '}
-                  <span className='text-foreground font-semibold'>Harshhaa Reddy</span>
-                </p>
+            <div className='border-border space-y-3 border-b p-5 lg:col-span-4 lg:border-r lg:border-b-0'>
+              <p className='text-muted-foreground font-mono text-[10px] font-semibold tracking-widest uppercase'>
+                {'// 01: Architecture'}
+              </p>
+              <p className='text-muted-foreground text-xs leading-relaxed sm:text-sm'>
+                Production-grade tutorials, architecture blueprints, and field notes on DevOps,
+                Kubernetes, Terraform, Platform Engineering, AI/ML, and LLMOps. Built for engineers
+                deploying systems at scale.
+              </p>
+              <div className='flex flex-wrap gap-1.5 font-mono text-[10px]'>
+                {['K8S', 'TERRAFORM', 'GITOPS', 'LLMOps', 'AI_INFRA', 'AWS', 'DOCKER'].map(
+                  (tag) => (
+                    <span
+                      key={tag}
+                      className='border-border/80 bg-muted/40 text-muted-foreground border px-1.5 py-0.5'
+                    >
+                      #{tag}
+                    </span>
+                  )
+                )}
               </div>
-            </FrameGridCell>
+              <p className='text-muted-foreground pt-1 font-mono text-[11px]'>
+                Author &amp; Maintainer:{' '}
+                <span className='text-foreground font-semibold'>Harshhaa Reddy</span>
+              </p>
+            </div>
 
             {/* CELL 2: DISPATCH NEWSLETTER */}
-            <FrameGridCell
-              label='// 02: DISPATCH'
-              className='border-border border-b p-5 sm:border-b'
-            >
-              <div className='space-y-3'>
-                <p className='text-muted-foreground text-xs leading-relaxed sm:text-sm'>
-                  Receive bi-weekly deep dives into production architecture, zero-downtime
-                  deployments, and distributed systems.
-                </p>
+            <div className='border-border space-y-3 border-b p-5 lg:col-span-4 lg:border-r lg:border-b-0'>
+              <p className='text-muted-foreground font-mono text-[10px] font-semibold tracking-widest uppercase'>
+                {'// 02: Dispatch'}
+              </p>
+              <p className='text-muted-foreground text-xs leading-relaxed sm:text-sm'>
+                Receive bi-weekly deep dives into production architecture, zero-downtime
+                deployments, and distributed systems.
+              </p>
 
-                {isSubscribed ? (
-                  <div className='border-foreground/30 bg-foreground/5 text-foreground flex items-center gap-2 border p-3 font-medium'>
-                    <CheckCircleIcon className='size-4 shrink-0' />
-                    <span className='font-mono text-xs'>
-                      Subscription verified! You are on the dispatch list.
-                    </span>
-                  </div>
-                ) : (
-                  <form onSubmit={handleSubscribe} className='flex flex-col gap-2 sm:flex-row'>
-                    <input
-                      type='email'
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder='engineer@company.com'
-                      className='border-border bg-background text-foreground placeholder:text-muted-foreground/60 focus:border-foreground h-9 min-w-0 flex-1 border px-3 font-mono text-xs transition-colors outline-none'
-                      required
-                    />
-                    <button
-                      type='submit'
-                      disabled={loading}
-                      className='border-border bg-foreground text-background hover:bg-foreground/90 inline-flex h-9 cursor-pointer items-center justify-center gap-1.5 border px-4 font-mono text-xs font-semibold tracking-wider uppercase transition-colors disabled:opacity-50'
-                    >
-                      <SendIcon className='size-3' />
-                      <span>{loading ? 'Joining...' : 'Subscribe'}</span>
-                    </button>
-                  </form>
-                )}
+              {isSubscribed ? (
+                <div className='border-foreground/30 bg-foreground/5 text-foreground flex items-center gap-2 border p-3 font-medium'>
+                  <CheckCircleIcon className='size-4 shrink-0' />
+                  <span className='font-mono text-xs'>
+                    Subscription verified! You are on the dispatch list.
+                  </span>
+                </div>
+              ) : (
+                <form onSubmit={handleSubscribe} className='flex flex-col gap-2 sm:flex-row'>
+                  <input
+                    type='email'
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder='engineer@company.com'
+                    className='border-border bg-background text-foreground placeholder:text-muted-foreground/60 focus:border-foreground h-9 min-w-0 flex-1 border px-3 font-mono text-xs transition-colors outline-none'
+                    required
+                  />
+                  <button
+                    type='submit'
+                    disabled={loading}
+                    className='border-border bg-foreground text-background hover:bg-foreground/90 inline-flex h-9 cursor-pointer items-center justify-center gap-1.5 border px-4 font-mono text-xs font-semibold tracking-wider uppercase transition-colors disabled:opacity-50'
+                  >
+                    <SendIcon className='size-3' />
+                    <span>{loading ? 'Joining...' : 'Subscribe'}</span>
+                  </button>
+                </form>
+              )}
 
-                <p className='text-muted-foreground/70 font-mono text-[10px]'>
-                  🔒 Strictly technical writeups. Zero marketing fluff.
-                </p>
-              </div>
-            </FrameGridCell>
+              <p className='text-muted-foreground/70 font-mono text-[10px]'>
+                🔒 Strictly technical writeups. Zero marketing fluff.
+              </p>
+            </div>
 
-            {/* CELL 3: INDEX */}
-            <FrameGridCell
-              label='// 03: DIRECTORY'
-              className='border-border border-b p-5 sm:border-r sm:border-b-0'
-            >
+            {/* CELL 3: DIRECTORY */}
+            <div className='border-border space-y-3 border-b p-5 lg:col-span-2 lg:border-r lg:border-b-0'>
+              <p className='text-muted-foreground font-mono text-[10px] font-semibold tracking-widest uppercase'>
+                {'// 03: Directory'}
+              </p>
               <ul className='-mx-1 space-y-1 font-mono text-xs'>
                 {directoryLinks.map((item) => (
                   <li key={item.href}>
@@ -195,75 +192,61 @@ const Footer = () => {
                           href={item.href}
                           target='_blank'
                           rel='noopener noreferrer'
-                          className='text-muted-foreground hover:text-foreground group flex items-center justify-between transition-colors'
+                          className='text-muted-foreground group hover:text-foreground flex items-center gap-2 transition-colors'
                         >
-                          <span className='flex items-center gap-2'>
-                            <span className='text-muted-foreground/60'>[{item.code}]</span>
-                            <span className='group-hover:underline'>{item.label}</span>
-                          </span>
-                          <span className='text-muted-foreground/60 text-[10px]'>{item.path}</span>
+                          <span className='text-muted-foreground/60 shrink-0'>[{item.code}]</span>
+                          <span className='truncate group-hover:underline'>{item.label}</span>
                         </a>
                       ) : (
                         <Link
                           href={item.href}
-                          className='text-muted-foreground hover:text-foreground group flex items-center justify-between transition-colors'
+                          className='text-muted-foreground group hover:text-foreground flex items-center gap-2 transition-colors'
                         >
-                          <span className='flex items-center gap-2'>
-                            <span className='text-muted-foreground/60'>[{item.code}]</span>
-                            <span className='group-hover:underline'>{item.label}</span>
-                          </span>
-                          <span className='text-muted-foreground/60 text-[10px]'>{item.path}</span>
+                          <span className='text-muted-foreground/60 shrink-0'>[{item.code}]</span>
+                          <span className='truncate group-hover:underline'>{item.label}</span>
                         </Link>
                       )}
                     </HoverMark>
                   </li>
                 ))}
               </ul>
-            </FrameGridCell>
+            </div>
 
             {/* CELL 4: NETWORK & TELEMETRY */}
-            <FrameGridCell label='// 04: CONNECT' className='p-5 sm:border-b-0'>
-              <div className='space-y-4'>
-                <ul className='-mx-1 space-y-1 font-mono text-xs'>
-                  {links.map((link) => (
-                    <li key={link.href}>
-                      <HoverMark label='Connect' className='px-1 py-1'>
-                        <a
-                          href={link.href}
-                          target='_blank'
-                          rel='noopener noreferrer'
-                          className='text-muted-foreground hover:text-foreground flex items-center justify-between transition-colors'
-                        >
-                          <span className='inline-flex items-center gap-2'>
-                            {link.icon}
-                            <span>{link.label}</span>
-                          </span>
-                          <span className='text-muted-foreground/60 text-[10px]'>
-                            {link.handle}
-                          </span>
-                        </a>
-                      </HoverMark>
-                    </li>
-                  ))}
-                </ul>
+            <div className='space-y-3 p-5 lg:col-span-2'>
+              <p className='text-muted-foreground font-mono text-[10px] font-semibold tracking-widest uppercase'>
+                {'// 04: Connect'}
+              </p>
+              <ul className='-mx-1 space-y-1 font-mono text-xs'>
+                {links.map((link) => (
+                  <li key={link.href}>
+                    <HoverMark label='Connect' className='px-1 py-1'>
+                      <a
+                        href={link.href}
+                        target='_blank'
+                        rel='noopener noreferrer'
+                        className='text-muted-foreground hover:text-foreground flex items-center gap-2 transition-colors'
+                      >
+                        {link.icon}
+                        <span className='truncate'>{link.label}</span>
+                      </a>
+                    </HoverMark>
+                  </li>
+                ))}
+              </ul>
 
-                <div className='border-border/80 bg-muted/20 space-y-1 border p-2.5 font-mono text-[10px]'>
-                  <div className='text-muted-foreground flex justify-between'>
-                    <span>PLATFORM</span>
-                    <span className='text-foreground font-semibold'>NEXT.JS 15 // DRIZZLE</span>
-                  </div>
-                  <div className='text-muted-foreground flex justify-between'>
-                    <span>DATABASE</span>
-                    <span className='text-foreground font-semibold'>POSTGRESQL // EDGE</span>
-                  </div>
-                  <div className='text-muted-foreground flex justify-between'>
-                    <span>AVAILABILITY</span>
-                    <span className='text-foreground font-semibold'>99.98% UPTIME</span>
-                  </div>
-                </div>
+              <div className='flex flex-wrap gap-1.5 pt-1 font-mono text-[9px]'>
+                {['NEXT.JS 15', 'DRIZZLE', 'POSTGRESQL'].map((tech) => (
+                  <span
+                    key={tech}
+                    className='border-border/80 bg-muted/40 text-muted-foreground border px-1.5 py-0.5'
+                  >
+                    {tech}
+                  </span>
+                ))}
               </div>
-            </FrameGridCell>
-          </FrameGrid>
+            </div>
+          </div>
 
           {/* SUB-FOOTER SYSTEM BAR */}
           <div className='border-border text-muted-foreground bg-muted/10 flex flex-col items-center justify-between gap-3 border-t px-4 py-3 font-mono text-[11px] sm:flex-row sm:px-5'>

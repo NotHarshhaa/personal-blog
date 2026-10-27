@@ -20,11 +20,11 @@ import NewPostButton from './new-post-button.lazy'
 import ThemeToggle from './theme-toggle'
 
 const NAV_ITEMS = [
-  { href: '/', label: '[posts]', match: (p: string) => p === '/' || p.startsWith('/posts') },
-  { href: '/snippets', label: '[vault]', match: (p: string) => p.startsWith('/snippets') },
-  { href: '/roadmaps', label: '[roadmaps]', match: (p: string) => p.startsWith('/roadmaps') },
-  { href: '/bookmarks', label: '[bookmarks]', match: (p: string) => p.startsWith('/bookmarks') },
-  { href: '/newsletter', label: '[dispatch]', match: (p: string) => p.startsWith('/newsletter') }
+  { href: '/', label: 'Posts', match: (p: string) => p === '/' || p.startsWith('/posts') },
+  { href: '/snippets', label: 'Vault', match: (p: string) => p.startsWith('/snippets') },
+  { href: '/roadmaps', label: 'Roadmaps', match: (p: string) => p.startsWith('/roadmaps') },
+  { href: '/bookmarks', label: 'Bookmarks', match: (p: string) => p.startsWith('/bookmarks') },
+  { href: '/newsletter', label: 'Dispatch', match: (p: string) => p.startsWith('/newsletter') }
 ]
 
 type Props = {
@@ -290,7 +290,7 @@ const ClientHeader = ({ user }: Props) => {
         <div className='flex items-center gap-2'>
           <span className='bg-foreground size-1.5 animate-pulse rounded-full' />
           <h2 className='text-foreground text-[11px] font-bold tracking-wider uppercase'>
-            // DISPATCHES
+            {'// DISPATCHES'}
           </h2>
         </div>
         {unread > 0 ? (
@@ -399,10 +399,8 @@ const ClientHeader = ({ user }: Props) => {
               className='border-border size-7 shrink-0 border transition-transform group-hover:scale-105'
             />
             <div className='min-w-0 leading-tight'>
-              <p className='truncate text-[12px] font-bold tracking-tight sm:text-sm'>
-                <span className='from-foreground via-foreground to-muted-foreground bg-gradient-to-r bg-clip-text text-transparent'>
-                  {SITE_NAME}
-                </span>
+              <p className='text-foreground truncate text-[12px] font-bold tracking-tight sm:text-sm'>
+                {SITE_NAME}
               </p>
               <p className='text-muted-foreground font-mono text-[9px] tracking-[0.14em] uppercase sm:text-[10px] sm:tracking-[0.16em]'>
                 by Harshhaa
@@ -420,11 +418,11 @@ const ClientHeader = ({ user }: Props) => {
         </div>
 
         <div className='flex shrink-0 items-center gap-1.5 sm:gap-2'>
-          <div className='hidden items-center gap-1.5 sm:gap-2 md:flex'>
+          <div className='hidden items-center gap-1 sm:gap-1.5 md:flex'>
             <button
               type='button'
               onClick={() => setIsCommandOpen(true)}
-              className='border-border/80 bg-background/60 text-muted-foreground hover:border-foreground hover:bg-muted/50 hover:text-foreground hidden cursor-pointer items-center gap-2 border px-2.5 py-1 text-xs transition-all lg:flex'
+              className='border-border/80 bg-background/60 text-muted-foreground hover:border-foreground hover:bg-muted/50 hover:text-foreground hidden h-8 cursor-pointer items-center gap-2 border px-2.5 text-xs transition-all lg:flex'
               aria-label='Search articles and run commands (Cmd+K)'
               title='Quick Search (⌘K)'
             >
@@ -436,7 +434,7 @@ const ClientHeader = ({ user }: Props) => {
             </button>
 
             <nav
-              className='hidden items-center gap-1 md:gap-1.5 lg:flex'
+              className='hidden items-center gap-0.5 md:gap-1 lg:flex'
               aria-label='Main Navigation'
             >
               {NAV_ITEMS.map((item) => {
@@ -446,10 +444,10 @@ const ClientHeader = ({ user }: Props) => {
                     key={item.href}
                     href={item.href}
                     className={cn(
-                      'border px-2 py-1 font-mono text-xs transition-all duration-150 xl:px-2.5',
+                      'px-2 py-1.5 font-mono text-[11px] tracking-wider uppercase transition-colors duration-150 xl:px-2.5',
                       isActive
-                        ? 'border-foreground/80 bg-foreground text-background font-semibold shadow-2xs'
-                        : 'text-muted-foreground hover:border-border hover:bg-muted/60 hover:text-foreground border-transparent'
+                        ? 'bg-foreground text-background font-semibold shadow-2xs'
+                        : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground'
                     )}
                   >
                     {item.label}
@@ -458,13 +456,15 @@ const ClientHeader = ({ user }: Props) => {
               })}
             </nav>
 
+            <div aria-hidden className='bg-border mx-1 hidden h-5 w-px xl:block' />
+
             <div className='relative'>
               <button
                 ref={notificationButtonRef}
                 type='button'
                 onClick={() => setShowNotifications(!showNotifications)}
                 className={cn(
-                  'text-muted-foreground hover:border-border hover:bg-muted hover:text-foreground relative flex size-9 cursor-pointer items-center justify-center border transition-colors',
+                  'text-muted-foreground hover:border-border hover:bg-muted hover:text-foreground relative flex size-8 cursor-pointer items-center justify-center border transition-colors',
                   showNotifications
                     ? 'border-border bg-muted text-foreground'
                     : 'border-transparent'
@@ -488,7 +488,7 @@ const ClientHeader = ({ user }: Props) => {
             </div>
 
             {user?.role === 'admin' && <NewPostButton />}
-            <ThemeToggle />
+            <ThemeToggle variant='icon' />
           </div>
 
           {user?.role === 'admin' && (
@@ -500,7 +500,7 @@ const ClientHeader = ({ user }: Props) => {
           <button
             type='button'
             onClick={() => setIsCommandOpen(true)}
-            className='border-border text-muted-foreground hover:bg-muted hover:text-foreground hidden size-9 cursor-pointer items-center justify-center border transition-colors sm:flex lg:hidden'
+            className='border-border text-muted-foreground hover:bg-muted hover:text-foreground hidden size-8 cursor-pointer items-center justify-center border transition-colors sm:flex lg:hidden'
             aria-label='Open search command palette'
           >
             <Search className='size-4' />
@@ -522,7 +522,7 @@ const ClientHeader = ({ user }: Props) => {
           <button
             type='button'
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className='border-border text-muted-foreground hover:bg-muted hover:text-foreground flex size-8 items-center justify-center border transition-colors sm:size-9 lg:hidden'
+            className='border-border text-muted-foreground hover:bg-muted hover:text-foreground flex size-8 items-center justify-center border transition-colors lg:hidden'
             aria-label='Toggle menu'
             aria-expanded={isMobileMenuOpen}
           >
@@ -583,7 +583,7 @@ const ClientHeader = ({ user }: Props) => {
                           href={item.href}
                           onClick={() => setIsMobileMenuOpen(false)}
                           className={cn(
-                            'hover-fill flex items-center justify-between border p-2.5 transition-colors',
+                            'hover-fill flex items-center justify-between border p-2.5 tracking-wider uppercase transition-colors',
                             isActive
                               ? 'border-foreground bg-foreground text-background font-semibold'
                               : 'border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground'

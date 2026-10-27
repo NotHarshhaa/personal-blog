@@ -12,8 +12,14 @@ const options = [
   { value: 'dark', label: 'Dark', icon: Moon }
 ] as const
 
-const ThemeToggle = ({ className }: { className?: string }) => {
-  const { theme, setTheme } = useTheme()
+type ThemeToggleProps = {
+  className?: string
+  /** 'segmented' shows all three modes; 'icon' is a single light/dark cycle button */
+  variant?: 'segmented' | 'icon'
+}
+
+const ThemeToggle = ({ className, variant = 'segmented' }: ThemeToggleProps) => {
+  const { theme, setTheme, resolvedTheme } = useTheme()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
@@ -21,45 +27,67 @@ const ThemeToggle = ({ className }: { className?: string }) => {
   }, [])
 
   if (!mounted) {
+    if (variant === 'icon') {
+      return (
+        <div
+          className={cn('border-border bg-muted/40 inline-flex size-8 border', className)}
+          aria-hidden
+        />
+      )
+    }
     return (
       <div
-        className={cn(
-          'inline-flex h-9 min-w-[6.75rem] border border-border bg-muted/40',
-          className
-        )}
+        className={cn('border-border bg-muted/40 inline-flex h-8 min-w-[6rem] border', className)}
         aria-hidden
       />
     )
   }
 
+  if (variant === 'icon') {
+    const isDark = resolvedTheme === 'dark'
+    const Icon = isDark ? Moon : Sun
+
+    return (
+      <button
+        type='button'
+        onClick={() => setTheme(isDark ? 'light' : 'dark')}
+        aria-label={`Switch to ${isDark ? 'light' : 'dark'} theme`}
+        title={`${isDark ? 'Dark' : 'Light'} theme — click to switch`}
+        className={cn(
+          'border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground inline-flex size-8 cursor-pointer items-center justify-center border transition-colors',
+          className
+        )}
+      >
+        <Icon className='size-3.5' strokeWidth={2} />
+      </button>
+    )
+  }
+
   return (
     <div
-      role="group"
-      aria-label="Theme"
-      className={cn(
-        'inline-flex h-9 items-stretch border border-border bg-background',
-        className
-      )}
+      role='group'
+      aria-label='Theme'
+      className={cn('border-border bg-background inline-flex h-8 items-stretch border', className)}
     >
       {options.map(({ value, label, icon: Icon }) => {
         const active = theme === value
         return (
           <button
             key={value}
-            type="button"
+            type='button'
             onClick={() => setTheme(value)}
             aria-label={`${label} theme`}
             aria-pressed={active}
             title={label}
             className={cn(
-              'flex h-9 min-w-9 items-center justify-center transition-colors cursor-pointer',
-              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40 focus-visible:ring-inset',
+              'flex h-8 min-w-8 flex-1 cursor-pointer items-center justify-center transition-colors',
+              'focus-visible:ring-ring/40 focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset',
               active
                 ? 'bg-foreground text-background'
                 : 'text-muted-foreground hover:bg-muted hover:text-foreground'
             )}
           >
-            <Icon className="size-3.5" strokeWidth={2} />
+            <Icon className='size-3.5' strokeWidth={2} />
           </button>
         )
       })}
