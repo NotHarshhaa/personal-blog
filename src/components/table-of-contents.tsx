@@ -43,23 +43,23 @@ export const TableOfContents = ({ content, className }: TableOfContentsProps) =>
       )
 
       const extractedHeadings: Heading[] = []
-      headingElements.forEach((heading) => {
+      for (const heading of headingElements) {
         const text = heading.textContent || ''
-        if (!text.trim()) return
+        if (!text.trim()) continue
 
-        const level = parseInt(heading.tagName.charAt(1))
+        const level = Number.parseInt(heading.tagName.charAt(1))
         let id = heading.id
 
         if (!id) {
           id = text
             .toLowerCase()
-            .replace(/[^a-z0-9]+/g, '-')
-            .replace(/^-|-$/g, '')
-            .substring(0, 50)
+            .replaceAll(/[^a-z0-9]+/g, '-')
+            .replaceAll(/^-|-$/g, '')
+            .slice(0, 50)
 
           let uniqueId = id
           let counter = 1
-          while (document.getElementById(uniqueId)) {
+          while (document.querySelector(`#${uniqueId}`)) {
             uniqueId = `${id}-${counter}`
             counter++
           }
@@ -68,7 +68,7 @@ export const TableOfContents = ({ content, className }: TableOfContentsProps) =>
         }
 
         extractedHeadings.push({ id, text: text.trim(), level })
-      })
+      }
 
       setHeadings(extractedHeadings)
       if (extractedHeadings.length > 0 && !activeId && extractedHeadings[0]?.id) {
@@ -92,11 +92,11 @@ export const TableOfContents = ({ content, className }: TableOfContentsProps) =>
 
     const observer = new IntersectionObserver(
       (entries) => {
-        entries.forEach((entry) => {
+        for (const entry of entries) {
           if (entry.isIntersecting) {
             setActiveId(entry.target.id)
           }
-        })
+        }
       },
       {
         rootMargin: '-15% 0% -65% 0%',
@@ -104,20 +104,20 @@ export const TableOfContents = ({ content, className }: TableOfContentsProps) =>
       }
     )
 
-    headings.forEach((heading) => {
-      const element = document.getElementById(heading.id)
+    for (const heading of headings) {
+      const element = document.querySelector(`#${heading.id}`)
       if (element) {
         observer.observe(element)
       }
-    })
+    }
 
     return () => {
-      headings.forEach((heading) => {
-        const element = document.getElementById(heading.id)
+      for (const heading of headings) {
+        const element = document.querySelector(`#${heading.id}`)
         if (element) {
           observer.unobserve(element)
         }
-      })
+      }
     }
   }, [headings])
 
@@ -126,7 +126,7 @@ export const TableOfContents = ({ content, className }: TableOfContentsProps) =>
     id: string
   ) => {
     e.preventDefault()
-    const element = document.getElementById(id)
+    const element = document.querySelector(`#${id}`)
     if (element) {
       const offset = 90
       const elementPosition = element.getBoundingClientRect().top
@@ -144,7 +144,7 @@ export const TableOfContents = ({ content, className }: TableOfContentsProps) =>
 
   const activeIndex = useMemo(() => {
     const idx = headings.findIndex((h) => h.id === activeId)
-    return idx >= 0 ? idx + 1 : 1
+    return idx === -1 ? 1 : idx + 1
   }, [headings, activeId])
 
   if (headings.length === 0) return null

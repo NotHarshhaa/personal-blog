@@ -3,6 +3,18 @@
 import type { User } from "@/db/schema";
 
 import {
+  Loader2Icon,
+  MoreVerticalIcon,
+  PencilIcon,
+  Share2Icon,
+  Trash2Icon,
+} from "lucide-react";
+import Link from "next/link";
+import { useAction } from "next-safe-action/hooks";
+import { useEffect,useRef, useState } from "react";
+
+import { deletePostAction } from "@/actions/delete-post-action";
+import {
   AlertDialog,
   AlertDialogAction,
   AlertDialogCancel,
@@ -19,18 +31,6 @@ import {
   DropdownMenuTrigger,
   toast,
 } from "@/components/ui";
-import {
-  Loader2Icon,
-  MoreVerticalIcon,
-  PencilIcon,
-  Share2Icon,
-  Trash2Icon,
-} from "lucide-react";
-import Link from "next/link";
-import { useAction } from "next-safe-action/hooks";
-import { useState, useRef, useEffect } from "react";
-
-import { deletePostAction } from "@/actions/delete-post-action";
 import { SITE_URL } from "@/lib/constants";
 import { copyUrl } from "@/utils/copy-url";
 
@@ -80,11 +80,11 @@ const Controls = (props: ControlsProps) => {
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    window.addEventListener("touchmove", handleScroll, { passive: true });
+    globalThis.addEventListener("touchmove", handleScroll, { passive: true });
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
-      window.removeEventListener("touchmove", handleScroll);
+      globalThis.removeEventListener("touchmove", handleScroll);
       clearTimeout(scrollTimeout);
     };
   }, [isDropdownOpen]);
@@ -164,7 +164,6 @@ const Controls = (props: ControlsProps) => {
                   e.preventDefault();
                   e.stopPropagation();
                   setIsDropdownOpen(false);
-                  return;
                 }
               }}
             >

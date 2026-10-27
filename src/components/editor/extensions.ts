@@ -49,7 +49,7 @@ const isHtmlContent = (content: unknown): boolean => {
   if (!trimmed) return false
   return (
     (trimmed.startsWith('<') && trimmed.endsWith('>')) ||
-    /^<(!DOCTYPE|html|head|body|p|div|h[1-6]|ul|ol|li|pre|blockquote|table|section|article|span|code|a|strong|em|img)/i.test(
+    /^<[a-z]/i.test(
       trimmed
     )
   )
@@ -58,18 +58,21 @@ const isHtmlContent = (content: unknown): boolean => {
 const SafeMarkdown = Markdown.extend({
   onBeforeCreate() {
     this.parent?.()
-    const storage = this.editor.storage as Record<string, any>
-    if (storage?.markdown?.parser) {
+    const storage = this.editor.storage
+    if (storage.markdown?.parser) {
       const origParse = storage.markdown.parser.parse.bind(storage.markdown.parser)
-      storage.markdown.parser.parse = (content: any, options: any) => {
+      storage.markdown.parser.parse = (
+        content: string,
+        options: Record<string, unknown>
+      ): unknown => {
         if (isHtmlContent(content)) {
           return content
         }
-        return origParse(content, options)
+        return origParse(content, options) as unknown
       }
     }
     // If the initial content was HTML, restore it so markdown-it's parser does not corrupt it
-    const editorOptions = this.editor.options as Record<string, any>
+    const editorOptions = this.editor.options as unknown as Record<string, unknown>
     if (
       editorOptions.initialContent &&
       isHtmlContent(editorOptions.initialContent)

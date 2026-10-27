@@ -16,6 +16,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 
+import { CornerBrackets } from "@/components/frame";
 import {
   Avatar,
   AvatarFallback,
@@ -27,7 +28,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui";
-import { CornerBrackets } from "@/components/frame";
 import { cn } from "@/lib/utils";
 
 type MenuProps = {

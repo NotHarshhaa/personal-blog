@@ -1,5 +1,12 @@
 'use client'
 
+import { AlertTriangle,Loader2Icon } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useAction } from 'next-safe-action/hooks'
+import { useState } from 'react'
+
+import { deleteAccountAction } from '@/actions/delete-account-action'
+import { Frame, FrameBody, FrameHeader } from '@/components/frame'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -16,14 +23,7 @@ import {
   Label,
   toast
 } from '@/components/ui'
-import { Loader2Icon, AlertTriangle } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { useAction } from 'next-safe-action/hooks'
-import { useState } from 'react'
 import { cn } from '@/lib/utils'
-
-import { Frame, FrameBody, FrameHeader } from '@/components/frame'
-import { deleteAccountAction } from '@/actions/delete-account-action'
 
 const Danger = () => {
   const [value, setValue] = useState('')
@@ -41,7 +41,7 @@ const Danger = () => {
   })
   const router = useRouter()
 
-  const handleDeleteAccount = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleDeleteAccount = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
 
     if (value !== 'delete my account') {

@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import {
   Cloud,
   Cpu,
@@ -9,6 +8,7 @@ import {
   Terminal,
   Wrench
 } from 'lucide-react'
+import { useState } from 'react'
 
 import { Frame, FrameHeader } from '@/components/frame'
 import { cn } from '@/utils'

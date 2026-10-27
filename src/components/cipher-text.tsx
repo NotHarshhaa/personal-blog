@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { type ReactNode,useEffect, useRef, useState } from 'react'
 
 const CIPHER_CHARACTERS =
   'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*<>/{}[]='
@@ -22,7 +22,14 @@ export const CipherText = ({
   scrambleOnMount = false,
   className
 }: CipherTextProps) => {
-  const originalText = String(text ?? children ?? '')
+  let originalText: string
+  if (typeof text === 'string') {
+    originalText = text
+  } else if (typeof children === 'string') {
+    originalText = children
+  } else {
+    originalText = ''
+  }
   const [displayText, setDisplayText] = useState(originalText)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
 
@@ -78,7 +85,15 @@ export const CipherText = ({
   return (
     <span
       className={className}
+      role="button"
+      tabIndex={0}
       onMouseEnter={scrambleOnHover ? scramble : undefined}
+      onKeyDown={(e) => {
+        if (scrambleOnHover && (e.key === 'Enter' || e.key === ' ')) {
+          e.preventDefault()
+          scramble()
+        }
+      }}
     >
       {displayText}
     </span>

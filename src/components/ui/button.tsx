@@ -1,5 +1,6 @@
-import { cn } from '@/utils'
 import { cva, type VariantProps } from 'cva'
+
+import { cn } from '@/utils'
 
 const buttonVariants = cva({
   base: [

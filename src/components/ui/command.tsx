@@ -27,12 +27,14 @@ const Command = (props: CommandProps) => {
 type CommandDialogProps = React.ComponentProps<typeof Dialog> & {
   title?: string
   description?: string
+  shouldFilter?: boolean
 }
 
 const CommandDialog = (props: CommandDialogProps) => {
   const {
     title = 'Command Palette',
     description = 'Search for a command to run...',
+    shouldFilter,
     children,
     ...rest
   } = props
@@ -45,7 +47,7 @@ const CommandDialog = (props: CommandDialogProps) => {
       </DialogHeader>
       <DialogContent
         showCloseButton={false}
-        className='overflow-hidden p-0 border border-border bg-card/95 shadow-2xl backdrop-blur-md rounded-none sm:max-w-2xl md:max-w-3xl duration-150'
+        className='border-border bg-card/95 overflow-hidden rounded-none border p-0 shadow-2xl backdrop-blur-md duration-150 sm:max-w-2xl md:max-w-3xl'
       >
         <Command
           className={cn(
@@ -58,7 +60,7 @@ const CommandDialog = (props: CommandDialogProps) => {
             '[&_[cmdk-item]]:px-3 [&_[cmdk-item]]:py-2.5'
           )}
         >
-          {children}
+          <Command shouldFilter={shouldFilter}>{children}</Command>
         </Command>
       </DialogContent>
     </Dialog>
@@ -73,20 +75,20 @@ const CommandInput = (props: CommandInputProps) => {
   return (
     <div
       data-slot='command-input-wrapper'
-      className='flex h-14 items-center gap-3 border-b border-border bg-muted/20 px-4'
+      className='border-border bg-muted/20 flex h-14 items-center gap-3 border-b px-4'
     >
-      <SearchIcon className='size-4 shrink-0 text-muted-foreground' />
+      <SearchIcon className='text-muted-foreground size-4 shrink-0' />
       <CommandPrimitive.Input
         data-slot='command-input'
         className={cn(
-          'flex h-12 w-full bg-transparent text-sm placeholder:text-muted-foreground',
-          'border-0 outline-none ring-0 focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0',
+          'placeholder:text-muted-foreground flex h-12 w-full bg-transparent text-sm',
+          'border-0 ring-0 outline-none focus:ring-0 focus:outline-none focus-visible:ring-0 focus-visible:outline-none',
           'disabled:cursor-not-allowed disabled:opacity-50',
           className
         )}
         {...rest}
       />
-      <kbd className='hidden sm:inline-flex items-center border border-border bg-background px-1.5 py-0.5 font-mono text-[10px] text-muted-foreground uppercase select-none'>
+      <kbd className='border-border bg-background text-muted-foreground hidden items-center border px-1.5 py-0.5 font-mono text-[10px] uppercase select-none sm:inline-flex'>
         ESC
       </kbd>
     </div>
@@ -102,7 +104,7 @@ const CommandList = (props: CommandListProps) => {
     <CommandPrimitive.List
       data-slot='command-list'
       className={cn(
-        'max-h-[380px] sm:max-h-[460px] scroll-py-2 overflow-y-auto overflow-x-hidden p-1',
+        'max-h-[380px] scroll-py-2 overflow-x-hidden overflow-y-auto p-1 sm:max-h-[460px]',
         '[scrollbar-width:thin] [scrollbar-color:var(--border)_transparent]',
         className
       )}
@@ -119,7 +121,7 @@ const CommandEmpty = (props: CommandEmptyProps) => {
   return (
     <CommandPrimitive.Empty
       data-slot='command-empty'
-      className={cn('py-10 text-center text-sm text-muted-foreground', className)}
+      className={cn('text-muted-foreground py-10 text-center text-sm', className)}
       {...rest}
     />
   )
@@ -166,7 +168,7 @@ const CommandItem = (props: CommandItemProps) => {
     <CommandPrimitive.Item
       data-slot='command-item'
       className={cn(
-        'group relative flex cursor-pointer select-none items-center gap-3 border-l-2 border-transparent px-3 py-2 text-sm transition-colors outline-none',
+        'group relative flex cursor-pointer items-center gap-3 border-l-2 border-transparent px-3 py-2 text-sm transition-colors outline-none select-none',
         'data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50',
         'data-[selected=true]:border-foreground data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground',
         '[&_svg]:pointer-events-none [&_svg]:shrink-0',
@@ -185,7 +187,10 @@ const CommandShortcut = (props: CommandShortcutProps) => {
   return (
     <span
       data-slot='command-shortcut'
-      className={cn('text-muted-foreground ml-auto font-mono text-[10px] tracking-wider', className)}
+      className={cn(
+        'text-muted-foreground ml-auto font-mono text-[10px] tracking-wider',
+        className
+      )}
       {...rest}
     />
   )

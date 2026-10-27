@@ -31,10 +31,10 @@ const SettingsPage = async () => {
           ...user,
           createdAt: new Date(user.createdAt),
           updatedAt: new Date(user.updatedAt),
-          github: user.github ?? '',
-          twitter: user.twitter ?? '',
-          linkedin: user.linkedin ?? '',
-          theme: user.theme ?? 'system'
+          github: user.github,
+          twitter: user.twitter,
+          linkedin: user.linkedin,
+          theme: user.theme
         }}
       />
       <Danger />

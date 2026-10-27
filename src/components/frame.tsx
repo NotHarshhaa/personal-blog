@@ -1,14 +1,15 @@
 'use client'
 
-import { cn } from '@/lib/utils'
 import type { HTMLAttributes, ReactNode } from 'react'
+
+import { cn } from '@/lib/utils'
 
 type CornerBracketsProps = {
   className?: string
   visible?: boolean
 }
 
-export function CornerBrackets({ className, visible = true }: CornerBracketsProps) {
+export function CornerBrackets({ className, visible = true }: Readonly<CornerBracketsProps>) {
   const visibility = visible ? 'opacity-100' : 'opacity-0'
   const sharedClassName = cn(
     'pointer-events-none absolute size-2 border-muted-foreground/50 transition-opacity',
@@ -39,7 +40,7 @@ export function Frame({
   corners = true,
   as: Comp = 'div',
   ...props
-}: FrameProps) {
+}: Readonly<FrameProps>) {
   return (
     <Comp
       className={cn(
@@ -64,7 +65,7 @@ export function FrameHeader({
   label,
   className,
   ...props
-}: FrameHeaderProps) {
+}: Readonly<FrameHeaderProps>) {
   return (
     <div
       className={cn(
@@ -87,7 +88,7 @@ export function FrameBody({
   children,
   className,
   ...props
-}: HTMLAttributes<HTMLDivElement>) {
+}: Readonly<HTMLAttributes<HTMLDivElement>>) {
   return (
     <div className={cn('px-4 py-5 sm:px-5 sm:py-6', className)} {...props}>
       {children}
@@ -95,7 +96,7 @@ export function FrameBody({
   )
 }
 
-export function FrameDivider({ className }: { className?: string }) {
+export function FrameDivider({ className }: Readonly<{ className?: string }>) {
   return <div className={cn('h-px w-full bg-border', className)} />
 }
 
@@ -103,10 +104,10 @@ export function FrameDivider({ className }: { className?: string }) {
 export function FrameGrid({
   children,
   className
-}: {
+}: Readonly<{
   children: ReactNode
   className?: string
-}) {
+}>) {
   return (
     <div className={cn('relative grid sm:grid-cols-2', className)}>
       <span
@@ -141,11 +142,11 @@ export function FrameGridCell({
   children,
   className,
   label
-}: {
+}: Readonly<{
   children: ReactNode
   className?: string
   label?: string
-}) {
+}>) {
   return (
     <div
       className={cn(

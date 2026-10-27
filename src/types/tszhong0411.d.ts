@@ -59,9 +59,10 @@ declare module '@/components/ui' {
   }
 
   interface FormFieldProps extends ComponentProps<'div'> {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- react-hook-form Control type is complex
     control?: any
     name: string
-    render: ({ field }: { field: any }) => React.ReactElement
+    render: ({ field }: { field: unknown }) => React.ReactElement
   }
 
   interface DialogProps extends ComponentProps<'div'> {
@@ -97,9 +98,9 @@ declare module '@/components/ui' {
   export const DialogTrigger: React.FC<DialogTriggerProps>
   export const Input: React.FC<ComponentProps<'input'>>
   export const Label: React.FC<ComponentProps<'label'>>
-  export const Select: React.FC<SelectProps<any>>
+  export const Select: React.FC<SelectProps<unknown>>
   export const SelectContent: React.FC<ComponentProps<'div'>>
-  export const SelectItem: React.FC<SelectItemProps<any>>
+  export const SelectItem: React.FC<SelectItemProps<unknown>>
   export const SelectTrigger: React.FC<ComponentProps<'div'>>
   export const SelectValue: React.FC<ComponentProps<'div'>>
   export const Textarea: React.FC<ComponentProps<'textarea'>>
@@ -155,6 +156,6 @@ declare module '@/components/ui' {
 }
 
 declare module '@/utils' {
-  export function cn(...inputs: (string | undefined | null | false)[]): string
+  export function cn(...inputs: Array<string | undefined | null | false>): string
   export function range(count: number): number[]
 }

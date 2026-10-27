@@ -1,18 +1,18 @@
 import {
-  FileIcon,
-  Github,
-  Twitter,
-  Linkedin,
   Calendar,
+  FileIcon,
+  GitBranch,
   Heart,
+  Link,
+  X
 } from "lucide-react";
 import { type Metadata } from "next";
 import { notFound } from "next/navigation";
 
+import { Frame, FrameBody, FrameHeader } from "@/components/frame";
 import PostCard from "@/components/post-card";
 import UserAvatar from "@/components/user-avatar";
 import UserRoleBadge from "@/components/user-role-badge";
-import { Frame, FrameBody, FrameHeader } from "@/components/frame";
 import { getCurrentUser } from "@/lib/auth";
 import { SITE_URL } from "@/lib/constants";
 import { getUserById } from "@/queries/get-user-by-id";
@@ -109,7 +109,7 @@ const UserPage = async (props: UserPageProps) => {
                     title="GitHub"
                     className="inline-flex items-center gap-1.5 border border-border px-3 py-2 text-sm transition-colors hover:bg-muted"
                   >
-                    <Github className="size-4" />
+                    <GitBranch className="size-4" />
                     <span className="hidden sm:inline">GitHub</span>
                   </a>
                 )}
@@ -121,7 +121,7 @@ const UserPage = async (props: UserPageProps) => {
                     title="Twitter"
                     className="inline-flex items-center gap-1.5 border border-border px-3 py-2 text-sm transition-colors hover:bg-muted"
                   >
-                    <Twitter className="size-4" />
+                    <X className="size-4" />
                     <span className="hidden sm:inline">Twitter</span>
                   </a>
                 )}
@@ -133,19 +133,17 @@ const UserPage = async (props: UserPageProps) => {
                     title="LinkedIn"
                     className="inline-flex items-center gap-1.5 border border-border px-3 py-2 text-sm transition-colors hover:bg-muted"
                   >
-                    <Linkedin className="size-4" />
+                    <Link className="size-4" />
                     <span className="hidden sm:inline">LinkedIn</span>
                   </a>
                 )}
                 <span className="inline-flex items-center gap-1.5 border border-border px-3 py-2 text-xs text-muted-foreground">
                   <Calendar className="size-3.5" />
                   Joined{" "}
-                  {user.createdAt
-                    ? new Date(user.createdAt).toLocaleDateString("en-US", {
-                        month: "long",
-                        year: "numeric",
-                      })
-                    : "—"}
+                  {new Date(user.createdAt).toLocaleDateString("en-US", {
+                    month: "long",
+                    year: "numeric",
+                  })}
                 </span>
               </div>
               <div className="mt-2 flex flex-wrap gap-3 text-sm">

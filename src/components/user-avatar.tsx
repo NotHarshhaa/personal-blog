@@ -1,5 +1,6 @@
-import { cn } from "@/utils";
 import Image, { type ImageProps } from "next/image";
+
+import { cn } from "@/utils";
 
 type UserAvatarProps = {
   userId: string;

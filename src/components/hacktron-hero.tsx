@@ -1,7 +1,8 @@
 'use client'
 
-import Link from 'next/link'
 import { RssIcon } from 'lucide-react'
+import Link from 'next/link'
+
 import CipherText from '@/components/cipher-text'
 import { CornerBrackets } from '@/components/frame'
 import TypingAnimation from '@/components/typing-animation'

@@ -3,19 +3,6 @@
 import type { User } from '@/db/schema'
 
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  Button,
-  buttonVariants,
-  toast
-} from '@/components/ui'
-import {
   ArrowUpDown,
   Clock,
   Eye,
@@ -37,6 +24,19 @@ import { deleteDraftPostsAction } from '@/actions/delete-draft-posts-action'
 import { CornerBrackets, Frame, FrameBody, FrameHeader } from '@/components/frame'
 import NewPostButton from '@/components/new-post-button'
 import PostCard, { type PostCardProps } from '@/components/post-card'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  Button,
+  buttonVariants,
+  toast
+} from '@/components/ui'
 import { cn } from '@/utils'
 
 type SortOption = 'newest' | 'views' | 'popular' | 'title'
@@ -47,10 +47,23 @@ type ContentProps = {
   user: User
 }
 
+const getEmptyStateTitle = (search: string, activeTab: TabOption): string => {
+  if (search) return `No articles match "${search}"`
+  if (activeTab === 'drafts') return 'No drafts in progress'
+  if (activeTab === 'published') return 'No published articles yet'
+  return 'No articles found in this view'
+}
+
+const getEmptyStateDescription = (search: string, activeTab: TabOption): string => {
+  if (search) return 'Try searching with a different term or reset your search filter.'
+  if (activeTab === 'drafts') return 'Start a new draft to draft out thoughts, technical tutorials, and architecture notes.'
+  return 'Create and publish your first technical article for the community!'
+}
+
 export const PostsClient = ({ posts, user }: ContentProps) => {
   const searchParams = useSearchParams()
   const router = useRouter()
-  const tabParam = (searchParams.get('tab') as TabOption) || 'published'
+  const tabParam = (searchParams.get('tab') ?? 'published') as TabOption
 
   const [activeTab, setActiveTab] = useState<TabOption>(tabParam)
   const [search, setSearch] = useState('')
@@ -85,7 +98,7 @@ export const PostsClient = ({ posts, user }: ContentProps) => {
     [posts]
   )
   const totalViews = useMemo(
-    () => posts.reduce((acc, p) => acc + (p.views || 0), 0),
+    () => posts.reduce((acc, p) => acc + p.views, 0),
     [posts]
   )
   const totalLikes = useMemo(
@@ -98,7 +111,7 @@ export const PostsClient = ({ posts, user }: ContentProps) => {
     () =>
       posts.filter(
         (p) =>
-          p.likes?.some((like) => like.id === user.id) ||
+          p.likes.some((like) => like.id === user.id) ||
           p.likeCount > 0
       ),
     [posts, user.id]
@@ -121,7 +134,7 @@ export const PostsClient = ({ posts, user }: ContentProps) => {
       (p) =>
         p.title.toLowerCase().includes(q) ||
         (p.description ?? '').toLowerCase().includes(q) ||
-        p.tags?.some((t) => t.toLowerCase().includes(q))
+        p.tags.some((t) => t.toLowerCase().includes(q))
     )
   }, [tabPosts, search])
 
@@ -129,18 +142,23 @@ export const PostsClient = ({ posts, user }: ContentProps) => {
   const sortedPosts = useMemo(() => {
     const list = [...searchFilteredPosts]
     switch (sortBy) {
-      case 'newest':
+      case 'newest': {
         return list.sort(
           (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
         )
-      case 'views':
+      }
+      case 'views': {
         return list.sort((a, b) => b.views - a.views)
-      case 'popular':
+      }
+      case 'popular': {
         return list.sort((a, b) => b.likeCount - a.likeCount)
-      case 'title':
+      }
+      case 'title': {
         return list.sort((a, b) => a.title.localeCompare(b.title))
-      default:
+      }
+      default: {
         return list
+      }
     }
   }, [searchFilteredPosts, sortBy])
 
@@ -474,20 +492,10 @@ export const PostsClient = ({ posts, user }: ContentProps) => {
               <Inbox className="size-6 text-muted-foreground" />
             </span>
             <p className="font-semibold text-foreground">
-              {search
-                ? `No articles match "${search}"`
-                : activeTab === 'drafts'
-                  ? 'No drafts in progress'
-                  : activeTab === 'published'
-                    ? 'No published articles yet'
-                    : 'No articles found in this view'}
+              {getEmptyStateTitle(search, activeTab)}
             </p>
             <p className="mt-1 max-w-sm text-xs leading-relaxed text-muted-foreground">
-              {search
-                ? 'Try searching with a different term or reset your search filter.'
-                : activeTab === 'drafts'
-                  ? 'Start a new draft to draft out thoughts, technical tutorials, and architecture notes.'
-                  : 'Create and publish your first technical article for the community!'}
+              {getEmptyStateDescription(search, activeTab)}
             </p>
             <div className="mt-5 flex flex-wrap gap-2">
               {search ? (

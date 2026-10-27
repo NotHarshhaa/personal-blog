@@ -1,6 +1,8 @@
-import { CornerBrackets } from './frame'
-import { cn } from '@/lib/utils'
 import type { HTMLAttributes, ReactNode } from 'react'
+
+import { cn } from '@/lib/utils'
+
+import { CornerBrackets } from './frame'
 
 type HoverMarkProps = HTMLAttributes<HTMLElement> & {
   children: ReactNode

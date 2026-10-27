@@ -1,7 +1,8 @@
 "use client";
 
+import { GlobeIcon,ShieldCheckIcon, StarIcon, UserIcon } from "lucide-react";
+
 import { Badge } from "@/components/ui";
-import { ShieldCheckIcon, UserIcon, StarIcon, GlobeIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type UserRoleBadgeProps = {
@@ -38,7 +39,8 @@ const UserRoleBadge = ({
   className,
   compact = false,
 }: UserRoleBadgeProps) => {
-  const config = roleConfig[role as keyof typeof roleConfig] || roleConfig.user;
+  const config =
+    roleConfig[role as keyof typeof roleConfig] ?? roleConfig.user;
 
   return (
     <Badge

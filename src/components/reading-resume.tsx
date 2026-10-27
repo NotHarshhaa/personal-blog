@@ -12,13 +12,11 @@ const MIN_PROGRESS = 0.05
 const MAX_PROGRESS = 0.95
 const SAVE_INTERVAL_MS = 2000
 
-type ProgressData = {
-  [postId: string]: {
+type ProgressData = Record<string, {
     progress: number
     timestamp: number
     title?: string
-  }
-}
+  }>
 
 const getStoredProgress = (): ProgressData => {
   try {
@@ -41,7 +39,7 @@ const saveProgress = (postId: string, progress: number) => {
 
     if (progress >= MAX_PROGRESS) {
       // Post is fully read, remove progress
-      delete data[postId]
+      Reflect.deleteProperty(data, postId)
     } else if (progress >= MIN_PROGRESS) {
       data[postId] = {
         progress,
@@ -54,7 +52,7 @@ const saveProgress = (postId: string, progress: number) => {
     for (const key of Object.keys(data)) {
       const entry = data[key]
       if (entry && entry.timestamp < thirtyDaysAgo) {
-        delete data[key]
+        Reflect.deleteProperty(data, key)
       }
     }
 
@@ -112,8 +110,6 @@ export const ReadingResume = ({ postId }: ReadingResumeProps) => {
 
       return () => clearTimeout(timer)
     }
-
-    return undefined
   }, [postId])
 
   // Save scroll position periodically

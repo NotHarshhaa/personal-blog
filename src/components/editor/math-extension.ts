@@ -29,7 +29,7 @@ export const MathExtension = Node.create({
     return {
       latex: {
         default: '',
-        parseHTML: (element) => element.getAttribute('data-latex') ?? element.dataset.latex ?? '',
+        parseHTML: (element) => element.dataset.latex ?? element.dataset.latex ?? '',
         renderHTML: (attributes) => ({
           'data-latex': attributes.latex,
           'data-display': attributes.display ? 'true' : 'false'
@@ -37,7 +37,7 @@ export const MathExtension = Node.create({
       },
       display: {
         default: false,
-        parseHTML: (element) => (element.getAttribute('data-display') ?? element.dataset.display) === 'true',
+        parseHTML: (element) => (element.dataset.display ?? element.dataset.display) === 'true',
         renderHTML: (attributes) => ({
           'data-display': attributes.display ? 'true' : 'false'
         })

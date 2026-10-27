@@ -22,6 +22,12 @@ type Links = Array<{
   handle: string
 }>
 
+const scrollToTop = () => {
+  if (typeof globalThis.window !== 'undefined') {
+    globalThis.window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+}
+
 const Footer = () => {
   const [email, setEmail] = useState('')
   const [loading, setLoading] = useState(false)
@@ -62,7 +68,7 @@ const Footer = () => {
     { href: '/feed.xml', code: '05', label: 'RSS 2.0 Feed', path: '/feed.xml', external: true }
   ]
 
-  const handleSubscribe = async (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.SyntheticEvent) => {
     e.preventDefault()
     if (!email.trim() || loading) return
 
@@ -80,12 +86,6 @@ const Footer = () => {
       toast.error('An unexpected error occurred. Please try again.')
     } finally {
       setLoading(false)
-    }
-  }
-
-  const scrollToTop = () => {
-    if (typeof window !== 'undefined') {
-      window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }
 

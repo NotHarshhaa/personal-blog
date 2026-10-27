@@ -1,4 +1,5 @@
 import type { Editor } from '@tiptap/react'
+
 import katex from 'katex'
 import {
   CheckIcon,
@@ -40,7 +41,7 @@ const md = new MarkdownIt({
 
 function renderMarkdownWithMath(raw: string): string {
   // 1. Block equations: $$ ... $$
-  const withBlockMath = raw.replace(/\$\$([\s\S]*?)\$\$/g, (_match, latex: string) => {
+  const withBlockMath = raw.replaceAll(/\$\$([\s\S]*?)\$\$/g, (_match, latex: string) => {
     const trimmed = latex.trim()
     try {
       const rendered = katex.renderToString(trimmed, {
@@ -54,7 +55,7 @@ function renderMarkdownWithMath(raw: string): string {
   })
 
   // 2. Inline equations: $ ... $
-  const withAllMath = withBlockMath.replace(/(?<!\\|\$)\$([^$\n]+?)\$(?!\$)/g, (_match, latex: string) => {
+  const withAllMath = withBlockMath.replaceAll(/(?<![\\$])\$([^$\n]+?)\$(?!\$)/g, (_match, latex: string) => {
     const trimmed = latex.trim()
     try {
       const rendered = katex.renderToString(trimmed, {
@@ -72,25 +73,25 @@ function renderMarkdownWithMath(raw: string): string {
 
 function markdownToTipTapHtml(raw: string): string {
   // 1. Block equations: $$ ... $$ -> <div data-latex="..." data-display="true"></div>
-  const withBlockMath = raw.replace(/\$\$([\s\S]*?)\$\$/g, (_match, latex: string) => {
+  const withBlockMath = raw.replaceAll(/\$\$([\s\S]*?)\$\$/g, (_match, latex: string) => {
     const trimmed = latex.trim()
-    const encoded = trimmed.replace(/"/g, '&quot;')
+    const encoded = trimmed.replaceAll('"', '&quot;')
     return `\n<div data-latex="${encoded}" data-display="true"></div>\n`
   })
 
   // 2. Inline equations: $ ... $ -> <span data-latex="..." data-display="false"></span>
-  const withAllMath = withBlockMath.replace(/(?<!\\|\$)\$([^$\n]+?)\$(?!\$)/g, (_match, latex: string) => {
+  const withAllMath = withBlockMath.replaceAll(/(?<![\\$])\$([^$\n]+?)\$(?!\$)/g, (_match, latex: string) => {
     const trimmed = latex.trim()
-    const encoded = trimmed.replace(/"/g, '&quot;')
+    const encoded = trimmed.replaceAll('"', '&quot;')
     return `<span data-latex="${encoded}" data-display="false"></span>`
   })
 
   const html = md.render(withAllMath)
   // Strip empty paragraphs and unwrap any <p><div data-latex ...></div></p>
   return html
-    .replace(/<p>\s*(<div data-latex="[^"]*" data-display="true"><\/div>)\s*<\/p>/g, '$1')
-    .replace(/<p>\s*<\/p>/g, '')
-    .replace(/<p>\s*<br\s*\/?>\s*<\/p>/g, '')
+    .replaceAll(/<p>\s*(<div data-latex="[^"]*" data-display="true"><\/div>)\s*<\/p>/g, '$1')
+    .replaceAll(/<p>\s*<\/p>/g, '')
+    .replaceAll(/<p>\s*<br\s*\/?>\s*<\/p>/g, '')
 }
 
 export type ExtractedMetadata = {

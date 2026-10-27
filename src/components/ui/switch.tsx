@@ -1,4 +1,5 @@
 import * as SwitchPrimitive from '@radix-ui/react-switch'
+
 import { cn } from '@/utils'
 
 type SwitchProps = React.ComponentProps<typeof SwitchPrimitive.Root>

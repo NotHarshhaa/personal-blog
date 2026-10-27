@@ -2,6 +2,7 @@
 
 import { FileText, Plus } from 'lucide-react'
 import Link from 'next/link'
+
 import { Frame, FrameBody } from '@/components/frame'
 
 type EmptyStateProps = {
@@ -25,7 +26,7 @@ const EmptyState = ({
     <Frame>
       <FrameBody className="flex flex-col items-center justify-center py-16 text-center">
         <span className="mb-5 flex size-14 items-center justify-center border border-border bg-background">
-          {icon || <FileText className="size-6 text-muted-foreground" />}
+          {icon ?? <FileText className="size-6 text-muted-foreground" />}
         </span>
         <h3 className="mb-2 text-lg font-semibold">{title}</h3>
         <p className="mb-6 max-w-md text-sm text-muted-foreground">

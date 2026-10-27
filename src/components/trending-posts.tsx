@@ -63,7 +63,7 @@ const TrendingPosts = async () => {
                     {post.views.toLocaleString()} views
                   </span>
                 </div>
-                {post.tags && post.tags.length > 0 && (
+                {post.tags.length > 0 && (
                   <div className="flex flex-wrap gap-1 pt-0.5">
                     {post.tags.slice(0, 3).map((tag) => (
                       <span

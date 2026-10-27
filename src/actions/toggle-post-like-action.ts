@@ -30,17 +30,13 @@ export const togglePostLikeAction = authenticatedActionClient
         where: and(eq(likes.postId, postId), eq(likes.userId, user.id))
       })
 
-      if (existingLike) {
-        await tx.delete(likes).where(eq(likes.id, existingLike.id))
-      } else {
-        await tx
+      await (existingLike ? tx.delete(likes).where(eq(likes.id, existingLike.id)) : tx
           .insert(likes)
           .values({
             postId,
             userId: user.id
           })
-          .onConflictDoNothing({ target: [likes.postId, likes.userId] })
-      }
+          .onConflictDoNothing({ target: [likes.postId, likes.userId] }));
     })
 
     revalidatePath(`/posts/${postId}`)

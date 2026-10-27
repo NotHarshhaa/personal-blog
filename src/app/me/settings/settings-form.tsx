@@ -5,6 +5,24 @@ import type { z } from 'zod'
 
 import { zodResolver } from '@hookform/resolvers/zod'
 import {
+  GitBranch,
+  Link,
+  Loader2Icon,
+  MonitorIcon,
+  MoonIcon,
+  SunIcon,
+  UserIcon,
+  X
+} from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useAction } from 'next-safe-action/hooks'
+import { useTheme } from 'next-themes'
+import { useForm, useWatch } from 'react-hook-form'
+
+import { updateUserSchema } from '@/actions/schema'
+import { updateUserAction } from '@/actions/update-user-action'
+import { Frame, FrameBody, FrameHeader } from '@/components/frame'
+import {
   Avatar,
   AvatarFallback,
   AvatarImage,
@@ -19,25 +37,7 @@ import {
   Textarea,
   toast
 } from '@/components/ui'
-import {
-  Loader2Icon,
-  UserIcon,
-  SunIcon,
-  MoonIcon,
-  MonitorIcon,
-  Github,
-  Twitter,
-  Linkedin
-} from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { useAction } from 'next-safe-action/hooks'
-import { useForm, useWatch } from 'react-hook-form'
 import { cn } from '@/lib/utils'
-import { useTheme } from 'next-themes'
-
-import { Frame, FrameBody, FrameHeader } from '@/components/frame'
-import { updateUserSchema } from '@/actions/schema'
-import { updateUserAction } from '@/actions/update-user-action'
 
 type SettingsFormProps = {
   user: User
@@ -115,6 +115,7 @@ const SettingsForm = (props: SettingsFormProps) => {
               <div className="flex flex-col items-center gap-3">
                 <Avatar className="size-20 border border-border sm:size-24">
                   <AvatarImage
+                    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- empty string should fall through to default image
                     src={preview.image || image || ''}
                     width={96}
                     height={96}
@@ -126,9 +127,11 @@ const SettingsForm = (props: SettingsFormProps) => {
                 </Avatar>
                 <div className="text-center">
                   <div className="text-base font-semibold sm:text-lg">
+                    {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- empty string should fall through to default name */}
                     {preview.name || name}
                   </div>
                   <div className="mt-1 max-w-xs text-xs text-muted-foreground sm:text-sm">
+                    {/* eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- empty string should fall through to default bio */}
                     {preview.bio || bio || 'No bio yet.'}
                   </div>
                 </div>
@@ -208,7 +211,7 @@ const SettingsForm = (props: SettingsFormProps) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="flex items-center gap-2 text-sm font-semibold">
-                      <Github className="size-4" />
+                      <GitBranch className="size-4" />
                       GitHub
                     </FormLabel>
                     <FormControl>
@@ -229,7 +232,7 @@ const SettingsForm = (props: SettingsFormProps) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="flex items-center gap-2 text-sm font-semibold">
-                      <Twitter className="size-4" />
+                      <X className="size-4" />
                       Twitter
                     </FormLabel>
                     <FormControl>
@@ -250,7 +253,7 @@ const SettingsForm = (props: SettingsFormProps) => {
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="flex items-center gap-2 text-sm font-semibold">
-                      <Linkedin className="size-4" />
+                      <Link className="size-4" />
                       LinkedIn
                     </FormLabel>
                     <FormControl>

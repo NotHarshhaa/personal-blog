@@ -3,13 +3,13 @@
 import type { Like, User } from '@/db/schema'
 
 import { createId } from '@paralleldrive/cuid2'
-import { Button, toast } from '@/components/ui'
-import { cn } from '@/utils'
 import { Heart } from 'lucide-react'
 import { useOptimisticAction } from 'next-safe-action/hooks'
 import { useState } from 'react'
 
 import { togglePostLikeAction } from '@/actions/toggle-post-like-action'
+import { Button, toast } from '@/components/ui'
+import { cn } from '@/utils'
 
 type LikeButtonProps = {
   likes: Like[]
@@ -111,6 +111,7 @@ const LikeButton = (props: LikeButtonProps) => {
           </svg>
         </span>
       )}
+      // eslint-disable-next-line @eslint-react/dom/no-unknown-property
       <style jsx>{`
         .animate-heart-pop {
           animation: heart-pop 0.4s cubic-bezier(.36,1.56,.64,1) both;

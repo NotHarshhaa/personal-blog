@@ -1,6 +1,7 @@
-import { cn } from '@/utils'
 import { cva, type VariantProps } from 'cva'
 import NextLink from 'next/link'
+
+import { cn } from '@/utils'
 
 const linkVariants = cva({
   variants: {

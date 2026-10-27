@@ -60,9 +60,7 @@ export function ViewsBadge({ className }: { readonly className?: string }) {
 
   // Smooth Count-Up Animation to targetViews using requestAnimationFrame
   useEffect(() => {
-    const reducedMotion =
-      typeof window !== 'undefined' &&
-      globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const reducedMotion = globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches
 
     if (reducedMotion) {
       setDisplayViews(targetViews)

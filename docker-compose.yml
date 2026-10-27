@@ -2,7 +2,7 @@ version: '3'
 
 services:
   db:
-    image: postgres:16-alpine
+    image: pgvector/pgvector:pg16
     container_name: one_blog_postgres
     ports:
       - 5432:5432

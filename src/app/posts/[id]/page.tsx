@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
 
+import { ArrowLeft, Calendar, Clock, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import readingTime from 'reading-time'
 
-import { ArrowLeft, Calendar, Clock, Sparkles } from 'lucide-react'
 import BookmarkButton from '@/components/bookmark-button'
 import Editor from '@/components/editor'
 import { CornerBrackets, Frame, FrameBody, FrameHeader } from '@/components/frame'
@@ -26,6 +26,12 @@ import { getPostMetadataById } from '@/queries/get-post-metadata-by-id'
 import { formatPostDate } from '@/utils/format-post-date'
 
 import LikeButton from './like-button'
+
+const getTechnicalDepth = (minutes: number): string => {
+  if (minutes <= 3) return 'QUICK GUIDE'
+  if (minutes <= 7) return 'TUTORIAL'
+  return 'DEEP DIVE'
+}
 
 type PostPageProps = {
   params: Promise<{
@@ -107,12 +113,11 @@ const PostPage = async (props: PostPageProps) => {
 
   const readStats = readingTime(content ?? '')
   const minutes = Math.ceil(readStats.minutes)
-  const technicalDepth =
-    minutes <= 3 ? 'QUICK GUIDE' : minutes <= 7 ? 'TUTORIAL' : 'DEEP DIVE'
+  const technicalDepth = getTechnicalDepth(minutes)
 
-  const wordCount = content
-    ? content.replace(/<[^>]*>/g, ' ').split(/\s+/).filter(Boolean).length
-    : 0
+  // eslint-disable-next-line sonarjs/slow-regex -- content is trusted HTML from our own editor
+  const strippedContent = content ? content.replaceAll(/<[^>]*>?/g, ' ') : ''
+  const wordCount = strippedContent.split(/\s+/).filter(Boolean).length
 
   const structuredData = {
     '@context': 'https://schema.org',
@@ -174,7 +179,7 @@ const PostPage = async (props: PostPageProps) => {
             <span>Back to all articles</span>
           </Link>
 
-          {tags && tags.length > 0 && (
+          {tags.length > 0 && (
             <Link
               href={`/?tag=${encodeURIComponent(tags[0]!)}`}
               className="hidden sm:inline-flex items-center gap-1 border border-border bg-background px-2 py-0.5 uppercase tracking-wider text-[11px] hover:border-foreground hover:text-foreground transition-colors"

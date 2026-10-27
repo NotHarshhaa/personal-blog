@@ -1,11 +1,11 @@
 'use client'
 
-import { Button, toast } from '@/components/ui'
 import { Loader2Icon, PenSquareIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useAction } from 'next-safe-action/hooks'
 
 import { createPostAction } from '@/actions/create-post-action'
+import { Button, toast } from '@/components/ui'
 import { cn } from '@/lib/utils'
 
 type NewPostButtonProps = {

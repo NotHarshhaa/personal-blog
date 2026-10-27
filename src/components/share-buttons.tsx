@@ -1,10 +1,11 @@
 'use client'
 
+import { Copy, Link, SendIcon, Share2, X } from 'lucide-react'
+
 import { Button, buttonVariants } from '@/components/ui'
-import { Copy, Share2, Twitter, Linkedin, Facebook } from 'lucide-react'
-import { copyUrl } from '@/utils/copy-url'
 import { SITE_URL } from '@/lib/constants'
 import { cn } from '@/utils'
+import { copyUrl } from '@/utils/copy-url'
 
 type ShareButtonsProps = {
   title: string
@@ -83,7 +84,7 @@ const ShareButtons = ({ title, description, postId, className }: ShareButtonsPro
           )}
           aria-label="Share on Twitter"
         >
-          <Twitter className="size-4" />
+          <X className="size-4" />
         </a>
 
         <a
@@ -96,7 +97,7 @@ const ShareButtons = ({ title, description, postId, className }: ShareButtonsPro
           )}
           aria-label="Share on LinkedIn"
         >
-          <Linkedin className="size-4" />
+          <Link className="size-4" />
         </a>
 
         <a
@@ -109,7 +110,7 @@ const ShareButtons = ({ title, description, postId, className }: ShareButtonsPro
           )}
           aria-label="Share on Facebook"
         >
-          <Facebook className="size-4" />
+          <SendIcon className="size-4" />
         </a>
       </div>
     </div>

@@ -4,7 +4,7 @@ import { SessionProvider } from 'next-auth/react'
 import { ThemeProvider } from 'next-themes'
 
 // Suppress React 19 false-positive warning for next-themes inline theme script
-if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === 'development') {
   const originalConsoleError = console.error
   console.error = (...args: unknown[]) => {
     if (

@@ -12,7 +12,7 @@ export const HeadingAnchors = () => {
     const handleClick = (e: MouseEvent) => {
       const heading = (e.target as HTMLElement).closest(
         '.prose h1[id], .prose h2[id], .prose h3[id], .prose h4[id], .prose h5[id], .prose h6[id]'
-      ) as HTMLElement | null
+      )
 
       if (!heading?.id) return
 

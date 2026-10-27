@@ -149,12 +149,13 @@ const Form = (props: FormProps) => {
                   </Label>
                   <Select
                     value={visibility}
-                    onValueChange={(value: string) => {
+                    onValueChange={(value: unknown) => {
+                      const strValue = value as string
                       if (
-                        value === (Visibility.Public as string) ||
-                        value === (Visibility.Private as string)
+                        strValue === (Visibility.Public as string) ||
+                        strValue === (Visibility.Private as string)
                       ) {
-                        setVisibility(value as Visibility)
+                        setVisibility(strValue as Visibility)
                       }
                     }}
                   >

@@ -95,11 +95,11 @@ export const BookmarksView = ({
         const matchesSearch =
           search.trim() === '' ||
           post.title.toLowerCase().includes(search.toLowerCase()) ||
-          (post.description && post.description.toLowerCase().includes(search.toLowerCase()))
+          (post.description?.toLowerCase().includes(search.toLowerCase()))
 
         const matchesTag =
           !selectedTag ||
-          (post.tags && post.tags.some((t) => t.toLowerCase() === selectedTag.toLowerCase()))
+          (post.tags?.some((t) => t.toLowerCase() === selectedTag.toLowerCase()))
 
         return matchesSearch && matchesTag
       })

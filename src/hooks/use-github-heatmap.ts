@@ -68,7 +68,10 @@ export function useGithubHeatmap(user: string): HeatmapData {
 
         // Pad with nulls so the first column starts on the correct day of week
         const firstDow = new Date(contribs[0]!.date).getDay()
-        const emptyPadding: Array<number | null> = new Array<number | null>(firstDow).fill(null)
+        const emptyPadding: Array<number | null> = Array.from(
+          { length: firstDow },
+          () => null
+        )
         const levels: Array<number | null> = contribs.map((c) => c.level)
         const cells: Array<number | null> = [...emptyPadding, ...levels]
 

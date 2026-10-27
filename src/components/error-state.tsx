@@ -1,7 +1,8 @@
-import { Frame, FrameBody, FrameHeader } from "@/components/frame";
-import { cn } from "@/lib/utils";
 import type { LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
+
+import { Frame, FrameBody, FrameHeader } from "@/components/frame";
+import { cn } from "@/lib/utils";
 
 type ErrorStateProps = {
   status: string;
