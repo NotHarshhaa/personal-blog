@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 
-import { ArrowLeft, Calendar, Clock, Sparkles } from 'lucide-react'
+import { ArrowLeft, Clock, Sparkles } from 'lucide-react'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import readingTime from 'reading-time'
@@ -29,6 +29,7 @@ import { getCurrentUser } from '@/lib/auth'
 import { SITE_TITLE, SITE_URL } from '@/lib/constants'
 import { getPostById } from '@/queries/get-post-by-id'
 import { getPostMetadataById } from '@/queries/get-post-metadata-by-id'
+import { cn } from '@/utils'
 import { formatPostDate } from '@/utils/format-post-date'
 
 import LikeButton from './like-button'
@@ -57,9 +58,8 @@ export const generateMetadata = async (props: PostPageProps): Promise<Metadata> 
   const descriptionQuery = post.description
     ? `&description=${encodeURIComponent(post.description)}`
     : ''
-  const tagsQuery = post.tags.length > 0
-    ? `&tags=${encodeURIComponent(post.tags.slice(0, 4).join(','))}`
-    : ''
+  const tagsQuery =
+    post.tags.length > 0 ? `&tags=${encodeURIComponent(post.tags.slice(0, 4).join(','))}` : ''
   const ogImageUrl = `${SITE_URL}/api/og?title=${encodeURIComponent(post.title)}${descriptionQuery}${tagsQuery}`
 
   return {
@@ -172,7 +172,7 @@ const PostPage = async (props: PostPageProps) => {
       minutes={minutes}
     >
       <script
-        type="application/ld+json"
+        type='application/ld+json'
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
       <ReadingProgress />
@@ -180,21 +180,27 @@ const PostPage = async (props: PostPageProps) => {
       <ReadingResume postId={id} />
       <HeadingAnchors />
 
-      <article className="relative z-10 w-full space-y-6 sm:space-y-8">
+      <article
+        className={cn(
+          'relative z-10 w-full space-y-6 sm:space-y-8',
+          // Clear the fixed audio dispatch bar that docks over the header on deep dives
+          minutes >= 7 && 'pt-11'
+        )}
+      >
         {/* Top Breadcrumb Bar */}
-        <div className="flex items-center justify-between text-xs font-mono text-muted-foreground">
+        <div className='text-muted-foreground flex items-center justify-between font-mono text-xs'>
           <Link
-            href="/"
-            className="group inline-flex items-center gap-1.5 transition-colors hover:text-foreground"
+            href='/'
+            className='group hover:text-foreground inline-flex items-center gap-1.5 transition-colors'
           >
-            <ArrowLeft className="size-3.5 transition-transform group-hover:-translate-x-1" />
+            <ArrowLeft className='size-3.5 transition-transform group-hover:-translate-x-1' />
             <span>Back to all articles</span>
           </Link>
 
           {tags.length > 0 && (
             <Link
               href={`/?tag=${encodeURIComponent(tags[0]!)}`}
-              className="hidden sm:inline-flex items-center gap-1 border border-border bg-background px-2 py-0.5 uppercase tracking-wider text-[11px] hover:border-foreground hover:text-foreground transition-colors"
+              className='border-border bg-background hover:border-foreground hover:text-foreground hidden items-center gap-1 border px-2 py-0.5 text-[11px] tracking-wider uppercase transition-colors sm:inline-flex'
             >
               <span>Topic: #{tags[0]}</span>
             </Link>
@@ -202,25 +208,48 @@ const PostPage = async (props: PostPageProps) => {
         </div>
 
         {/* 1. Article Header Frame */}
-        <Frame as="header">
-          <FrameHeader label="Technical Guide">
-            <div className="flex items-center gap-2 font-mono text-[10px] uppercase text-muted-foreground">
-              <span className="hidden sm:inline-flex items-center gap-1 text-foreground/80 font-medium">
-                <Sparkles className="size-3 text-foreground" />
-                {technicalDepth}
-              </span>
-              <span className="hidden sm:inline" aria-hidden>·</span>
-              <span>{readStats.text}</span>
+        <Frame as='header'>
+          {/* Blueprint status strip — mirrors the homepage post card */}
+          <div className='border-border/80 bg-muted/30 relative overflow-hidden border-b'>
+            <div
+              aria-hidden
+              className='absolute inset-0 [background-image:linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] [mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_80%)] [background-size:14px_14px] opacity-50'
+            />
+            <div className='text-muted-foreground relative flex items-center justify-between gap-2 px-4 py-2 font-mono text-[9px] tracking-widest uppercase sm:px-5'>
+              <span className='truncate'>DOC // {id.slice(0, 8)}</span>
+              <div className='flex shrink-0 items-center gap-2'>
+                <span className='border-border bg-background/80 text-foreground inline-flex items-center gap-1 border px-1.5 py-px text-[8px] font-semibold'>
+                  <Sparkles className='size-2.5' aria-hidden />
+                  {technicalDepth}
+                </span>
+                <span className='inline-flex items-center gap-1'>
+                  <Clock className='size-2.5' aria-hidden />
+                  {readStats.text}
+                </span>
+              </div>
             </div>
-          </FrameHeader>
+          </div>
 
-          <FrameBody className="space-y-5">
-            {/* Metadata Badges Strip */}
-            <div className="flex flex-wrap items-center gap-2 pt-0.5 sm:gap-2.5">
-              {/* Author Chip */}
+          <FrameBody className='space-y-5'>
+            {/* Title */}
+            <h1 className='font-heading text-foreground text-3xl leading-tight font-semibold tracking-tight text-balance sm:text-4xl lg:text-5xl'>
+              {title}
+            </h1>
+
+            {/* Description Subtitle */}
+            {description && (
+              <div className='border-foreground/30 border-l-2 py-0.5 pl-3.5'>
+                <p className='text-muted-foreground max-w-3xl text-base leading-relaxed sm:text-lg'>
+                  {description}
+                </p>
+              </div>
+            )}
+
+            {/* Meta Row: author · date · views */}
+            <div className='text-muted-foreground flex flex-wrap items-center gap-x-2.5 gap-y-2 font-mono text-xs'>
               <Link
                 href={`/users/${author.id}`}
-                className="inline-flex items-center gap-2 border border-border bg-background px-2.5 py-1 text-xs text-foreground transition-colors hover:border-foreground"
+                className='text-foreground inline-flex items-center gap-2 font-medium transition-opacity hover:opacity-80'
                 aria-label={`View posts by ${author.name}`}
               >
                 <UserAvatar
@@ -229,53 +258,24 @@ const PostPage = async (props: PostPageProps) => {
                   src={author.image}
                   alt={author.name}
                   userId={author.id}
-                  className="size-4.5 border border-border"
+                  className='border-border size-4.5 border'
                 />
-                <span className="font-medium">{author.name}</span>
+                <span>{author.name}</span>
               </Link>
-
-              {/* Date Chip */}
-              <div className="inline-flex items-center gap-1.5 border border-border bg-background/80 px-2.5 py-1 font-mono text-[11px] text-muted-foreground">
-                <Calendar className="size-3" />
-                <time dateTime={dateTime}>
-                  {formatPostDate(createdAt, { relative: true })}
-                </time>
-              </div>
-
-              {/* Reading Time Chip */}
-              <div className="inline-flex items-center gap-1.5 border border-border bg-background/80 px-2.5 py-1 font-mono text-[11px] text-muted-foreground">
-                <Clock className="size-3" />
-                <span>{readStats.text}</span>
-              </div>
-
-              {/* Views Chip */}
-              <div className="inline-flex items-center gap-1.5 border border-border bg-background/80 px-2.5 py-1 font-mono text-[11px] text-muted-foreground">
-                <PostViews postId={id} initialViews={views} />
-              </div>
+              <span aria-hidden>·</span>
+              <time dateTime={dateTime}>{formatPostDate(createdAt, { relative: true })}</time>
+              <span aria-hidden>·</span>
+              <PostViews postId={id} initialViews={views} className='text-xs' />
             </div>
-
-            {/* Title */}
-            <h1 className="text-3xl font-bold tracking-tight text-balance text-foreground sm:text-4xl lg:text-5xl leading-tight">
-              {title}
-            </h1>
-
-            {/* Description Subtitle */}
-            {description && (
-              <div className="border-l-2 border-foreground/30 pl-3.5 py-0.5">
-                <p className="max-w-3xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-                  {description}
-                </p>
-              </div>
-            )}
 
             {/* Tags Pills */}
             {tags.length > 0 && (
-              <ul className="flex flex-wrap gap-1.5 pt-1" aria-label="Article topics">
+              <ul className='flex flex-wrap gap-1.5 pt-1' aria-label='Article topics'>
                 {tags.map((tag) => (
                   <li key={tag}>
                     <Link
                       href={`/?tag=${encodeURIComponent(tag)}`}
-                      className="inline-block border border-border bg-background px-2.5 py-1 font-mono text-[11px] tracking-wide text-muted-foreground uppercase transition-colors hover:border-foreground hover:text-foreground"
+                      className='border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground inline-block border px-2.5 py-1 font-mono text-[11px] tracking-wide uppercase transition-colors'
                     >
                       #{tag}
                     </Link>
@@ -300,8 +300,8 @@ const PostPage = async (props: PostPageProps) => {
 
         {/* 2. Main Content & TOC Frame */}
         <Frame>
-          <FrameHeader label="Article Content">
-            <div className="flex items-center gap-2 font-mono text-[10px] text-muted-foreground uppercase">
+          <FrameHeader label='Article Content'>
+            <div className='text-muted-foreground flex items-center gap-2 font-mono text-[10px] uppercase'>
               <span>{wordCount.toLocaleString()} words</span>
             </div>
           </FrameHeader>
@@ -309,8 +309,8 @@ const PostPage = async (props: PostPageProps) => {
           <FrameBody>
             <RunbookProvider content={content ?? ''}>
               <RunbookVariablesBar />
-              <div className="flex flex-col lg:flex-row lg:items-start gap-8 xl:gap-12">
-                <div className="prose dark:prose-invert w-full max-w-full min-w-0 flex-1">
+              <div className='flex flex-col gap-8 lg:flex-row lg:items-start xl:gap-12'>
+                <div className='prose dark:prose-invert w-full max-w-full min-w-0 flex-1'>
                   <Editor options={{ content, editable: false }} />
                 </div>
                 <TableOfContents content={content ?? ''} />
@@ -318,34 +318,34 @@ const PostPage = async (props: PostPageProps) => {
             </RunbookProvider>
 
             {/* 3. Author Attribution & Community Engagement Section */}
-            <div className="mt-14 space-y-5 border-t border-border pt-8">
+            <div className='border-border mt-14 space-y-5 border-t pt-8'>
               {/* Author Attribution Card */}
-              <div className="relative border border-border bg-muted/20 p-4 sm:p-5">
-                <CornerBrackets className="size-2" />
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                  <div className="flex items-center gap-3.5">
-                    <Link href={`/users/${author.id}`} className="shrink-0">
+              <div className='border-border bg-muted/20 relative border p-4 sm:p-5'>
+                <CornerBrackets className='size-2' />
+                <div className='flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center'>
+                  <div className='flex items-center gap-3.5'>
+                    <Link href={`/users/${author.id}`} className='shrink-0'>
                       <UserAvatar
                         width={48}
                         height={48}
                         src={author.image}
                         alt={author.name}
                         userId={author.id}
-                        className="size-12 border border-border"
+                        className='border-border size-12 border'
                       />
                     </Link>
-                    <div className="min-w-0 space-y-0.5">
-                      <p className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                    <div className='min-w-0 space-y-0.5'>
+                      <p className='text-muted-foreground font-mono text-[10px] tracking-widest uppercase'>
                         Written by
                       </p>
                       <Link
                         href={`/users/${author.id}`}
-                        className="text-base font-semibold tracking-tight text-foreground hover:underline"
+                        className='text-foreground text-base font-semibold tracking-tight hover:underline'
                       >
                         {author.name}
                       </Link>
                       {author.bio && (
-                        <p className="text-xs text-muted-foreground line-clamp-2 max-w-md">
+                        <p className='text-muted-foreground line-clamp-2 max-w-md text-xs'>
                           {author.bio}
                         </p>
                       )}
@@ -354,7 +354,7 @@ const PostPage = async (props: PostPageProps) => {
 
                   <Link
                     href={`/users/${author.id}`}
-                    className="inline-flex items-center gap-1.5 border border-border bg-background px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider text-foreground hover:border-foreground transition-colors"
+                    className='border-border bg-background text-foreground hover:border-foreground inline-flex items-center gap-1.5 border px-3 py-1.5 font-mono text-[11px] tracking-wider uppercase transition-colors'
                   >
                     <span>View Profile</span>
                   </Link>
@@ -362,8 +362,8 @@ const PostPage = async (props: PostPageProps) => {
               </div>
 
               {/* Engagement Actions Bar */}
-              <div className="flex flex-col items-start justify-between gap-4 border border-border bg-card/60 p-3 sm:flex-row sm:items-center sm:p-4">
-                <div className="flex items-center gap-2.5">
+              <div className='border-border bg-card/60 flex flex-col items-start justify-between gap-4 border p-3 sm:flex-row sm:items-center sm:p-4'>
+                <div className='flex items-center gap-2.5'>
                   <LikeButton
                     likes={likes}
                     likeCount={likeCount}
@@ -390,15 +390,11 @@ const PostPage = async (props: PostPageProps) => {
                   />
                 </div>
 
-                <div className="flex items-center gap-3 w-full justify-between sm:w-auto sm:justify-end">
-                  <span className="font-mono text-[10px] uppercase text-muted-foreground tracking-wider">
+                <div className='flex w-full items-center justify-between gap-3 sm:w-auto sm:justify-end'>
+                  <span className='text-muted-foreground font-mono text-[10px] tracking-wider uppercase'>
                     Share article:
                   </span>
-                  <ShareButtons
-                    title={title}
-                    description={description ?? undefined}
-                    postId={id}
-                  />
+                  <ShareButtons title={title} description={description ?? undefined} postId={id} />
                 </div>
               </div>
             </div>
