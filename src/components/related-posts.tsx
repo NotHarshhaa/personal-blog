@@ -97,7 +97,7 @@ const RelatedPosts = async ({
                   </p>
                 )}
 
-                <div className="mt-2 flex items-center justify-between gap-3">
+                <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
                   <div className="flex min-w-0 items-center gap-1.5 font-mono text-[11px] text-muted-foreground">
                     <UserAvatar
                       width={16}
@@ -119,29 +119,34 @@ const RelatedPosts = async ({
                     </time>
                   </div>
 
-                  <div className="flex shrink-0 items-center gap-3 font-mono text-[11px] text-muted-foreground">
-                    <span
-                      className="inline-flex items-center gap-1"
+                  <div className="flex shrink-0 items-center gap-1.5 font-mono text-[11px]">
+                    <div
+                      className="inline-flex items-center gap-1 border border-border/80 bg-background/80 px-1.5 py-0.5 text-[10px] text-muted-foreground transition-colors group-hover/related:border-foreground/30"
                       aria-label={`${post.views.toLocaleString()} views`}
+                      title={`${post.views.toLocaleString()} views`}
                     >
-                      <EyeIcon className="size-3" aria-hidden />
-                      <span className="hidden sm:inline">
+                      <EyeIcon className="size-2.5 text-muted-foreground/80 transition-colors group-hover/related:text-foreground" aria-hidden />
+                      <span className="font-semibold tabular-nums text-foreground">
                         {post.views.toLocaleString()}
                       </span>
-                    </span>
-                    <span
-                      className="inline-flex items-center gap-1"
+                    </div>
+                    <div
+                      className="inline-flex items-center gap-1 border border-border/80 bg-background/80 px-1.5 py-0.5 text-[10px] text-muted-foreground transition-colors group-hover/related:border-foreground/30"
                       aria-label={`${post.likeCount.toLocaleString()} likes`}
+                      title={`${post.likeCount.toLocaleString()} likes`}
                     >
-                      <HeartIcon className="size-3" aria-hidden />
-                      <span className="hidden sm:inline">
+                      <HeartIcon className="size-2.5 text-muted-foreground/80 transition-transform group-hover/related:scale-110 group-hover/related:text-rose-500" aria-hidden />
+                      <span className="font-semibold tabular-nums text-foreground">
                         {post.likeCount.toLocaleString()}
                       </span>
-                    </span>
-                    <span className="inline-flex items-center gap-1">
-                      <ClockIcon className="size-3" aria-hidden />
-                      <span className="hidden sm:inline">{readTime}</span>
-                    </span>
+                    </div>
+                    <div
+                      className="hidden sm:inline-flex items-center gap-1 border border-border/60 bg-muted/20 px-1.5 py-0.5 text-[10px] text-muted-foreground"
+                      title={`Estimated read time: ${readTime}`}
+                    >
+                      <ClockIcon className="size-2.5 text-muted-foreground/70" aria-hidden />
+                      <span>{readTime}</span>
+                    </div>
                   </div>
                 </div>
               </div>

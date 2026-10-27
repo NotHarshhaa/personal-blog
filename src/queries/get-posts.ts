@@ -28,7 +28,8 @@ export const getPosts = async () => {
       },
       likes: {
         columns: {
-          id: true
+          id: true,
+          userId: true
         }
       }
     },

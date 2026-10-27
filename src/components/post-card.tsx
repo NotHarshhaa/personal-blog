@@ -2,7 +2,7 @@
 
 import type { Like, Post, User } from '@/db/schema'
 
-import { ClockIcon, EyeIcon, HeartIcon } from 'lucide-react'
+import { ClockIcon, EyeIcon, FlameIcon, HeartIcon } from 'lucide-react'
 import Link from 'next/link'
 import { memo } from 'react'
 import readingTime from 'reading-time'
@@ -17,7 +17,7 @@ import UserAvatar from './user-avatar'
 export type PostCardProps = {
   post: Pick<Post, 'id' | 'title' | 'description' | 'published' | 'createdAt' | 'views'> & {
     tags?: string[]
-    likes: Array<Pick<Like, 'id'>>
+    likes: Array<Pick<Like, 'id'> & { userId?: string }>
     likeCount: number
     content?: string | null
   } & {
@@ -39,6 +39,11 @@ const PostCard = memo((props: PostCardProps) => {
   const readTime = readingTime(description ?? title).text
   const isNew =
     published && Date.now() - createdAt.getTime() < 7 * 24 * 60 * 60 * 1000
+  const isPopular = views >= 1000 || likeCount >= 30
+  const isUserLiked = Boolean(
+    user?.id &&
+      post.likes.some((like) => ('userId' in like && like.userId === user.id) || like.id === user.id)
+  )
 
   return (
     <article className="hover-fill group/card relative flex flex-col justify-between border border-border bg-card transition-colors duration-150 hover:border-foreground/60">
@@ -176,28 +181,80 @@ const PostCard = memo((props: PostCardProps) => {
             </div>
           )}
 
-          <div className="flex items-center justify-between border-t border-border/60 pt-2.5 font-mono text-[11px] text-muted-foreground">
-            <div className="flex items-center gap-3">
-              <span
-                className="inline-flex items-center gap-1"
+          {/* Upgraded Engagement Telemetry Footer */}
+          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border/60 pt-3 font-mono text-[11px]">
+            <div className="flex items-center gap-1.5">
+              {/* Views Telemetry Badge */}
+              <div
+                className={cn(
+                  'inline-flex items-center gap-1.5 border px-2 py-0.5 font-mono text-[11px] transition-all duration-150',
+                  isPopular
+                    ? 'border-amber-500/40 bg-amber-500/5 text-foreground group-hover/card:border-amber-500/60'
+                    : 'border-border/80 bg-background/80 text-muted-foreground group-hover/card:border-foreground/30 group-hover/card:bg-card'
+                )}
+                title={`${views.toLocaleString()} Total Reads${isPopular ? ' · High Engagement' : ''}`}
                 aria-label={`${views.toLocaleString()} views`}
               >
-                <EyeIcon className="size-3" aria-hidden />
-                <span>{views.toLocaleString()}</span>
-              </span>
-              <span
-                className="inline-flex items-center gap-1"
+                {isPopular ? (
+                  <FlameIcon className="size-3 text-amber-500" aria-hidden />
+                ) : (
+                  <EyeIcon
+                    className="size-3 text-muted-foreground/80 transition-colors group-hover/card:text-foreground"
+                    aria-hidden
+                  />
+                )}
+                <span className="font-semibold tabular-nums text-foreground">
+                  {views.toLocaleString()}
+                </span>
+                <span className="hidden text-[9px] uppercase tracking-wider text-muted-foreground/60 sm:inline">
+                  reads
+                </span>
+              </div>
+
+              {/* Likes Telemetry Badge */}
+              <div
+                className={cn(
+                  'inline-flex items-center gap-1.5 border px-2 py-0.5 font-mono text-[11px] transition-all duration-150',
+                  isUserLiked
+                    ? 'border-rose-500/50 bg-rose-500/10 text-rose-600 dark:text-rose-400'
+                    : 'border-border/80 bg-background/80 text-muted-foreground group-hover/card:border-foreground/30 group-hover/card:bg-card'
+                )}
+                title={`${likeCount.toLocaleString()} Appreciations${isUserLiked ? ' (You liked this)' : ''}`}
                 aria-label={`${likeCount.toLocaleString()} likes`}
               >
-                <HeartIcon className="size-3" aria-hidden />
-                <span>{likeCount.toLocaleString()}</span>
-              </span>
+                <HeartIcon
+                  className={cn(
+                    'size-3 transition-transform duration-150',
+                    isUserLiked
+                      ? 'fill-rose-500 text-rose-500'
+                      : 'text-muted-foreground/80 group-hover/card:scale-110 group-hover/card:text-rose-500'
+                  )}
+                  aria-hidden
+                />
+                <span
+                  className={cn(
+                    'font-semibold tabular-nums',
+                    isUserLiked
+                      ? 'text-rose-600 dark:text-rose-400'
+                      : 'text-foreground'
+                  )}
+                >
+                  {likeCount.toLocaleString()}
+                </span>
+                <span className="hidden text-[9px] uppercase tracking-wider text-muted-foreground/60 sm:inline">
+                  likes
+                </span>
+              </div>
             </div>
 
-            <span className="inline-flex items-center gap-1 text-[10px]">
-              <ClockIcon className="size-3" aria-hidden />
+            {/* Read Time Badge */}
+            <div
+              className="inline-flex items-center gap-1 border border-border/70 bg-background/60 px-2 py-0.5 font-mono text-[10px] text-muted-foreground transition-colors group-hover/card:border-border"
+              title={`Estimated reading duration: ${readTime}`}
+            >
+              <ClockIcon className="size-2.5 text-muted-foreground/70" aria-hidden />
               <span>{readTime}</span>
-            </span>
+            </div>
           </div>
         </div>
       </div>
