@@ -26,6 +26,7 @@ const RefreshEngagementButton = () => {
   return (
     <Button
       variant="outline"
+      corners
       onClick={() => action.execute()}
       disabled={action.isExecuting}
     >

@@ -63,13 +63,16 @@ const LikeButton = (props: LikeButtonProps) => {
   return (
     <div className='relative group'>
       <Button
+        corners
+        variant="outline"
         className={cn(
-          'flex items-center gap-2 border border-border bg-background px-3 py-1.5 text-sm font-medium transition-colors hover:bg-muted',
+          'flex items-center gap-2 px-3.5 py-1.5 text-xs font-mono uppercase tracking-wider transition-all',
           !user && 'cursor-not-allowed opacity-60',
-          isUserLiked && 'bg-foreground text-background hover:bg-foreground/90 hover:text-background',
+          isUserLiked
+            ? 'border-rose-500/50 bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 hover:border-rose-500/70'
+            : 'border-border bg-background text-foreground hover:border-foreground/60 hover:bg-muted/40',
           isAnimating && 'scale-[1.02]'
         )}
-        variant='ghost'
         disabled={!user || action.isExecuting}
         onClick={handleLike}
         aria-pressed={isUserLiked}
@@ -111,8 +114,7 @@ const LikeButton = (props: LikeButtonProps) => {
           </svg>
         </span>
       )}
-      // eslint-disable-next-line @eslint-react/dom/no-unknown-property
-      <style jsx>{`
+      <style>{`
         .animate-heart-pop {
           animation: heart-pop 0.4s cubic-bezier(.36,1.56,.64,1) both;
         }

@@ -2,8 +2,10 @@ declare module '@/components/ui' {
   import type { ComponentProps } from 'react'
 
   interface ButtonProps extends ComponentProps<'button'> {
-    variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'
-    size?: 'default' | 'sm' | 'lg' | 'icon'
+    variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link' | 'blueprint'
+    size?: 'default' | 'sm' | 'lg' | 'icon' | 'icon-sm' | 'icon-lg'
+    asChild?: boolean
+    corners?: boolean
   }
 
   interface AlertDialogProps extends ComponentProps<'div'> {

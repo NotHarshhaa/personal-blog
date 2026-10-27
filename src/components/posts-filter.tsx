@@ -471,6 +471,7 @@ export const PostsFilter = ({ posts, user }: PostsFilterProps) => {
             <Button
               variant="outline"
               size="sm"
+              corners
               onClick={() => setShowFilters(!showFilters)}
               className="gap-2 font-mono text-xs uppercase cursor-pointer"
             >

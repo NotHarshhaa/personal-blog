@@ -57,13 +57,15 @@ export const BookmarkButton = ({ post, userId }: BookmarkButtonProps) => {
   return (
     <div className="group relative">
       <Button
+        corners
+        variant="outline"
         className={cn(
-          'flex items-center gap-2 border border-border bg-background px-3 py-1.5 text-sm font-medium transition-colors hover:bg-muted cursor-pointer',
-          active &&
-            'bg-foreground text-background hover:bg-foreground/90 hover:text-background',
+          'flex items-center gap-2 px-3.5 py-1.5 text-xs font-mono uppercase tracking-wider transition-all cursor-pointer',
+          active
+            ? 'border-foreground bg-foreground text-background hover:bg-foreground/90 hover:text-background'
+            : 'border-border bg-background text-foreground hover:border-foreground/60 hover:bg-muted/40',
           isAnimating && 'scale-[1.02]'
         )}
-        variant="ghost"
         disabled={!isLoaded}
         onClick={handleToggle}
         aria-pressed={active}

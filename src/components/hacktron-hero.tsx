@@ -6,6 +6,7 @@ import Link from 'next/link'
 import CipherText from '@/components/cipher-text'
 import { CornerBrackets } from '@/components/frame'
 import TypingAnimation from '@/components/typing-animation'
+import { Button } from '@/components/ui'
 import { ViewsBadge } from '@/components/views-badge'
 import { SITE_NAME, SITE_TOPICS } from '@/lib/constants'
 
@@ -52,20 +53,18 @@ export const HacktronHero = () => {
           </p>
 
           <div className="flex flex-wrap items-center gap-3 pt-2">
-            <Link
-              href="/feed.xml"
-              className="inline-flex items-center gap-2 border border-foreground bg-foreground px-4 py-2 font-mono text-xs font-semibold tracking-wider text-background uppercase transition-all duration-150 hover:bg-background hover:text-foreground"
-            >
-              <RssIcon className="size-3.5" />
-              <span>Subscribe via RSS ↘</span>
-            </Link>
+            <Button asChild variant="default" corners>
+              <Link href="/feed.xml">
+                <RssIcon className="size-3.5" />
+                <span>Subscribe via RSS ↘</span>
+              </Link>
+            </Button>
 
-            <Link
-              href="/newsletter"
-              className="inline-flex items-center gap-2 border border-border bg-card px-4 py-2 font-mono text-xs font-medium tracking-wider text-muted-foreground uppercase transition-all duration-150 hover:border-foreground hover:text-foreground"
-            >
-              <span>Email Dispatch ↗</span>
-            </Link>
+            <Button asChild variant="outline" corners>
+              <Link href="/newsletter">
+                <span>Email Dispatch ↗</span>
+              </Link>
+            </Button>
           </div>
 
           {/* Quick topic tags */}

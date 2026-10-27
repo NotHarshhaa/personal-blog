@@ -5,7 +5,7 @@ import { cn } from '@/utils'
 
 const badgeVariants = cva({
   base: [
-    'inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden whitespace-nowrap rounded-md border px-2 py-0.5 text-xs font-medium transition-[color,box-shadow]',
+    'inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden whitespace-nowrap border px-2 py-0.5 text-[11px] font-mono font-medium uppercase tracking-wider transition-all',
     'dark:aria-invalid:ring-destructive/40',
     'focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]',
     'aria-invalid:ring-destructive/20 aria-invalid:border-destructive',
@@ -13,12 +13,11 @@ const badgeVariants = cva({
   ],
   variants: {
     variant: {
-      default: 'bg-primary text-primary-foreground [a&]:hover:bg-primary/90 border-transparent',
-      secondary:
-        'bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90 border-transparent',
+      default: 'border-foreground/80 bg-foreground text-background shadow-xs',
+      secondary: 'border-border/80 bg-muted/60 text-foreground',
       destructive:
-        'bg-destructive [a&]:hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60 border-transparent text-white',
-      outline: 'text-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground'
+        'border-destructive/50 bg-destructive/10 text-destructive dark:text-red-400',
+      outline: 'border-border bg-background text-foreground'
     }
   },
   defaultVariants: {
@@ -35,7 +34,7 @@ const Badge = (props: BadgeProps) => {
   const { className, variant, asChild = false, ...rest } = props
   const Comp = asChild ? Slot : 'span'
 
-  return <Comp data-slot='badge' className={cn(badgeVariants({ variant }), className)} {...rest} />
+  return <Comp data-slot="badge" className={cn(badgeVariants({ variant }), className)} {...rest} />
 }
 
 export { Badge, badgeVariants }

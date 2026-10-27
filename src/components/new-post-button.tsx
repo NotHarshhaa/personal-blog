@@ -35,7 +35,8 @@ const NewPostButton = ({ className, compact = false }: NewPostButtonProps) => {
 
   return (
     <Button
-      variant="ghost"
+      variant={compact ? 'ghost' : 'outline'}
+      corners={!compact}
       className={cn(compact ? 'size-9 px-0' : 'py-1.5', className)}
       onClick={newPost}
       disabled={action.isExecuting}
