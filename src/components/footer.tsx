@@ -7,7 +7,7 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 
 import { subscribeNewsletterAction } from '@/actions/subscribe-newsletter-action'
-import { Frame } from '@/components/frame'
+import { Frame, StripHeader } from '@/components/frame'
 import { HoverMark } from '@/components/hover-mark'
 
 type Links = Array<{
@@ -88,12 +88,8 @@ const Footer = () => {
       <div className='mx-auto max-w-[90rem] px-4 pt-8 pb-12 sm:px-6 sm:pt-14 sm:pb-20 lg:px-8'>
         <Frame>
           {/* Blueprint status strip */}
-          <div className='border-border/80 bg-muted/30 relative overflow-hidden border-b'>
-            <div
-              aria-hidden
-              className='absolute inset-0 [background-image:linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] [mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_80%)] [background-size:14px_14px] opacity-50'
-            />
-            <div className='text-muted-foreground relative flex items-center justify-between gap-2 px-4 py-2 font-mono text-[9px] tracking-widest uppercase sm:px-5'>
+          <StripHeader
+            left={
               <span className='inline-flex items-center gap-1.5'>
                 <span className='relative flex size-1.5'>
                   <span className='bg-foreground/50 absolute inline-flex h-full w-full animate-ping rounded-full opacity-75' />
@@ -101,9 +97,9 @@ const Footer = () => {
                 </span>
                 <span className='text-foreground font-semibold'>All systems operational</span>
               </span>
-              <span className='hidden sm:inline'>Region: global_edge // build v2.4</span>
-            </div>
-          </div>
+            }
+            right={<span className='hidden sm:inline'>Region: global_edge // build v2.4</span>}
+          />
 
           {/* Main grid */}
           <div className='grid grid-cols-1 lg:grid-cols-12'>

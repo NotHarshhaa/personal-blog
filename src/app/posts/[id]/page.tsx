@@ -12,7 +12,7 @@ import {
 } from '@/components/audio-dispatch-player'
 import BookmarkButton from '@/components/bookmark-button'
 import Editor from '@/components/editor'
-import { CornerBrackets, Frame, FrameBody, FrameHeader } from '@/components/frame'
+import { CornerBrackets, Frame, FrameBody, FrameHeader, StripHeader } from '@/components/frame'
 import GiscusComments from '@/components/giscus-comments'
 import HeadingAnchors from '@/components/heading-anchors'
 import NewsletterCard from '@/components/newsletter-card'
@@ -210,14 +210,10 @@ const PostPage = async (props: PostPageProps) => {
         {/* 1. Article Header Frame */}
         <Frame as='header'>
           {/* Blueprint status strip — mirrors the homepage post card */}
-          <div className='border-border/80 bg-muted/30 relative overflow-hidden border-b'>
-            <div
-              aria-hidden
-              className='absolute inset-0 [background-image:linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] [mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_80%)] [background-size:14px_14px] opacity-50'
-            />
-            <div className='text-muted-foreground relative flex items-center justify-between gap-2 px-4 py-2 font-mono text-[9px] tracking-widest uppercase sm:px-5'>
-              <span className='truncate'>DOC // {id.slice(0, 8)}</span>
-              <div className='flex shrink-0 items-center gap-2'>
+          <StripHeader
+            left={<span className='truncate'>DOC // {id.slice(0, 8)}</span>}
+            right={
+              <>
                 <span className='border-border bg-background/80 text-foreground inline-flex items-center gap-1 border px-1.5 py-px text-[8px] font-semibold'>
                   <Sparkles className='size-2.5' aria-hidden />
                   {technicalDepth}
@@ -226,9 +222,9 @@ const PostPage = async (props: PostPageProps) => {
                   <Clock className='size-2.5' aria-hidden />
                   {readStats.text}
                 </span>
-              </div>
-            </div>
-          </div>
+              </>
+            }
+          />
 
           <FrameBody className='space-y-5'>
             {/* Title */}

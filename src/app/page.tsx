@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 
-import { Frame, FrameBody, FrameHeader } from '@/components/frame'
+import { Frame, FrameBody, StripHeader } from '@/components/frame'
 import GithubActivity from '@/components/github-activity'
 import HacktronHero from '@/components/hacktron-hero'
 import Posts from '@/components/posts'
@@ -12,14 +12,17 @@ import { range } from '@/utils'
 
 const HomePage = () => {
   return (
-    <div className="relative z-10 w-full space-y-6 sm:space-y-8">
+    <div className='relative z-10 w-full space-y-6 sm:space-y-8'>
       <HacktronHero />
 
       <Suspense
         fallback={
           <Frame>
-            <FrameHeader label="Live site telemetry" />
-            <FrameBody className="py-8 text-center font-mono text-sm text-muted-foreground">
+            <StripHeader
+              left={<span className='text-foreground font-semibold'>Live site telemetry</span>}
+              right={<span>Calibrating...</span>}
+            />
+            <FrameBody className='text-muted-foreground py-8 text-center font-mono text-sm'>
               CALIBRATING TELEMETRY...
             </FrameBody>
           </Frame>
@@ -28,13 +31,18 @@ const HomePage = () => {
         <SiteTelemetry />
       </Suspense>
 
-      <GithubActivity username="NotHarshhaa" />
+      <GithubActivity username='NotHarshhaa' />
 
       <Suspense
         fallback={
           <Frame>
-            <FrameHeader label="Trending" />
-            <FrameBody className="py-8 text-center text-sm text-muted-foreground">
+            <StripHeader
+              left={
+                <span className='text-foreground font-semibold'>Trending // Top this week</span>
+              }
+              right={<span>Loading...</span>}
+            />
+            <FrameBody className='text-muted-foreground py-8 text-center text-sm'>
               Loading trending posts...
             </FrameBody>
           </Frame>
@@ -43,13 +51,18 @@ const HomePage = () => {
         <TrendingPosts />
       </Suspense>
 
-      <section aria-label="Posts">
+      <section aria-label='Posts'>
         <Suspense
           fallback={
             <Frame>
-              <FrameHeader label="Latest posts" />
-              <div className="divide-y divide-border">
-                {(range(6)).map((i) => (
+              <StripHeader
+                left={
+                  <span className='text-foreground font-semibold'>Latest technical write-ups</span>
+                }
+                right={<span>Loading...</span>}
+              />
+              <div className='divide-border divide-y'>
+                {range(6).map((i) => (
                   <PostsPlaceholder key={i} />
                 ))}
               </div>

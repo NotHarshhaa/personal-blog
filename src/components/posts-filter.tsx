@@ -3,9 +3,11 @@
 import type { User } from '@/db/schema'
 
 import {
-  ArrowUpDown,
+  ChevronDown,
+  ChevronUp,
   Clock,
   Heart,
+  History,
   Layers,
   Search,
   TagIcon,
@@ -15,7 +17,7 @@ import {
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { type ReactNode, useEffect, useMemo, useState } from 'react'
 
-import { CornerBrackets, Frame, FrameHeader } from '@/components/frame'
+import { Frame, StripHeader } from '@/components/frame'
 import PostCard, { type PostCardProps } from '@/components/post-card'
 import { Button } from '@/components/ui'
 import { SITE_TOPICS } from '@/lib/constants'
@@ -37,6 +39,8 @@ const CATEGORY_TABS: Array<{ id: CategoryFilter; label: string }> = [
   { id: 'tools', label: 'Tools & Infra' }
 ]
 
+const MAX_VISIBLE_TAGS = 12
+
 const AI_TOPICS = new Set([
   'ai / ml',
   'ai infrastructure',
@@ -46,13 +50,7 @@ const AI_TOPICS = new Set([
   'productivity'
 ])
 
-const DEVOPS_TOPICS = new Set([
-  'devops',
-  'cloud',
-  'platform engineering',
-  'ci/cd',
-  'automation'
-])
+const DEVOPS_TOPICS = new Set(['devops', 'cloud', 'platform engineering', 'ci/cd', 'automation'])
 
 const TOOL_TOPICS = new Set([
   'kubernetes',
@@ -75,10 +73,10 @@ export const PostsFilter = ({ posts, user }: PostsFilterProps) => {
   const tagParam = searchParams.get('tag')
 
   const [sortBy, setSortBy] = useState<SortOption>('newest')
-  const [showFilters, setShowFilters] = useState(false)
   const [selectedTag, setSelectedTag] = useState<string | null>(tagParam)
   const [activeCategory, setActiveCategory] = useState<CategoryFilter>('all')
   const [searchQuery, setSearchQuery] = useState('')
+  const [showAllTags, setShowAllTags] = useState(false)
 
   useEffect(() => {
     setSelectedTag(tagParam)
@@ -150,15 +148,10 @@ export const PostsFilter = ({ posts, user }: PostsFilterProps) => {
         const matchTag =
           post.tags?.some((t) => {
             const tl = t.toLowerCase().trim()
-            return (
-              tl === lowerTag ||
-              tl.includes(lowerTag) ||
-              lowerTag.includes(tl)
-            )
+            return tl === lowerTag || tl.includes(lowerTag) || lowerTag.includes(tl)
           }) ?? false
         const matchTitle = post.title.toLowerCase().includes(lowerTag)
-        const matchDesc =
-          post.description?.toLowerCase().includes(lowerTag) ?? false
+        const matchDesc = post.description?.toLowerCase().includes(lowerTag) ?? false
         return matchTag || matchTitle || matchDesc
       })
     }
@@ -168,8 +161,7 @@ export const PostsFilter = ({ posts, user }: PostsFilterProps) => {
       result = result.filter((post) => {
         const matchTitle = post.title.toLowerCase().includes(q)
         const matchDesc = post.description?.toLowerCase().includes(q) ?? false
-        const matchTags =
-          post.tags?.some((t) => t.toLowerCase().includes(q)) ?? false
+        const matchTags = post.tags?.some((t) => t.toLowerCase().includes(q)) ?? false
         return matchTitle || matchDesc || matchTags
       })
     }
@@ -183,14 +175,10 @@ export const PostsFilter = ({ posts, user }: PostsFilterProps) => {
 
     switch (sortBy) {
       case 'newest': {
-        return sorted.sort(
-          (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
-        )
+        return sorted.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
       }
       case 'oldest': {
-        return sorted.sort(
-          (a, b) => a.createdAt.getTime() - b.createdAt.getTime()
-        )
+        return sorted.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
       }
       case 'popular': {
         return sorted.sort((a, b) => {
@@ -222,17 +210,17 @@ export const PostsFilter = ({ posts, user }: PostsFilterProps) => {
     label: string
     icon: ReactNode
   }> = [
-    { value: 'newest', label: 'Newest', icon: <Clock className="size-3.5" /> },
-    { value: 'oldest', label: 'Oldest', icon: <Clock className="size-3.5" /> },
+    { value: 'newest', label: 'Newest', icon: <Clock className='size-3' /> },
+    { value: 'oldest', label: 'Oldest', icon: <History className='size-3' /> },
     {
       value: 'popular',
       label: 'Most Liked',
-      icon: <Heart className="size-3.5" />
+      icon: <Heart className='size-3' />
     },
     {
       value: 'trending',
       label: 'Trending',
-      icon: <TrendingUp className="size-3.5" />
+      icon: <TrendingUp className='size-3' />
     }
   ]
 
@@ -256,49 +244,59 @@ export const PostsFilter = ({ posts, user }: PostsFilterProps) => {
     return `No posts matched "${searchQuery}".`
   }
 
+  // Keep an active tag pill visible even when the cloud is collapsed
+  const expandedTags = showAllTags || Boolean(selectedTag)
+  const tagsToShow = expandedTags ? visibleTags : visibleTags.slice(0, MAX_VISIBLE_TAGS)
+  const hiddenTagCount = visibleTags.length - tagsToShow.length
+
   return (
-    <div className="w-full space-y-4">
+    <div className='w-full space-y-4'>
       {/* Blueprint Topics & Tag Filtering Hub */}
-      <Frame className="relative overflow-visible">
-        <CornerBrackets />
-        <FrameHeader label="Topic Navigator & Filter">
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-[10px] text-muted-foreground uppercase">
-              {allTags.length} Topics
-            </span>
-            {hasActiveFilter && (
-              <button
-                type="button"
-                onClick={handleClearAllFilters}
-                className="inline-flex items-center gap-1 border border-border bg-background px-2 py-0.5 font-mono text-[10px] text-muted-foreground transition-colors hover:border-foreground hover:text-foreground cursor-pointer"
-                aria-label="Clear all filters"
-              >
-                <X className="size-3" />
-                Reset
-              </button>
-            )}
-          </div>
-        </FrameHeader>
+      <Frame className='relative overflow-visible'>
+        <StripHeader
+          left={
+            <>
+              <Layers className='text-foreground size-3' aria-hidden />
+              <span className='text-foreground font-semibold'>Topic navigator // filter</span>
+            </>
+          }
+          right={
+            <>
+              <span>{allTags.length} topics</span>
+              {hasActiveFilter && (
+                <button
+                  type='button'
+                  onClick={handleClearAllFilters}
+                  className='border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground inline-flex cursor-pointer items-center gap-1 border px-2 py-px text-[9px] font-semibold transition-colors'
+                  aria-label='Clear all filters'
+                >
+                  <X className='size-2.5' aria-hidden />
+                  Reset
+                </button>
+              )}
+            </>
+          }
+        />
 
         {/* Category Tabs & Quick Search Input */}
-        <div className="border-b border-border bg-muted/20 px-3 py-2.5 sm:px-4">
-          <div className="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
+        <div className='border-border bg-muted/20 border-b px-3 py-2.5 sm:px-4'>
+          <div className='flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between'>
             {/* Category Filter Tabs */}
-            <div className="flex flex-wrap items-center gap-1.5" role="tablist">
+            <div className='flex flex-wrap items-center gap-1.5' role='tablist'>
               {CATEGORY_TABS.map((tab) => {
                 const isTabActive = activeCategory === tab.id
                 return (
                   <button
                     key={tab.id}
-                    type="button"
+                    type='button'
                     onClick={() => setActiveCategory(tab.id)}
                     className={cn(
-                      'border px-2.5 py-1 font-mono text-[11px] uppercase tracking-wider transition-all duration-150 cursor-pointer',
+                      'cursor-pointer border px-2.5 py-1 font-mono text-[11px] tracking-wider uppercase transition-all duration-150',
                       isTabActive
                         ? 'border-foreground bg-foreground text-background font-semibold shadow-xs'
                         : 'border-border/80 bg-background text-muted-foreground hover:border-foreground/60 hover:text-foreground'
                     )}
-                    role="tab"
+                    role='tab'
                     aria-selected={isTabActive}
                   >
                     {tab.label}
@@ -308,63 +306,60 @@ export const PostsFilter = ({ posts, user }: PostsFilterProps) => {
             </div>
 
             {/* Quick Keyword Filter Input */}
-            <div className="relative w-full sm:w-64">
-              <Search className="absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+            <div className='relative w-full sm:w-64'>
+              <Search className='text-muted-foreground pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2' />
               <input
-                type="text"
+                type='text'
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Filter articles..."
-                className="h-7.5 w-full border border-border bg-background pl-8 pr-7 font-mono text-xs text-foreground placeholder:text-muted-foreground/60 outline-none transition-colors focus:border-foreground"
+                placeholder='Filter articles...'
+                className='border-border bg-background text-foreground placeholder:text-muted-foreground/60 focus:border-foreground h-7.5 w-full border pr-7 pl-8 font-mono text-xs transition-colors outline-none'
               />
               {searchQuery && (
                 <button
-                  type="button"
+                  type='button'
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
-                  aria-label="Clear search filter"
+                  className='text-muted-foreground hover:text-foreground absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer'
+                  aria-label='Clear search filter'
                 >
-                  <X className="size-3" />
+                  <X className='size-3' />
                 </button>
               )}
             </div>
           </div>
         </div>
 
-        {/* Tag Pills Cloud */}
-        <div className="flex flex-wrap items-center gap-2 p-3 sm:p-4">
+        {/* Tag Pills Cloud (collapsed to a compact set by default) */}
+        <div className='flex flex-wrap items-center gap-2 p-3 sm:p-4'>
           {/* All Posts Reset Pill */}
           <button
-            type="button"
+            type='button'
             onClick={() => handleSelectTag(null)}
             className={cn(
-              'group inline-flex items-center gap-1.5 border px-3 py-1 font-mono text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer',
+              'group inline-flex cursor-pointer items-center gap-1.5 border px-3 py-1 font-mono text-xs tracking-wider uppercase transition-all duration-150',
               selectedTag
                 ? 'border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground'
                 : 'border-foreground bg-foreground text-background font-semibold shadow-xs'
             )}
             aria-pressed={!selectedTag}
           >
-            <Layers className="size-3 text-muted-foreground group-aria-pressed:text-background" />
+            <Layers className='text-muted-foreground group-aria-pressed:text-background size-3' />
             <span>All Posts</span>
-            <span className="text-[10px] opacity-75">[{posts.length}]</span>
+            <span className='text-[10px] opacity-75'>[{posts.length}]</span>
           </button>
 
           {/* Individual Topic Badges */}
-          {visibleTags.map((topic) => {
-            const isSelected =
-              selectedTag?.toLowerCase().trim() === topic.toLowerCase().trim()
+          {tagsToShow.map((topic) => {
+            const isSelected = selectedTag?.toLowerCase().trim() === topic.toLowerCase().trim()
             const count = tagCounts.get(topic.toLowerCase().trim()) ?? 0
 
             return (
               <button
                 key={topic}
-                type="button"
-                onClick={() =>
-                  isSelected ? handleSelectTag(null) : handleSelectTag(topic)
-                }
+                type='button'
+                onClick={() => (isSelected ? handleSelectTag(null) : handleSelectTag(topic))}
                 className={cn(
-                  'group inline-flex items-center gap-1.5 border px-2.5 py-1 font-mono text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer',
+                  'group inline-flex cursor-pointer items-center gap-1.5 border px-2.5 py-1 font-mono text-xs tracking-wider uppercase transition-all duration-150',
                   isSelected
                     ? 'border-foreground bg-foreground text-background font-semibold shadow-xs'
                     : 'border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground hover:bg-muted/40'
@@ -374,9 +369,7 @@ export const PostsFilter = ({ posts, user }: PostsFilterProps) => {
               >
                 <span
                   className={
-                    isSelected
-                      ? 'text-background/80 font-bold'
-                      : 'text-muted-foreground/60'
+                    isSelected ? 'text-background/80 font-bold' : 'text-muted-foreground/60'
                   }
                 >
                   #
@@ -386,49 +379,68 @@ export const PostsFilter = ({ posts, user }: PostsFilterProps) => {
                   <span
                     className={cn(
                       'text-[10px]',
-                      isSelected
-                        ? 'text-background/80 font-bold'
-                        : 'text-muted-foreground'
+                      isSelected ? 'text-background/80 font-bold' : 'text-muted-foreground'
                     )}
                   >
                     [{count < 10 ? `0${count}` : count}]
                   </span>
                 )}
                 {isSelected && (
-                  <X className="size-3 text-background transition-transform group-hover:scale-125" />
+                  <X className='text-background size-3 transition-transform group-hover:scale-125' />
                 )}
               </button>
             )
           })}
+
+          {/* Cloud Expander */}
+          {hiddenTagCount > 0 && (
+            <button
+              type='button'
+              onClick={() => setShowAllTags((v) => !v)}
+              className='border-border text-muted-foreground hover:border-foreground hover:text-foreground inline-flex cursor-pointer items-center gap-1 border border-dashed px-2.5 py-1 font-mono text-xs tracking-wider uppercase transition-colors'
+              aria-expanded={expandedTags}
+            >
+              {expandedTags ? (
+                <>
+                  <ChevronUp className='size-3' aria-hidden />
+                  <span>Show less</span>
+                </>
+              ) : (
+                <>
+                  <ChevronDown className='size-3' aria-hidden />
+                  <span>+{hiddenTagCount} more</span>
+                </>
+              )}
+            </button>
+          )}
         </div>
 
         {/* Active Filter Strip (Shows exact active parameters) */}
         {hasActiveFilter && (
-          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border bg-muted/40 px-3 py-2 font-mono text-xs text-muted-foreground sm:px-4">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-[10px] uppercase tracking-widest text-foreground font-semibold">
+          <div className='border-border bg-muted/40 text-muted-foreground flex flex-wrap items-center justify-between gap-2 border-t px-3 py-2 font-mono text-xs sm:px-4'>
+            <div className='flex flex-wrap items-center gap-2'>
+              <span className='text-foreground text-[10px] font-semibold tracking-widest uppercase'>
                 ACTIVE FILTER:
               </span>
               {selectedTag && (
-                <span className="inline-flex items-center gap-1 border border-foreground bg-foreground text-background px-1.5 py-0.5 text-[10px] uppercase font-bold">
+                <span className='border-foreground bg-foreground text-background inline-flex items-center gap-1 border px-1.5 py-0.5 text-[10px] font-bold uppercase'>
                   #{selectedTag}
                 </span>
               )}
               {searchQuery && (
-                <span className="inline-flex items-center gap-1 border border-border bg-background px-1.5 py-0.5 text-[10px] text-foreground">
+                <span className='border-border bg-background text-foreground inline-flex items-center gap-1 border px-1.5 py-0.5 text-[10px]'>
                   Keyword: &quot;{searchQuery}&quot;
                 </span>
               )}
-              <span className="text-[10px]">
-                ({sortedPosts.length}{' '}
-                {sortedPosts.length === 1 ? 'match' : 'matches'})
+              <span className='text-[10px]'>
+                ({sortedPosts.length} {sortedPosts.length === 1 ? 'match' : 'matches'})
               </span>
             </div>
 
             <button
-              type="button"
+              type='button'
               onClick={handleClearAllFilters}
-              className="inline-flex items-center gap-1 text-[11px] text-foreground underline decoration-border hover:decoration-foreground cursor-pointer"
+              className='text-foreground decoration-border hover:decoration-foreground inline-flex cursor-pointer items-center gap-1 text-[11px] underline'
             >
               Clear filters
             </button>
@@ -436,94 +448,87 @@ export const PostsFilter = ({ posts, user }: PostsFilterProps) => {
         )}
       </Frame>
 
-      {/* Sort Options Panel */}
-      {showFilters && (
-        <Frame>
-          <FrameHeader label="Sort articles by" />
-          <div className="flex flex-wrap gap-2 p-3 sm:p-4">
-            {sortOptions.map((option) => (
-              <Button
-                key={option.value}
-                variant={sortBy === option.value ? 'default' : 'outline'}
-                size="sm"
-                onClick={() => {
-                  setSortBy(option.value)
-                  setShowFilters(false)
-                }}
-                className="gap-2 cursor-pointer font-mono text-xs uppercase"
-              >
-                {option.icon}
-                {option.label}
-              </Button>
-            ))}
-          </div>
-        </Frame>
-      )}
-
       {/* Articles Feed Frame */}
-      <Frame className="overflow-visible">
-        <FrameHeader label={getHeaderLabel()}>
-          <div className="flex items-center gap-3">
-            <span className="font-mono text-xs text-muted-foreground">
-              {sortedPosts.length}{' '}
-              {sortedPosts.length === 1 ? 'ARTICLE' : 'ARTICLES'}
+      <Frame className='overflow-visible'>
+        <StripHeader
+          left={<span className='text-foreground font-semibold'>{getHeaderLabel()}</span>}
+          right={
+            <span>
+              {sortedPosts.length} {sortedPosts.length === 1 ? 'article' : 'articles'}
             </span>
-            <Button
-              variant="outline"
-              size="sm"
-              corners
-              onClick={() => setShowFilters(!showFilters)}
-              className="gap-2 font-mono text-xs uppercase cursor-pointer"
-            >
-              <ArrowUpDown className="size-3.5" />
-              Sort: {sortBy}
-            </Button>
+          }
+        />
+
+        {/* Inline Sort Toolbar */}
+        <div className='border-border bg-muted/20 flex flex-wrap items-center justify-between gap-2 border-b px-3 py-2 sm:px-4'>
+          <span className='text-muted-foreground font-mono text-[10px] tracking-widest uppercase'>
+            Sort
+          </span>
+          <div className='flex flex-wrap items-center gap-1'>
+            {sortOptions.map((option) => {
+              const isActive = sortBy === option.value
+              return (
+                <button
+                  key={option.value}
+                  type='button'
+                  onClick={() => setSortBy(option.value)}
+                  className={cn(
+                    'inline-flex cursor-pointer items-center gap-1.5 border px-2 py-1 font-mono text-[10px] tracking-wider uppercase transition-all duration-150',
+                    isActive
+                      ? 'border-foreground bg-foreground text-background font-semibold shadow-xs'
+                      : 'border-border/70 bg-background text-muted-foreground hover:border-foreground hover:text-foreground'
+                  )}
+                  aria-pressed={isActive}
+                >
+                  {option.icon}
+                  {option.label}
+                </button>
+              )
+            })}
           </div>
-        </FrameHeader>
+        </div>
 
         {sortedPosts.length === 0 ? (
-          <div className="p-8 text-center sm:p-12">
-            <TagIcon className="mx-auto mb-3 size-8 text-muted-foreground opacity-50" />
-            <p className="font-semibold text-foreground">
-              No articles match your filter criteria
-            </p>
-            <p className="mx-auto mt-1 max-w-sm text-xs leading-relaxed text-muted-foreground">
+          <div className='p-8 text-center sm:p-12'>
+            <TagIcon className='text-muted-foreground mx-auto mb-3 size-8 opacity-50' />
+            <p className='text-foreground font-semibold'>No articles match your filter criteria</p>
+            <p className='text-muted-foreground mx-auto mt-1 max-w-sm text-xs leading-relaxed'>
               {getEmptyMessage()}
             </p>
-            <div className="mt-4 flex flex-wrap justify-center gap-2">
+            <div className='mt-4 flex flex-wrap justify-center gap-2'>
               <Button
-                variant="outline"
-                size="sm"
+                variant='outline'
+                size='sm'
                 onClick={handleClearAllFilters}
-                className="font-mono text-xs uppercase cursor-pointer"
+                className='cursor-pointer font-mono text-xs uppercase'
               >
                 View all articles
               </Button>
               <button
-                type="button"
+                type='button'
                 onClick={() => handleSelectTag('DevOps')}
-                className="border border-border bg-background px-3 py-1 font-mono text-xs uppercase text-muted-foreground hover:border-foreground hover:text-foreground cursor-pointer"
+                className='border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground cursor-pointer border px-3 py-1 font-mono text-xs uppercase'
               >
                 #DevOps
               </button>
               <button
-                type="button"
+                type='button'
                 onClick={() => handleSelectTag('AI / ML')}
-                className="border border-border bg-background px-3 py-1 font-mono text-xs uppercase text-muted-foreground hover:border-foreground hover:text-foreground cursor-pointer"
+                className='border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground cursor-pointer border px-3 py-1 font-mono text-xs uppercase'
               >
                 #AI / ML
               </button>
               <button
-                type="button"
+                type='button'
                 onClick={() => handleSelectTag('Kubernetes')}
-                className="border border-border bg-background px-3 py-1 font-mono text-xs uppercase text-muted-foreground hover:border-foreground hover:text-foreground cursor-pointer"
+                className='border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground cursor-pointer border px-3 py-1 font-mono text-xs uppercase'
               >
                 #Kubernetes
               </button>
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 sm:gap-5 sm:p-5 lg:grid-cols-3">
+          <div className='grid grid-cols-1 gap-4 p-4 sm:grid-cols-2 sm:gap-5 sm:p-5 lg:grid-cols-3'>
             {sortedPosts.map((post) => (
               <PostCard
                 key={post.id}

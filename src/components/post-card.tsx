@@ -7,7 +7,7 @@ import Link from 'next/link'
 import { memo } from 'react'
 import readingTime from 'reading-time'
 
-import { CornerBrackets } from '@/components/frame'
+import { CornerBrackets, StripHeader } from '@/components/frame'
 import { cn } from '@/utils'
 import { formatPostDate } from '@/utils/format-post-date'
 
@@ -53,38 +53,32 @@ const PostCard = memo((props: PostCardProps) => {
       <CornerBrackets className='border-foreground/80 opacity-0 transition-opacity duration-150 group-hover/card:opacity-100' />
 
       {/* Blueprint status strip: doc ref + state chip + read time */}
-      <Link
-        href={href}
-        className='border-border/80 bg-muted/30 group-hover/card:bg-muted/50 relative block overflow-hidden border-b transition-colors'
-        tabIndex={-1}
-        aria-hidden
-      >
-        <div
-          aria-hidden
-          className='absolute inset-0 [background-image:linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] [mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_80%)] [background-size:14px_14px] opacity-50 transition-opacity duration-150 group-hover/card:opacity-80'
+      <Link href={href} className='relative block' tabIndex={-1} aria-hidden>
+        <StripHeader
+          left={<span className='truncate'>DOC // {id.slice(0, 8)}</span>}
+          right={
+            <>
+              {!published && (
+                <span className='border-muted-foreground/50 border border-dashed px-1.5 py-px text-[8px] font-semibold'>
+                  Draft
+                </span>
+              )}
+              {isNew && (
+                <span
+                  className='bg-foreground text-background px-1.5 py-px text-[8px] font-semibold'
+                  aria-label='Published within the last week'
+                >
+                  New
+                </span>
+              )}
+              <span className='inline-flex items-center gap-1'>
+                <ClockIcon className='size-2.5' aria-hidden />
+                {readTime}
+              </span>
+            </>
+          }
+          className='group-hover/card:bg-muted/50 transition-colors'
         />
-        <div className='text-muted-foreground relative flex items-center justify-between gap-2 px-4 py-2 font-mono text-[9px] tracking-widest uppercase'>
-          <span className='truncate'>DOC // {id.slice(0, 8)}</span>
-          <div className='flex shrink-0 items-center gap-2'>
-            {!published && (
-              <span className='border-muted-foreground/50 border border-dashed px-1.5 py-px text-[8px] font-semibold'>
-                Draft
-              </span>
-            )}
-            {isNew && (
-              <span
-                className='bg-foreground text-background px-1.5 py-px text-[8px] font-semibold'
-                aria-label='Published within the last week'
-              >
-                New
-              </span>
-            )}
-            <span className='inline-flex items-center gap-1'>
-              <ClockIcon className='size-2.5' aria-hidden />
-              {readTime}
-            </span>
-          </div>
-        </div>
       </Link>
 
       {/* Main Content Area */}
