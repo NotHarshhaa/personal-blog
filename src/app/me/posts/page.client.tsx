@@ -134,7 +134,7 @@ export const PostsClient = ({ posts, user }: ContentProps) => {
       (p) =>
         p.title.toLowerCase().includes(q) ||
         (p.description ?? '').toLowerCase().includes(q) ||
-        p.tags.some((t) => t.toLowerCase().includes(q))
+        p.tags?.some((t) => t.toLowerCase().includes(q))
     )
   }, [tabPosts, search])
 

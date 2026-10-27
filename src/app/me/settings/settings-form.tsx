@@ -49,6 +49,8 @@ const themeOptions = [
   { value: 'dark', label: 'Dark', icon: <MoonIcon className="size-4" /> }
 ]
 
+type SettingsFormValues = z.infer<typeof updateUserSchema>
+
 const SettingsForm = (props: SettingsFormProps) => {
   const { user } = props
   const { name, image, bio } = user
@@ -69,14 +71,7 @@ const SettingsForm = (props: SettingsFormProps) => {
     }
   })
 
-  const form = useForm<
-    z.infer<typeof updateUserSchema> & {
-      github?: string
-      twitter?: string
-      linkedin?: string
-      theme?: string
-    }
-  >({
+  const form = useForm<SettingsFormValues>({
     resolver: zodResolver(updateUserSchema),
     defaultValues: {
       name: name,
@@ -91,14 +86,7 @@ const SettingsForm = (props: SettingsFormProps) => {
 
   const preview = useWatch({ control: form.control })
 
-  const onSubmit = async (
-    values: z.infer<typeof updateUserSchema> & {
-      github?: string
-      twitter?: string
-      linkedin?: string
-      theme?: string
-    }
-  ) => {
+  const onSubmit = async (values: SettingsFormValues) => {
     await action.executeAsync(values)
   }
 

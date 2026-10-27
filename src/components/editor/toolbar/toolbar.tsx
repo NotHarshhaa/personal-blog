@@ -17,6 +17,7 @@ import {
 
 import { AlignDropdown } from './align-dropdown'
 import { ColorPicker } from './color-picker'
+import { DiagramDialog } from './diagram-dialog'
 import { EmojiPicker } from './emoji-picker'
 import { FontFamilyDropdown } from './font-family-dropdown'
 import { HeadingDropdown } from './heading-dropdown'
@@ -152,10 +153,11 @@ export const Toolbar = ({ editor, onMetadataExtracted }: ToolbarProps) => {
 
       <ToolbarDivider />
 
-      {/* Markdown Import/Export & Mathematics */}
+      {/* Markdown Import/Export, Mathematics & Architecture Blueprints */}
       <div className="flex items-center gap-0.5">
         <MarkdownDialog editor={editor} onMetadataExtracted={onMetadataExtracted} />
         <MathDialog editor={editor} />
+        <DiagramDialog editor={editor} />
       </div>
 
       <ToolbarDivider />

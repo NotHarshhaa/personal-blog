@@ -33,6 +33,7 @@ import { all, createLowlight } from 'lowlight'
 import { Markdown } from 'tiptap-markdown'
 
 import { CodeBlockNodeView } from './code-block-node-view'
+import { DiagramExtension } from './diagram-extension'
 import { MathExtension } from './math-extension'
 
 const lowlight = createLowlight(all)
@@ -121,6 +122,9 @@ export const extensions: AnyExtension[] = [
 
   // Mathematics (KaTeX / LaTeX)
   MathExtension,
+
+  // Architecture Blueprints & Topologies (Mermaid)
+  DiagramExtension,
 
   // Text Styling & Typography
   TextStyle,

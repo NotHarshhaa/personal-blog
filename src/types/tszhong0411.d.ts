@@ -62,7 +62,8 @@ declare module '@/components/ui' {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- react-hook-form Control type is complex
     control?: any
     name: string
-    render: ({ field }: { field: unknown }) => React.ReactElement
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    render: ({ field }: { field: any }) => React.ReactElement
   }
 
   interface DialogProps extends ComponentProps<'div'> {

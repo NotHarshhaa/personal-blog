@@ -7,15 +7,20 @@ import {
   FileCodeIcon,
   GitCompareIcon,
   HashIcon,
+  LayersIcon,
   TerminalIcon
 } from 'lucide-react'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
+import { DiagramNodeView } from '@/components/editor/diagram-node-view'
 import { CornerBrackets } from '@/components/frame'
+import { useRunbookVariables } from '@/components/runbook-variables'
 import { cn } from '@/utils'
 
 const LANGUAGES = [
   { label: 'Plain Text', value: 'plaintext' },
+  { label: 'Mermaid Diagram', value: 'mermaid' },
   { label: 'Diff (+ / -)', value: 'diff' },
   { label: 'YAML / Kubernetes', value: 'yaml' },
   { label: 'Dockerfile', value: 'dockerfile' },
@@ -38,13 +43,19 @@ export const CodeBlockNodeView = (props: ReactNodeViewProps) => {
   const [copied, setCopied] = useState(false)
   const [showLineNumbers, setShowLineNumbers] = useState(node.attrs.showLineNumbers !== false)
 
+  const { substitute, hasCustomizations } = useRunbookVariables()
+
   const currentLanguage = (node.attrs.language as string) || 'plaintext'
   const filename = (node.attrs.filename as string) || ''
 
   const handleCopy = () => {
-    const codeText = node.textContent
+    const rawCode = node.textContent
+    const codeText = substitute(rawCode)
     void globalThis.navigator.clipboard.writeText(codeText)
     setCopied(true)
+    if (hasCustomizations && codeText !== rawCode) {
+      toast.success('Copied with custom runbook parameters applied!')
+    }
     setTimeout(() => setCopied(false), 1800)
   }
 
@@ -53,16 +64,35 @@ export const CodeBlockNodeView = (props: ReactNodeViewProps) => {
 
   const isTerminal = currentLanguage === 'bash' || currentLanguage === 'shell'
   const isDiff = currentLanguage === 'diff'
+  const isMermaid = currentLanguage === 'mermaid'
 
   const lineCount = node.textContent.split('\n').length
 
   const languageIcon = (
     <>
+      {isMermaid && <LayersIcon className='size-3.5 shrink-0 text-foreground' />}
       {isTerminal && <TerminalIcon className='size-3.5 shrink-0' />}
       {isDiff && <GitCompareIcon className='size-3.5 shrink-0' />}
-      {!isTerminal && !isDiff && <FileCodeIcon className='size-3.5 shrink-0 opacity-70' />}
+      {!isTerminal && !isDiff && !isMermaid && <FileCodeIcon className='size-3.5 shrink-0 opacity-70' />}
     </>
   )
+
+  // In reading mode, render mermaid diagrams directly as interactive blueprints
+  if (isMermaid && !editor.isEditable) {
+    return (
+      <DiagramNodeView
+        {...props}
+        node={
+          {
+            attrs: {
+              code: node.textContent,
+              caption: filename || 'Architecture Blueprint'
+            }
+          } as unknown as ReactNodeViewProps['node']
+        }
+      />
+    )
+  }
 
   // ── Authoring mode: keep the blueprint controls (language select, filename,
   // line-number toggle) so editors keep their tooling. ──
@@ -191,6 +221,11 @@ export const CodeBlockNodeView = (props: ReactNodeViewProps) => {
               {filename}
             </span>
           </>
+        )}
+        {hasCustomizations && (
+          <span className='ml-auto mr-1 border border-foreground/30 bg-foreground/10 px-1.5 py-0.2 font-mono text-[9px] font-medium text-foreground normal-case'>
+            Parameters Injected
+          </span>
         )}
       </figcaption>
 

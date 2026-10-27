@@ -79,6 +79,8 @@ export const ReadingResume = ({ postId }: ReadingResumeProps) => {
   useEffect(() => {
     if (hasShownToast.current) return
 
+    let timer: ReturnType<typeof setTimeout> | undefined
+
     const data = getStoredProgress()
     const entry = data[postId]
 
@@ -88,7 +90,7 @@ export const ReadingResume = ({ postId }: ReadingResumeProps) => {
       const percent = Math.round(entry.progress * 100)
 
       // Small delay for a smooth UX after page load
-      const timer = setTimeout(() => {
+      timer = setTimeout(() => {
         toast(`Reading Progress: ${percent}%`, {
           description: 'Pick up where you left off?',
           action: {
@@ -107,8 +109,10 @@ export const ReadingResume = ({ postId }: ReadingResumeProps) => {
           duration: 8000
         })
       }, 1200)
+    }
 
-      return () => clearTimeout(timer)
+    return () => {
+      if (timer) clearTimeout(timer)
     }
   }, [postId])
 

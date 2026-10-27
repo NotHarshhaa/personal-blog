@@ -15,6 +15,7 @@ import PostViews from '@/components/post-views'
 import ReadingProgress from '@/components/reading-progress'
 import ReadingResume from '@/components/reading-resume'
 import RelatedPosts from '@/components/related-posts'
+import { RunbookProvider, RunbookVariablesBar } from '@/components/runbook-variables'
 import SeriesNavigator from '@/components/series-navigator'
 import ShareButtons from '@/components/share-buttons'
 import TableOfContents from '@/components/table-of-contents'
@@ -115,7 +116,6 @@ const PostPage = async (props: PostPageProps) => {
   const minutes = Math.ceil(readStats.minutes)
   const technicalDepth = getTechnicalDepth(minutes)
 
-  // eslint-disable-next-line sonarjs/slow-regex -- content is trusted HTML from our own editor
   const strippedContent = content ? content.replaceAll(/<[^>]*>?/g, ' ') : ''
   const wordCount = strippedContent.split(/\s+/).filter(Boolean).length
 
@@ -292,12 +292,15 @@ const PostPage = async (props: PostPageProps) => {
           </FrameHeader>
 
           <FrameBody>
-            <div className="flex flex-col lg:flex-row lg:items-start gap-8 xl:gap-12">
-              <div className="prose dark:prose-invert w-full max-w-full min-w-0 flex-1">
-                <Editor options={{ content, editable: false }} />
+            <RunbookProvider content={content ?? ''}>
+              <RunbookVariablesBar />
+              <div className="flex flex-col lg:flex-row lg:items-start gap-8 xl:gap-12">
+                <div className="prose dark:prose-invert w-full max-w-full min-w-0 flex-1">
+                  <Editor options={{ content, editable: false }} />
+                </div>
+                <TableOfContents content={content ?? ''} />
               </div>
-              <TableOfContents content={content ?? ''} />
-            </div>
+            </RunbookProvider>
 
             {/* 3. Author Attribution & Community Engagement Section */}
             <div className="mt-14 space-y-5 border-t border-border pt-8">
