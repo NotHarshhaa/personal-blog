@@ -10,6 +10,7 @@ import {
   ShieldCheckIcon,
   TerminalIcon
 } from 'lucide-react'
+import Link from 'next/link'
 
 import {
   Frame,
@@ -19,6 +20,7 @@ import {
   FrameHeader
 } from '@/components/frame'
 import NewsletterCard from '@/components/newsletter-card'
+import { getCurrentUser } from '@/lib/auth'
 
 export const metadata: Metadata = {
   title: 'DevOps & AI Architecture Dispatch',
@@ -106,9 +108,30 @@ const GUARANTEES = [
   }
 ]
 
-const NewsletterPage = () => {
+const NewsletterPage = async () => {
+  const user = await getCurrentUser()
+  const isAdmin = user?.role === 'admin'
+
   return (
     <div className="relative z-10 w-full space-y-8 sm:space-y-10">
+      {/* Admin Action Bar */}
+      {isAdmin && (
+        <div className="flex flex-wrap items-center justify-between gap-3 border border-border bg-muted/40 p-3 font-mono text-xs">
+          <div className="flex items-center gap-2">
+            <span className="size-2 bg-foreground" />
+            <span className="font-semibold text-foreground uppercase">
+              Admin Publishing Pipeline Active
+            </span>
+          </div>
+          <Link
+            href="/admin"
+            className="inline-flex items-center gap-1 border border-border bg-background px-2.5 py-1 text-foreground transition-colors hover:border-foreground"
+          >
+            <span>Open Delivery Dispatcher ↘</span>
+          </Link>
+        </div>
+      )}
+
       {/* HEADER HERO */}
       <Frame as="header">
         <FrameHeader label="PUBLICATION // DISPATCH ARCHIVE">
@@ -158,7 +181,7 @@ const NewsletterPage = () => {
       <section aria-labelledby="pillars-heading" className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 id="pillars-heading" className="font-mono text-xs font-bold uppercase tracking-widest text-muted-foreground">
-            // WHAT EVERY DISPATCH COVERS
+            {'//'} WHAT EVERY DISPATCH COVERS
           </h2>
           <span className="font-mono text-[11px] text-muted-foreground">4 CORE DOMAINS</span>
         </div>
@@ -203,7 +226,7 @@ const NewsletterPage = () => {
       <section aria-labelledby="sample-issues-heading" className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 id="sample-issues-heading" className="font-mono text-xs font-bold uppercase tracking-widest text-muted-foreground">
-            // RECENT DISPATCH SAMPLE EDITIONS
+            {'//'} RECENT DISPATCH SAMPLE EDITIONS
           </h2>
           <span className="font-mono text-[11px] text-muted-foreground">DEEP-DIVES</span>
         </div>

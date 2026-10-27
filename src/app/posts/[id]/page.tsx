@@ -5,6 +5,11 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import readingTime from 'reading-time'
 
+import {
+  AudioDispatchHero,
+  AudioDispatchProvider,
+  AudioDispatchTopBar
+} from '@/components/audio-dispatch-player'
 import BookmarkButton from '@/components/bookmark-button'
 import Editor from '@/components/editor'
 import { CornerBrackets, Frame, FrameBody, FrameHeader } from '@/components/frame'
@@ -159,12 +164,19 @@ const PostPage = async (props: PostPageProps) => {
   }
 
   return (
-    <>
+    <AudioDispatchProvider
+      postId={id}
+      title={title}
+      description={description}
+      content={content}
+      minutes={minutes}
+    >
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
       <ReadingProgress />
+      <AudioDispatchTopBar />
       <ReadingResume postId={id} />
       <HeadingAnchors />
 
@@ -273,6 +285,9 @@ const PostPage = async (props: PostPageProps) => {
             )}
           </FrameBody>
         </Frame>
+
+        {/* Audio Briefing Hero (For Deep Dives >7 min) */}
+        <AudioDispatchHero />
 
         {/* Series Navigation (if part of a series) */}
         {post.series && (
@@ -400,7 +415,7 @@ const PostPage = async (props: PostPageProps) => {
           currentPostDescription={description}
         />
       </article>
-    </>
+    </AudioDispatchProvider>
   )
 }
 
