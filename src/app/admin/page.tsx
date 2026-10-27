@@ -1,4 +1,6 @@
 import { desc, eq } from 'drizzle-orm'
+import { SquareTerminal } from 'lucide-react'
+import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
 import { Frame, FrameBody, FrameHeader } from '@/components/frame'
@@ -58,32 +60,31 @@ export default async function AdminPage() {
   }))
 
   return (
-    <main className="space-y-6 p-4 sm:p-8">
+    <main className='space-y-6 p-4 sm:p-8'>
       {/* Header */}
-      <Frame as="header">
-        <FrameHeader label="Admin // System Control Panel" />
-        <FrameBody className="space-y-2">
-          <h1 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+      <Frame as='header'>
+        <FrameHeader label='Admin // System Control Panel' />
+        <FrameBody className='space-y-2'>
+          <h1 className='text-foreground text-2xl font-bold tracking-tight sm:text-3xl'>
             Admin Dashboard
           </h1>
-          <p className="font-mono text-xs text-muted-foreground">
-            Authenticated operator: <span className="text-foreground">{user.email}</span>
+          <p className='text-muted-foreground font-mono text-xs'>
+            Authenticated operator: <span className='text-foreground'>{user.email}</span>
           </p>
         </FrameBody>
       </Frame>
 
       {/* Newsletter Delivery Engine Section */}
-      <Frame as="section">
-        <FrameHeader label="PUBLICATION PIPELINE // EMAIL DISPATCH ENGINE" />
-        <FrameBody className="space-y-3">
+      <Frame as='section'>
+        <FrameHeader label='PUBLICATION PIPELINE // EMAIL DISPATCH ENGINE' />
+        <FrameBody className='space-y-3'>
           <div>
-            <h2 className="text-base font-semibold text-foreground sm:text-lg">
+            <h2 className='text-foreground text-base font-semibold sm:text-lg'>
               Automated Newsletter Dispatch
             </h2>
-            <p className="font-mono text-xs text-muted-foreground">
-              Compile published Markdown &amp; Tiptap posts into sharp, monochromatic
-              0px-radius HTML emails and dispatch them directly to all active subscribers via
-              Resend.
+            <p className='text-muted-foreground font-mono text-xs'>
+              Compile published Markdown &amp; Tiptap posts into sharp, monochromatic 0px-radius
+              HTML emails and dispatch them directly to all active subscribers via Resend.
             </p>
           </div>
 
@@ -95,18 +96,41 @@ export default async function AdminPage() {
       </Frame>
 
       {/* Article Metrics Sync Section */}
-      <Frame as="section">
-        <FrameHeader label="Article metrics // Telemetry Calibration" />
-        <FrameBody className="space-y-3">
-          <h2 className="text-base font-semibold text-foreground sm:text-lg">
+      <Frame as='section'>
+        <FrameHeader label='Article metrics // Telemetry Calibration' />
+        <FrameBody className='space-y-3'>
+          <h2 className='text-foreground text-base font-semibold sm:text-lg'>
             Recalculate article metrics
           </h2>
-          <p className="text-xs text-muted-foreground">
-            Synchronize baseline views and engagement metrics for published articles based
-            on their publication date and reader velocity. Drafts keep their private
-            counters hidden.
+          <p className='text-muted-foreground text-xs'>
+            Synchronize baseline views and engagement metrics for published articles based on their
+            publication date and reader velocity. Drafts keep their private counters hidden.
           </p>
           <RefreshEngagementButton />
+        </FrameBody>
+      </Frame>
+
+      {/* Snippet Vault Section */}
+      <Frame as='section'>
+        <FrameHeader label='Snippet Vault // CLI Dispatch Manager' />
+        <FrameBody className='space-y-3'>
+          <h2 className='text-foreground text-base font-semibold sm:text-lg'>
+            Micro-dispatches &amp; CLI one-liners
+          </h2>
+          <p className='text-muted-foreground text-xs'>
+            File 30-second battle-tested configs — kubectl JSONPath tricks, Terraform state surgery,
+            GPG signing fixes, Docker optimizations — into the public vault at{' '}
+            <span className='text-foreground font-mono'>/snippets</span>. Every published snippet is
+            retrievable raw at <span className='text-foreground font-mono'>/raw/&lt;id&gt;</span>{' '}
+            for <span className='text-foreground font-mono'>curl | bash</span> piping.
+          </p>
+          <Link
+            href='/admin/snippets'
+            className='border-foreground/80 bg-card text-foreground hover:bg-foreground hover:text-background inline-flex items-center gap-2 border px-4 py-2 font-mono text-xs tracking-widest uppercase transition-colors'
+          >
+            <SquareTerminal className='size-3.5' />
+            Open Snippet Manager
+          </Link>
         </FrameBody>
       </Frame>
     </main>

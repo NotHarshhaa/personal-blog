@@ -35,5 +35,24 @@ export const updateUserSchema = z.object({
   github: z.string().url().optional().or(z.literal('')),
   twitter: z.string().url().optional().or(z.literal('')),
   linkedin: z.string().url().optional().or(z.literal('')),
-  theme: z.enum(['system', 'light', 'dark']).optional().or(z.literal('')),
+  theme: z.enum(['system', 'light', 'dark']).optional().or(z.literal(''))
+})
+
+export const snippetSchema = z.object({
+  title: z.string().min(1).max(120),
+  description: z.string().max(300).optional(),
+  code: z.string().min(1).max(20_000),
+  language: z.string().min(1).max(40).default('bash'),
+  tags: z.array(z.string().min(1).max(30)).max(8).default([]),
+  published: z.boolean().default(false)
+})
+
+export const createSnippetSchema = snippetSchema
+
+export const updateSnippetSchema = snippetSchema.extend({
+  snippetId: z.string()
+})
+
+export const deleteSnippetSchema = z.object({
+  snippetId: z.string()
 })

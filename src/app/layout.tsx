@@ -67,7 +67,10 @@ export const metadata: Metadata = {
   alternates: {
     canonical: SITE_URL,
     types: {
-      'application/rss+xml': [{ url: '/feed.xml', title: `${SITE_TITLE} RSS Feed` }]
+      'application/rss+xml': [
+        { url: '/feed.xml', title: `${SITE_TITLE} RSS Feed` },
+        { url: '/snippets/feed.xml', title: `${SITE_TITLE} Snippet Vault RSS Feed` }
+      ]
     }
   },
   keywords: [...SITE_KEYWORDS],

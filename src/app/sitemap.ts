@@ -2,9 +2,10 @@ import { type MetadataRoute } from 'next'
 
 import { SITE_URL } from '@/lib/constants'
 import { getPosts } from '@/queries/get-posts'
+import { getSnippets } from '@/queries/get-snippets'
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const { posts } = await getPosts()
+  const [{ posts }, { snippets }] = await Promise.all([getPosts(), getSnippets()])
 
   const staticPages = [
     {
@@ -18,6 +19,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: new Date(),
       changeFrequency: 'daily' as const,
       priority: 0.9
+    },
+    {
+      url: `${SITE_URL}/snippets`,
+      lastModified: new Date(),
+      changeFrequency: 'daily' as const,
+      priority: 0.8
     },
     {
       url: `${SITE_URL}/newsletter`,
@@ -46,6 +53,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8
   }))
 
+  const snippetPages = snippets.map((snippet) => ({
+    url: `${SITE_URL}/snippets/${snippet.id}`,
+    lastModified: new Date(snippet.createdAt),
+    changeFrequency: 'weekly' as const,
+    priority: 0.6
+  }))
+
   // One entry per author, not per post
   const authorIds = [...new Set(posts.map((post) => post.user.id))]
   const authorPages = authorIds.map((id) => ({
@@ -55,5 +69,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.6
   }))
 
-  return [...staticPages, ...postPages, ...authorPages]
+  return [...staticPages, ...postPages, ...snippetPages, ...authorPages]
 }

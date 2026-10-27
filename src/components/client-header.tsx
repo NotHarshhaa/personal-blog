@@ -21,6 +21,7 @@ import ThemeToggle from './theme-toggle'
 
 const NAV_ITEMS = [
   { href: '/', label: '[posts]', match: (p: string) => p === '/' || p.startsWith('/posts') },
+  { href: '/snippets', label: '[vault]', match: (p: string) => p.startsWith('/snippets') },
   { href: '/roadmaps', label: '[roadmaps]', match: (p: string) => p.startsWith('/roadmaps') },
   { href: '/bookmarks', label: '[bookmarks]', match: (p: string) => p.startsWith('/bookmarks') },
   { href: '/newsletter', label: '[dispatch]', match: (p: string) => p.startsWith('/newsletter') }
@@ -100,9 +101,7 @@ const ClientHeader = ({ user }: Props) => {
       if (stored) {
         const parsed = JSON.parse(stored) as unknown
         if (Array.isArray(parsed)) {
-          setReadIds(
-            parsed.filter((item): item is string => typeof item === 'string')
-          )
+          setReadIds(parsed.filter((item): item is string => typeof item === 'string'))
         }
       }
     } catch {
@@ -206,14 +205,9 @@ const ClientHeader = ({ user }: Props) => {
 
   const handleToggleRead = (notifId: string) => {
     setReadIds((prev) => {
-      const next = prev.includes(notifId)
-        ? prev.filter((id) => id !== notifId)
-        : [...prev, notifId]
+      const next = prev.includes(notifId) ? prev.filter((id) => id !== notifId) : [...prev, notifId]
       try {
-        globalThis.localStorage.setItem(
-          'read_notifications_v1',
-          JSON.stringify(next)
-        )
+        globalThis.localStorage.setItem('read_notifications_v1', JSON.stringify(next))
       } catch {
         // Ignore storage error
       }
@@ -225,10 +219,7 @@ const ClientHeader = ({ user }: Props) => {
     const allIds = notifications.map((n) => n.id)
     setReadIds(allIds)
     try {
-      globalThis.localStorage.setItem(
-        'read_notifications_v1',
-        JSON.stringify(allIds)
-      )
+      globalThis.localStorage.setItem('read_notifications_v1', JSON.stringify(allIds))
     } catch {
       // Ignore storage error
     }
@@ -248,7 +239,7 @@ const ClientHeader = ({ user }: Props) => {
   const notificationsList = (
     <>
       {notifications.length === 0 ? (
-        <p className="px-4 py-6 text-center font-mono text-xs text-muted-foreground">
+        <p className='text-muted-foreground px-4 py-6 text-center font-mono text-xs'>
           No notifications yet
         </p>
       ) : (
@@ -257,18 +248,18 @@ const ClientHeader = ({ user }: Props) => {
           return (
             <HoverMark
               key={notif.id}
-              label="Open"
+              label='Open'
               className={cn(
-                'border-b border-border last:border-0 transition-colors',
+                'border-border border-b transition-colors last:border-0',
                 !isRead && 'bg-muted/30'
               )}
             >
               <button
-                type="button"
+                type='button'
                 onClick={() => handleNotificationClick(notif.id, notif.postId)}
-                className="flex w-full flex-col gap-1 px-4 py-3 text-left cursor-pointer"
+                className='flex w-full cursor-pointer flex-col gap-1 px-4 py-3 text-left'
               >
-                <div className="flex items-center justify-between gap-2">
+                <div className='flex items-center justify-between gap-2'>
                   <span
                     className={cn(
                       'line-clamp-1 text-xs font-semibold',
@@ -277,11 +268,11 @@ const ClientHeader = ({ user }: Props) => {
                   >
                     {notif.title}
                   </span>
-                  <span className="shrink-0 font-mono text-[10px] text-muted-foreground">
+                  <span className='text-muted-foreground shrink-0 font-mono text-[10px]'>
                     {formatPostDate(notif.createdAt, { relative: true })}
                   </span>
                 </div>
-                <span className="line-clamp-2 text-xs text-muted-foreground">
+                <span className='text-muted-foreground line-clamp-2 text-xs'>
                   {notif.description}
                 </span>
               </button>
@@ -293,36 +284,36 @@ const ClientHeader = ({ user }: Props) => {
   )
 
   const notificationsPanel = (
-    <div className="relative border border-border bg-card shadow-xl">
+    <div className='border-border bg-card relative border shadow-xl'>
       <CornerBrackets />
-      <div className="flex items-center justify-between border-b border-border bg-muted/30 px-3.5 py-2 font-mono">
-        <div className="flex items-center gap-2">
-          <span className="size-1.5 rounded-full bg-foreground animate-pulse" />
-          <h2 className="text-[11px] font-bold uppercase tracking-wider text-foreground">
+      <div className='border-border bg-muted/30 flex items-center justify-between border-b px-3.5 py-2 font-mono'>
+        <div className='flex items-center gap-2'>
+          <span className='bg-foreground size-1.5 animate-pulse rounded-full' />
+          <h2 className='text-foreground text-[11px] font-bold tracking-wider uppercase'>
             // DISPATCHES
           </h2>
         </div>
         {unread > 0 ? (
-          <span className="border border-border bg-foreground text-background px-1.5 py-0.5 text-[9px] font-mono font-bold tracking-wider">
+          <span className='border-border bg-foreground text-background border px-1.5 py-0.5 font-mono text-[9px] font-bold tracking-wider'>
             {unread} NEW
           </span>
         ) : (
-          <span className="font-mono text-[10px] text-muted-foreground uppercase">
+          <span className='text-muted-foreground font-mono text-[10px] uppercase'>
             ALL CAUGHT UP
           </span>
         )}
       </div>
-      <div className="max-h-72 divide-y divide-border overflow-y-auto">{notificationsList}</div>
+      <div className='divide-border max-h-72 divide-y overflow-y-auto'>{notificationsList}</div>
       {notifications.length > 0 && (
-        <div className="flex items-center justify-between border-t border-border bg-muted/20 p-2 font-mono text-[10px]">
+        <div className='border-border bg-muted/20 flex items-center justify-between border-t p-2 font-mono text-[10px]'>
           <button
-            type="button"
+            type='button'
             onClick={handleClearAll}
-            className="flex items-center gap-1.5 border border-border bg-background px-2.5 py-1 text-muted-foreground transition-colors hover:border-foreground hover:bg-muted hover:text-foreground cursor-pointer"
+            className='border-border bg-background text-muted-foreground hover:border-foreground hover:bg-muted hover:text-foreground flex cursor-pointer items-center gap-1.5 border px-2.5 py-1 transition-colors'
           >
             <span>[MARK ALL AS READ]</span>
           </button>
-          <span className="text-muted-foreground/60">{notifications.length} TOTAL</span>
+          <span className='text-muted-foreground/60'>{notifications.length} TOTAL</span>
         </div>
       )}
     </div>
@@ -338,28 +329,24 @@ const ClientHeader = ({ user }: Props) => {
 
   const searchResults = (
     <>
-      {loading && (
-        <p className="p-4 text-center text-sm text-muted-foreground">Loading...</p>
-      )}
+      {loading && <p className='text-muted-foreground p-4 text-center text-sm'>Loading...</p>}
       {!loading && results.length === 0 && (
-        <p className="p-4 text-center text-sm text-muted-foreground">
-          No results found.
-        </p>
+        <p className='text-muted-foreground p-4 text-center text-sm'>No results found.</p>
       )}
       {!loading &&
         results.map((post) => (
           <HoverMark
             key={post.id}
-            label="Read article"
-            className="border-b border-border last:border-0"
+            label='Read article'
+            className='border-border border-b last:border-0'
           >
             <button
-              type="button"
-              className="block w-full px-4 py-3 text-left"
+              type='button'
+              className='block w-full px-4 py-3 text-left'
               onClick={() => handleSearchResultSelect(post.id)}
             >
-              <p className="text-sm font-medium">{post.title}</p>
-              <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">
+              <p className='text-sm font-medium'>{post.title}</p>
+              <p className='text-muted-foreground mt-0.5 line-clamp-2 text-xs'>
                 {post.description}
               </p>
             </button>
@@ -369,21 +356,21 @@ const ClientHeader = ({ user }: Props) => {
   )
 
   const searchField = (
-    <div className="relative">
-      <div className="flex items-center gap-3 border border-border bg-background px-3 py-2.5">
-        <Search className="size-4 shrink-0 text-muted-foreground" />
+    <div className='relative'>
+      <div className='border-border bg-background flex items-center gap-3 border px-3 py-2.5'>
+        <Search className='text-muted-foreground size-4 shrink-0' />
         <input
           ref={searchRef}
-          type="text"
+          type='text'
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search posts..."
-          className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
+          placeholder='Search posts...'
+          className='placeholder:text-muted-foreground w-full bg-transparent text-sm outline-none'
           onFocus={() => search && setShowDropdown(true)}
         />
       </div>
       {showDropdown && (
-        <div className="absolute inset-x-0 z-50 mt-1 max-h-72 overflow-auto border border-border bg-card">
+        <div className='border-border bg-card absolute inset-x-0 z-50 mt-1 max-h-72 overflow-auto border'>
           {searchResults}
         </div>
       )}
@@ -393,125 +380,130 @@ const ClientHeader = ({ user }: Props) => {
   return (
     <header
       className={cn(
-        'relative isolate z-50 mx-auto w-full max-w-[90rem] border border-border bg-card',
+        'border-border bg-card relative isolate z-50 mx-auto w-full max-w-[90rem] border',
         isScrolled && 'shadow-sm'
       )}
     >
       <CornerBrackets />
-      <div className="mx-auto flex min-h-14 max-w-[90rem] items-center justify-between gap-2 px-3 py-2 sm:gap-3 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-2.5 min-w-0 flex-1">
+      <div className='mx-auto flex min-h-14 max-w-[90rem] items-center justify-between gap-2 px-3 py-2 sm:gap-3 sm:px-6 lg:px-8'>
+        <div className='flex min-w-0 flex-1 items-center gap-2.5'>
           <Link
-            href="/"
-            className="bracket-title group flex min-w-0 items-center gap-1.5 p-0 sm:gap-2.5 sm:px-2 sm:pr-2"
+            href='/'
+            className='bracket-title group flex min-w-0 items-center gap-1.5 p-0 sm:gap-2.5 sm:px-2 sm:pr-2'
           >
             <Image
-              src="/logo.svg"
-              alt="Logo"
+              src='/logo.svg'
+              alt='Logo'
               width={28}
               height={28}
-              className="size-7 shrink-0 border border-border transition-transform group-hover:scale-105"
+              className='border-border size-7 shrink-0 border transition-transform group-hover:scale-105'
             />
-            <div className="min-w-0 leading-tight">
-              <p className="text-[12px] font-bold tracking-tight sm:text-sm truncate">
-                <span className="bg-gradient-to-r from-foreground via-foreground to-muted-foreground bg-clip-text text-transparent">
+            <div className='min-w-0 leading-tight'>
+              <p className='truncate text-[12px] font-bold tracking-tight sm:text-sm'>
+                <span className='from-foreground via-foreground to-muted-foreground bg-gradient-to-r bg-clip-text text-transparent'>
                   {SITE_NAME}
                 </span>
               </p>
-              <p className="font-mono text-[9px] tracking-[0.14em] text-muted-foreground uppercase sm:text-[10px] sm:tracking-[0.16em]">
+              <p className='text-muted-foreground font-mono text-[9px] tracking-[0.14em] uppercase sm:text-[10px] sm:tracking-[0.16em]'>
                 by Harshhaa
               </p>
             </div>
           </Link>
 
-          <div className="hidden xl:flex items-center gap-1.5 border border-border/70 bg-muted/40 px-2 py-0.5 font-mono text-[9px] text-muted-foreground uppercase tracking-wider">
-            <span className="relative flex size-1.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-foreground/50 opacity-75" />
-              <span className="relative inline-flex size-1.5 rounded-full bg-foreground" />
+          <div className='border-border/70 bg-muted/40 text-muted-foreground hidden items-center gap-1.5 border px-2 py-0.5 font-mono text-[9px] tracking-wider uppercase xl:flex'>
+            <span className='relative flex size-1.5'>
+              <span className='bg-foreground/50 absolute inline-flex h-full w-full animate-ping rounded-full opacity-75' />
+              <span className='bg-foreground relative inline-flex size-1.5 rounded-full' />
             </span>
             <span>SYS:OK</span>
           </div>
         </div>
 
-        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
-          <div className="hidden items-center gap-1.5 sm:gap-2 md:flex">
+        <div className='flex shrink-0 items-center gap-1.5 sm:gap-2'>
+          <div className='hidden items-center gap-1.5 sm:gap-2 md:flex'>
             <button
-              type="button"
+              type='button'
               onClick={() => setIsCommandOpen(true)}
-              className="hidden lg:flex items-center gap-2 border border-border/80 bg-background/60 px-2.5 py-1 text-xs text-muted-foreground transition-all hover:border-foreground hover:bg-muted/50 hover:text-foreground cursor-pointer"
-              aria-label="Search articles and run commands (Cmd+K)"
-              title="Quick Search (⌘K)"
+              className='border-border/80 bg-background/60 text-muted-foreground hover:border-foreground hover:bg-muted/50 hover:text-foreground hidden cursor-pointer items-center gap-2 border px-2.5 py-1 text-xs transition-all lg:flex'
+              aria-label='Search articles and run commands (Cmd+K)'
+              title='Quick Search (⌘K)'
             >
-              <Search className="size-3.5" />
-              <span className="hidden xl:inline font-mono text-xs">Search...</span>
-              <kbd className="rounded-none border border-border bg-muted px-1.5 py-0.5 font-mono text-[10px] font-semibold text-muted-foreground">
+              <Search className='size-3.5' />
+              <span className='hidden font-mono text-xs xl:inline'>Search...</span>
+              <kbd className='border-border bg-muted text-muted-foreground rounded-none border px-1.5 py-0.5 font-mono text-[10px] font-semibold'>
                 ⌘K
               </kbd>
             </button>
 
-            <nav className="hidden items-center gap-1 md:gap-1.5 lg:flex" aria-label="Main Navigation">
+            <nav
+              className='hidden items-center gap-1 md:gap-1.5 lg:flex'
+              aria-label='Main Navigation'
+            >
               {NAV_ITEMS.map((item) => {
                 const isActive = item.match(pathname)
                 return (
                   <Link
-                      key={item.href}
-                      href={item.href}
-                      className={cn(
-                        'border px-2 py-1 font-mono text-xs transition-all duration-150 xl:px-2.5',
-                        isActive
-                          ? 'border-foreground/80 bg-foreground text-background font-semibold shadow-2xs'
-                          : 'border-transparent text-muted-foreground hover:border-border hover:bg-muted/60 hover:text-foreground'
-                      )}
-                    >
-                      {item.label}
-                    </Link>
+                    key={item.href}
+                    href={item.href}
+                    className={cn(
+                      'border px-2 py-1 font-mono text-xs transition-all duration-150 xl:px-2.5',
+                      isActive
+                        ? 'border-foreground/80 bg-foreground text-background font-semibold shadow-2xs'
+                        : 'text-muted-foreground hover:border-border hover:bg-muted/60 hover:text-foreground border-transparent'
+                    )}
+                  >
+                    {item.label}
+                  </Link>
                 )
               })}
             </nav>
 
-            <div className="relative">
+            <div className='relative'>
               <button
                 ref={notificationButtonRef}
-                type="button"
+                type='button'
                 onClick={() => setShowNotifications(!showNotifications)}
                 className={cn(
-                  'relative flex size-9 items-center justify-center border text-muted-foreground hover:border-border hover:bg-muted hover:text-foreground cursor-pointer transition-colors',
-                  showNotifications ? 'border-border bg-muted text-foreground' : 'border-transparent'
+                  'text-muted-foreground hover:border-border hover:bg-muted hover:text-foreground relative flex size-9 cursor-pointer items-center justify-center border transition-colors',
+                  showNotifications
+                    ? 'border-border bg-muted text-foreground'
+                    : 'border-transparent'
                 )}
-                aria-label="Show notifications"
+                aria-label='Show notifications'
               >
-                <Bell className="size-4" />
+                <Bell className='size-4' />
                 {unread > 0 && (
-                  <span className="absolute top-1.5 right-1.5 size-1.5 rounded-full bg-foreground" />
+                  <span className='bg-foreground absolute top-1.5 right-1.5 size-1.5 rounded-full' />
                 )}
               </button>
 
               {showNotifications && (
                 <div
                   ref={notificationsRef}
-                  className="absolute right-0 z-50 mt-2 w-80 max-w-[calc(100vw-2rem)]"
+                  className='absolute right-0 z-50 mt-2 w-80 max-w-[calc(100vw-2rem)]'
                 >
                   {notificationsPanel}
                 </div>
               )}
             </div>
 
-          {user?.role === 'admin' && <NewPostButton />}
-          <ThemeToggle />
+            {user?.role === 'admin' && <NewPostButton />}
+            <ThemeToggle />
           </div>
 
           {user?.role === 'admin' && (
-            <div className="md:hidden">
+            <div className='md:hidden'>
               <NewPostButton compact />
             </div>
           )}
 
           <button
-            type="button"
+            type='button'
             onClick={() => setIsCommandOpen(true)}
-            className="hidden size-9 items-center justify-center border border-border text-muted-foreground hover:bg-muted hover:text-foreground sm:flex lg:hidden cursor-pointer transition-colors"
-            aria-label="Open search command palette"
+            className='border-border text-muted-foreground hover:bg-muted hover:text-foreground hidden size-9 cursor-pointer items-center justify-center border transition-colors sm:flex lg:hidden'
+            aria-label='Open search command palette'
           >
-            <Search className="size-4" />
+            <Search className='size-4' />
           </button>
 
           <Menu
@@ -528,65 +520,61 @@ const ClientHeader = ({ user }: Props) => {
           />
 
           <button
-            type="button"
+            type='button'
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="flex size-8 items-center justify-center border border-border text-muted-foreground hover:bg-muted hover:text-foreground sm:size-9 lg:hidden transition-colors"
-            aria-label="Toggle menu"
+            className='border-border text-muted-foreground hover:bg-muted hover:text-foreground flex size-8 items-center justify-center border transition-colors sm:size-9 lg:hidden'
+            aria-label='Toggle menu'
             aria-expanded={isMobileMenuOpen}
           >
-            {isMobileMenuOpen ? (
-              <X className="size-4" />
-            ) : (
-              <MenuIcon className="size-4" />
-            )}
+            {isMobileMenuOpen ? <X className='size-4' /> : <MenuIcon className='size-4' />}
           </button>
         </div>
       </div>
 
       {isSearchOpen && (
-        <div className="hidden border-t border-border md:block">
-          <div className="relative mx-auto max-w-[90rem] px-4 py-3 sm:px-6 lg:px-8">
+        <div className='border-border hidden border-t md:block'>
+          <div className='relative mx-auto max-w-[90rem] px-4 py-3 sm:px-6 lg:px-8'>
             {searchField}
           </div>
         </div>
       )}
 
       {isMobileMenuOpen && (
-        <div className="border-t border-border lg:hidden">
-          <div className="relative mx-auto max-w-[90rem] px-4 py-4 sm:px-6">
-            <div className="relative border border-border bg-card">
+        <div className='border-border border-t lg:hidden'>
+          <div className='relative mx-auto max-w-[90rem] px-4 py-4 sm:px-6'>
+            <div className='border-border bg-card relative border'>
               <span
                 aria-hidden
-                className="pointer-events-none absolute -top-px -left-px z-10 size-2.5 border-t-2 border-l-2 border-foreground/45"
+                className='border-foreground/45 pointer-events-none absolute -top-px -left-px z-10 size-2.5 border-t-2 border-l-2'
               />
               <span
                 aria-hidden
-                className="pointer-events-none absolute -top-px -right-px z-10 size-2.5 border-t-2 border-r-2 border-foreground/45"
+                className='border-foreground/45 pointer-events-none absolute -top-px -right-px z-10 size-2.5 border-t-2 border-r-2'
               />
               <span
                 aria-hidden
-                className="pointer-events-none absolute -bottom-px -left-px z-10 size-2.5 border-b-2 border-l-2 border-foreground/45"
+                className='border-foreground/45 pointer-events-none absolute -bottom-px -left-px z-10 size-2.5 border-b-2 border-l-2'
               />
               <span
                 aria-hidden
-                className="pointer-events-none absolute -right-px -bottom-px z-10 size-2.5 border-b-2 border-r-2 border-foreground/45"
+                className='border-foreground/45 pointer-events-none absolute -right-px -bottom-px z-10 size-2.5 border-r-2 border-b-2'
               />
 
-              <div className="space-y-4 p-4">
+              <div className='space-y-4 p-4'>
                 <div>
-                  <p className="mb-2 text-[10px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
+                  <p className='text-muted-foreground mb-2 text-[10px] font-semibold tracking-[0.18em] uppercase'>
                     Search
                   </p>
                   {searchField}
                 </div>
 
-                <div className="h-px w-full bg-border" />
+                <div className='bg-border h-px w-full' />
 
-                <div className="space-y-1.5">
-                  <p className="text-[10px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
+                <div className='space-y-1.5'>
+                  <p className='text-muted-foreground text-[10px] font-semibold tracking-[0.18em] uppercase'>
                     Navigation
                   </p>
-                  <div className="grid grid-cols-2 gap-2 font-mono text-xs">
+                  <div className='grid grid-cols-2 gap-2 font-mono text-xs'>
                     {NAV_ITEMS.map((item) => {
                       const isActive = item.match(pathname)
                       return (
@@ -602,34 +590,34 @@ const ClientHeader = ({ user }: Props) => {
                           )}
                         >
                           <span>{item.label}</span>
-                          {isActive && <span className="size-1.5 rounded-full bg-background" />}
+                          {isActive && <span className='bg-background size-1.5 rounded-full' />}
                         </Link>
                       )
                     })}
                   </div>
                 </div>
 
-                <div className="h-px w-full bg-border" />
+                <div className='bg-border h-px w-full' />
 
                 <div>
-                  <div className="mb-2 flex items-center justify-between">
-                    <p className="text-[10px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
+                  <div className='mb-2 flex items-center justify-between'>
+                    <p className='text-muted-foreground text-[10px] font-semibold tracking-[0.18em] uppercase'>
                       Notifications
                     </p>
                     {unread > 0 && (
-                      <span className="border border-border px-2 py-0.5 text-[10px] font-medium">
+                      <span className='border-border border px-2 py-0.5 text-[10px] font-medium'>
                         {unread} new
                       </span>
                     )}
                   </div>
-                  <div className="border border-border bg-background">
-                    <div className="max-h-48 overflow-y-auto">{notificationsList}</div>
+                  <div className='border-border bg-background border'>
+                    <div className='max-h-48 overflow-y-auto'>{notificationsList}</div>
                     {notifications.length > 0 && (
-                      <div className="border-t border-border p-2">
+                      <div className='border-border border-t p-2'>
                         <button
-                          type="button"
+                          type='button'
                           onClick={handleClearAll}
-                          className="w-full border border-border px-3 py-2 text-xs text-muted-foreground hover:bg-muted hover:text-foreground cursor-pointer"
+                          className='border-border text-muted-foreground hover:bg-muted hover:text-foreground w-full cursor-pointer border px-3 py-2 text-xs'
                         >
                           Clear all
                         </button>
@@ -638,13 +626,13 @@ const ClientHeader = ({ user }: Props) => {
                   </div>
                 </div>
 
-                <div className="h-px w-full bg-border" />
+                <div className='bg-border h-px w-full' />
 
                 <div>
-                  <p className="mb-2 text-[10px] font-semibold tracking-[0.18em] text-muted-foreground uppercase">
+                  <p className='text-muted-foreground mb-2 text-[10px] font-semibold tracking-[0.18em] uppercase'>
                     Theme
                   </p>
-                  <ThemeToggle className="flex w-full [&>button]:flex-1" />
+                  <ThemeToggle className='flex w-full [&>button]:flex-1' />
                 </div>
               </div>
             </div>

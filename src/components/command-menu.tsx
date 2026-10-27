@@ -14,6 +14,7 @@ import {
   RssIcon,
   SettingsIcon,
   ShieldIcon,
+  SquareTerminalIcon,
   SunIcon,
   TagIcon,
   UserIcon
@@ -51,6 +52,8 @@ type SearchPost = {
 
 const STATIC_ITEM_FILTERS = [
   'home blog articles',
+  'snippets vault til cli one-liners commands copy paste curl micro dispatches',
+  'manage snippets admin vault editor',
   'roadmaps series learning tracks guides devops ai',
   'bookmarks read later saved articles favorite',
   'newsletter dispatch subscribe email notes devops ai',
@@ -84,6 +87,7 @@ const hasVisibleStaticItems = (args: StaticVisibilityArgs): boolean => {
     return true
   }
   if (args.isAdmin && args.matches('admin dashboard metrics engagement')) return true
+  if (args.isAdmin && args.matches('manage snippets admin vault editor')) return true
   if (SITE_TOPICS.some((topic) => args.matches(`topic ${topic}`))) return true
   return STATIC_ITEM_FILTERS.some((filter) => args.matches(filter))
 }
@@ -287,72 +291,70 @@ export const CommandMenu = ({
 
           {/* Full list when no query yet */}
           {showFullList && posts.length > 0 && (
-                <CommandGroup heading='Published Articles'>
-                  {posts
-                    .filter((post) =>
-                      matches(
-                        `${post.title} ${post.description ?? ''} ${post.tags?.join(' ') ?? ''}`
-                      )
-                    )
-                    .map((post) => (
-                      <PostItem
-                        key={post.id}
-                        post={post}
-                        onSelect={() => runCommand(() => router.push(`/posts/${post.id}`))}
-                      />
-                    ))}
-                </CommandGroup>
-              )}
+            <CommandGroup heading='Published Articles'>
+              {posts
+                .filter((post) =>
+                  matches(`${post.title} ${post.description ?? ''} ${post.tags?.join(' ') ?? ''}`)
+                )
+                .map((post) => (
+                  <PostItem
+                    key={post.id}
+                    post={post}
+                    onSelect={() => runCommand(() => router.push(`/posts/${post.id}`))}
+                  />
+                ))}
+            </CommandGroup>
+          )}
 
-              <CommandSeparator />
+          <CommandSeparator />
 
-              {/* Topic Filters */}
-              <CommandGroup heading='Topics & Technology'>
-                <div className='grid grid-cols-1 gap-1 sm:grid-cols-2'>
-                  {SITE_TOPICS.filter((topic) => matches(`topic ${topic}`)).map((topic) => (
-                    <CommandItem
-                      key={topic}
-                      value={`topic ${topic}`}
-                      onSelect={() =>
-                        runCommand(() => router.push(`/?tag=${encodeURIComponent(topic)}`))
-                      }
-                      className='cursor-pointer'
-                    >
-                      <TagIcon className='text-muted-foreground size-3.5 shrink-0' />
-                      <span className='font-mono text-xs tracking-wider uppercase'>#{topic}</span>
-                      <CommandShortcut className='font-mono text-[9px]'>Filter</CommandShortcut>
-                    </CommandItem>
-                  ))}
-                </div>
-              </CommandGroup>
+          {/* Topic Filters */}
+          <CommandGroup heading='Topics & Technology'>
+            <div className='grid grid-cols-1 gap-1 sm:grid-cols-2'>
+              {SITE_TOPICS.filter((topic) => matches(`topic ${topic}`)).map((topic) => (
+                <CommandItem
+                  key={topic}
+                  value={`topic ${topic}`}
+                  onSelect={() =>
+                    runCommand(() => router.push(`/?tag=${encodeURIComponent(topic)}`))
+                  }
+                  className='cursor-pointer'
+                >
+                  <TagIcon className='text-muted-foreground size-3.5 shrink-0' />
+                  <span className='font-mono text-xs tracking-wider uppercase'>#{topic}</span>
+                  <CommandShortcut className='font-mono text-[9px]'>Filter</CommandShortcut>
+                </CommandItem>
+              ))}
+            </div>
+          </CommandGroup>
 
-              <CommandSeparator />
+          <CommandSeparator />
 
-              {/* Navigation */}
-              <CommandGroup heading='Navigation'>
-                <NavItems
-                  matches={matches}
-                  userRole={userRole}
-                  isLoggedIn={isLoggedIn}
-                  runCommand={runCommand}
-                  router={router}
-                />
-              </CommandGroup>
+          {/* Navigation */}
+          <CommandGroup heading='Navigation'>
+            <NavItems
+              matches={matches}
+              userRole={userRole}
+              isLoggedIn={isLoggedIn}
+              runCommand={runCommand}
+              router={router}
+            />
+          </CommandGroup>
 
-              <CommandSeparator />
+          <CommandSeparator />
 
-              {/* Appearance & Quick Actions */}
-              <CommandGroup heading='Appearance & Tools'>
-                <ActionItems
-                  matches={matches}
-                  runCommand={runCommand}
-                  setTheme={setTheme}
-                  copiedUrl={copiedUrl}
-                  copiedRss={copiedRss}
-                  handleCopyUrl={handleCopyUrl}
-                  handleCopyRss={handleCopyRss}
-                />
-              </CommandGroup>
+          {/* Appearance & Quick Actions */}
+          <CommandGroup heading='Appearance & Tools'>
+            <ActionItems
+              matches={matches}
+              runCommand={runCommand}
+              setTheme={setTheme}
+              copiedUrl={copiedUrl}
+              copiedRss={copiedRss}
+              handleCopyUrl={handleCopyUrl}
+              handleCopyRss={handleCopyRss}
+            />
+          </CommandGroup>
         </CommandList>
 
         {/* Keyboard Shortcuts Footer */}
@@ -454,6 +456,18 @@ const NavItems = ({ matches, userRole, isLoggedIn, runCommand, router }: NavItem
       </CommandItem>
     )}
 
+    {matches('snippets vault til cli one-liners commands copy paste curl micro dispatches') && (
+      <CommandItem
+        value='snippets vault til cli one-liners commands copy paste curl micro dispatches'
+        onSelect={() => runCommand(() => router.push('/snippets'))}
+        className='cursor-pointer'
+      >
+        <SquareTerminalIcon className='text-muted-foreground size-4 shrink-0' />
+        <span>Snippet Vault — CLI one-liners &amp; 30-second fixes</span>
+        <CommandShortcut className='font-mono text-[10px]'>Vault</CommandShortcut>
+      </CommandItem>
+    )}
+
     {matches('roadmaps series learning tracks guides devops ai') && (
       <CommandItem
         value='roadmaps series learning tracks guides devops ai'
@@ -520,6 +534,18 @@ const NavItems = ({ matches, userRole, isLoggedIn, runCommand, router }: NavItem
       >
         <ShieldIcon className='text-muted-foreground size-4 shrink-0' />
         <span>Admin Dashboard</span>
+        <CommandShortcut className='font-mono text-[10px]'>Admin</CommandShortcut>
+      </CommandItem>
+    )}
+
+    {userRole === 'admin' && matches('manage snippets admin vault editor') && (
+      <CommandItem
+        value='manage snippets admin vault editor'
+        onSelect={() => runCommand(() => router.push('/admin/snippets'))}
+        className='cursor-pointer'
+      >
+        <SquareTerminalIcon className='text-muted-foreground size-4 shrink-0' />
+        <span>Manage Snippet Vault</span>
         <CommandShortcut className='font-mono text-[10px]'>Admin</CommandShortcut>
       </CommandItem>
     )}
