@@ -1,9 +1,9 @@
 import { desc, eq } from 'drizzle-orm'
-import { SquareTerminal } from 'lucide-react'
+import { ShieldCheckIcon, SquareTerminal } from 'lucide-react'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 
-import { Frame, FrameBody, FrameHeader } from '@/components/frame'
+import { Frame, FrameBody, StripHeader } from '@/components/frame'
 import RefreshEngagementButton from '@/components/refresh-engagement-button'
 import { db } from '@/db'
 import { posts, subscribers } from '@/db/schema'
@@ -63,30 +63,42 @@ export default async function AdminPage() {
     <main className='space-y-6 p-4 sm:p-8'>
       {/* Header */}
       <Frame as='header'>
-        <FrameHeader label='Admin // System Control Panel' />
-        <FrameBody className='space-y-2'>
-          <h1 className='text-foreground text-2xl font-bold tracking-tight sm:text-3xl'>
+        <StripHeader
+          left={
+            <>
+              <ShieldCheckIcon className='text-foreground size-3' aria-hidden />
+              <span className='text-foreground font-semibold'>Admin // System control panel</span>
+            </>
+          }
+          right={<span>Operator: {user.email}</span>}
+        />
+        <FrameBody className='space-y-1'>
+          <h1 className='font-heading text-foreground text-2xl font-semibold tracking-tight sm:text-3xl'>
             Admin Dashboard
           </h1>
-          <p className='text-muted-foreground font-mono text-xs'>
-            Authenticated operator: <span className='text-foreground'>{user.email}</span>
+          <p className='text-muted-foreground text-sm'>
+            Dispatch pipelines, telemetry calibration, and the snippet vault — all operator controls
+            in one console.
           </p>
         </FrameBody>
       </Frame>
 
       {/* Newsletter Delivery Engine Section */}
       <Frame as='section'>
-        <FrameHeader label='PUBLICATION PIPELINE // EMAIL DISPATCH ENGINE' />
+        <StripHeader
+          left={
+            <span className='text-foreground font-semibold'>{'// 01: Email dispatch engine'}</span>
+          }
+          right={<span>{activeSubs.length} active subscribers</span>}
+        />
         <FrameBody className='space-y-3'>
-          <div>
-            <h2 className='text-foreground text-base font-semibold sm:text-lg'>
-              Automated Newsletter Dispatch
-            </h2>
-            <p className='text-muted-foreground font-mono text-xs'>
-              Compile published Markdown &amp; Tiptap posts into sharp, monochromatic 0px-radius
-              HTML emails and dispatch them directly to all active subscribers via Resend.
-            </p>
-          </div>
+          <h2 className='text-foreground text-base font-semibold sm:text-lg'>
+            Automated Newsletter Dispatch
+          </h2>
+          <p className='text-muted-foreground font-mono text-xs'>
+            Compile published Markdown &amp; Tiptap posts into sharp, monochromatic 0px-radius HTML
+            emails and dispatch them directly to all active subscribers via Resend.
+          </p>
 
           <NewsletterDispatcher
             subscriberCount={activeSubs.length}
@@ -97,7 +109,12 @@ export default async function AdminPage() {
 
       {/* Article Metrics Sync Section */}
       <Frame as='section'>
-        <FrameHeader label='Article metrics // Telemetry Calibration' />
+        <StripHeader
+          left={
+            <span className='text-foreground font-semibold'>{'// 02: Telemetry calibration'}</span>
+          }
+          right={<span>{publishedPosts.length} published posts</span>}
+        />
         <FrameBody className='space-y-3'>
           <h2 className='text-foreground text-base font-semibold sm:text-lg'>
             Recalculate article metrics
@@ -112,7 +129,12 @@ export default async function AdminPage() {
 
       {/* Snippet Vault Section */}
       <Frame as='section'>
-        <FrameHeader label='Snippet Vault // CLI Dispatch Manager' />
+        <StripHeader
+          left={
+            <span className='text-foreground font-semibold'>{'// 03: Snippet vault manager'}</span>
+          }
+          right={<span>/snippets // /raw/&lt;id&gt;</span>}
+        />
         <FrameBody className='space-y-3'>
           <h2 className='text-foreground text-base font-semibold sm:text-lg'>
             Micro-dispatches &amp; CLI one-liners
@@ -126,7 +148,7 @@ export default async function AdminPage() {
           </p>
           <Link
             href='/admin/snippets'
-            className='border-foreground/80 bg-card text-foreground hover:bg-foreground hover:text-background inline-flex items-center gap-2 border px-4 py-2 font-mono text-xs tracking-widest uppercase transition-colors'
+            className='border-foreground/80 bg-card text-foreground hover:bg-foreground hover:text-background inline-flex cursor-pointer items-center gap-2 border px-4 py-2 font-mono text-xs tracking-widest uppercase transition-colors'
           >
             <SquareTerminal className='size-3.5' />
             Open Snippet Manager

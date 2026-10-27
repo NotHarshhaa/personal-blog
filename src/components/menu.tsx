@@ -77,10 +77,10 @@ const Menu = ({ user }: MenuProps) => {
         className='border-border bg-card relative w-64 p-0 shadow-xl'
       >
         <CornerBrackets />
-        <div className='border-border bg-muted/30 border-b px-3.5 py-2 font-mono'>
+        <div className='border-border bg-muted/40 border-b px-3.5 py-2 font-mono'>
           <div className='flex items-center justify-between'>
-            <span className='text-muted-foreground text-[10px] font-bold tracking-wider uppercase'>
-              // USER_SESSION
+            <span className='text-muted-foreground text-[10px] font-bold tracking-widest uppercase'>
+              {'// User session'}
             </span>
             {role && (
               <span className='border-border bg-foreground text-background border px-1.5 py-0.5 text-[9px] font-bold uppercase'>
@@ -95,7 +95,7 @@ const Menu = ({ user }: MenuProps) => {
             <Avatar className='border-border size-9 border'>
               <AvatarImage src={image} alt={name} />
               <AvatarFallback className='bg-muted font-mono text-xs'>
-                {name?.slice(0, 2).toUpperCase() || 'OP'}
+                {name.slice(0, 2).toUpperCase() || 'OP'}
               </AvatarFallback>
             </Avatar>
             <div className='min-w-0 flex-1'>
@@ -115,7 +115,7 @@ const Menu = ({ user }: MenuProps) => {
           <DropdownMenuItem asChild>
             <Link href='/me/posts' className='cursor-pointer gap-2'>
               <FileText className='text-muted-foreground size-3.5' />
-              <span>My Posts & Studio</span>
+              <span>My Posts &amp; Studio</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
@@ -166,8 +166,16 @@ const Menu = ({ user }: MenuProps) => {
             className='text-destructive focus:bg-destructive/10 focus:text-destructive cursor-pointer gap-2'
           >
             <LogOut className='size-3.5' />
-            <span>[Log Out]</span>
+            <span>Log out</span>
           </DropdownMenuItem>
+        </div>
+
+        <div className='border-border bg-muted/30 text-muted-foreground flex items-center justify-between border-t px-3.5 py-2 font-mono text-[9px] tracking-widest uppercase'>
+          <span className='inline-flex items-center gap-1.5'>
+            <span className='bg-foreground size-1.5 animate-pulse rounded-full' aria-hidden />
+            <span>Session active</span>
+          </span>
+          <span>v2.4</span>
         </div>
       </DropdownMenuContent>
     </DropdownMenu>

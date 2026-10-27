@@ -21,7 +21,7 @@ import { useAction } from 'next-safe-action/hooks'
 import { useMemo, useState } from 'react'
 
 import { deleteDraftPostsAction } from '@/actions/delete-draft-posts-action'
-import { CornerBrackets, Frame, FrameBody, FrameHeader } from '@/components/frame'
+import { Frame, FrameBody, StripHeader } from '@/components/frame'
 import NewPostButton from '@/components/new-post-button'
 import PostCard, { type PostCardProps } from '@/components/post-card'
 import {
@@ -56,9 +56,210 @@ const getEmptyStateTitle = (search: string, activeTab: TabOption): string => {
 
 const getEmptyStateDescription = (search: string, activeTab: TabOption): string => {
   if (search) return 'Try searching with a different term or reset your search filter.'
-  if (activeTab === 'drafts') return 'Start a new draft to draft out thoughts, technical tutorials, and architecture notes.'
+  if (activeTab === 'drafts')
+    return 'Start a new draft to draft out thoughts, technical tutorials, and architecture notes.'
   return 'Create and publish your first technical article for the community!'
 }
+
+const sortLabels: Record<SortOption, { label: string; icon: React.ReactNode }> = {
+  newest: { label: 'Newest First', icon: <Clock className='size-3' /> },
+  views: { label: 'Most Views', icon: <Eye className='size-3' /> },
+  popular: { label: 'Most Liked', icon: <Heart className='size-3' /> },
+  title: { label: 'Alphabetical', icon: <ArrowUpDown className='size-3' /> }
+}
+
+type MetricsRowProps = {
+  activeTab: TabOption
+  onTabChange: (tab: TabOption) => void
+  publishedCount: number
+  draftCount: number
+  totalViews: number
+  totalLikes: number
+}
+
+const MetricsRow = ({
+  activeTab,
+  onTabChange,
+  publishedCount,
+  draftCount,
+  totalViews,
+  totalLikes
+}: MetricsRowProps) => (
+  <div className='border-border grid grid-cols-2 border sm:grid-cols-4'>
+    {/* Published Tile */}
+    <button
+      type='button'
+      onClick={() => onTabChange('published')}
+      className={cn(
+        'group border-border flex cursor-pointer flex-col justify-between p-3.5 text-left transition-colors duration-150 sm:border-r',
+        activeTab === 'published' ? 'bg-muted/50' : 'hover:bg-muted/20'
+      )}
+    >
+      <span className='text-muted-foreground flex items-center justify-between font-mono text-[10px] tracking-widest uppercase'>
+        Published
+        <FileCheck2 className='text-foreground size-3.5' aria-hidden />
+      </span>
+      <span className='mt-2 flex items-baseline gap-1.5'>
+        <span className='text-foreground font-mono text-2xl font-bold tracking-tight tabular-nums sm:text-3xl'>
+          {publishedCount.toString().padStart(2, '0')}
+        </span>
+        <span className='text-muted-foreground font-mono text-[10px] uppercase'>live</span>
+      </span>
+    </button>
+
+    {/* Drafts Tile */}
+    <button
+      type='button'
+      onClick={() => onTabChange('drafts')}
+      className={cn(
+        'group border-border flex cursor-pointer flex-col justify-between p-3.5 text-left transition-colors duration-150 sm:border-r',
+        activeTab === 'drafts' ? 'bg-muted/50' : 'hover:bg-muted/20'
+      )}
+    >
+      <span className='text-muted-foreground flex items-center justify-between font-mono text-[10px] tracking-widest uppercase'>
+        Drafts
+        <FileEdit className='text-foreground size-3.5' aria-hidden />
+      </span>
+      <span className='mt-2 flex items-baseline gap-1.5'>
+        <span className='text-foreground font-mono text-2xl font-bold tracking-tight tabular-nums sm:text-3xl'>
+          {draftCount.toString().padStart(2, '0')}
+        </span>
+        <span className='text-muted-foreground font-mono text-[10px] uppercase'>wip</span>
+      </span>
+    </button>
+
+    {/* Total Views Tile */}
+    <div className='border-border flex flex-col justify-between border-t p-3.5 sm:border-t-0 sm:border-r'>
+      <span className='text-muted-foreground flex items-center justify-between font-mono text-[10px] tracking-widest uppercase'>
+        Total reads
+        <Eye className='text-foreground size-3.5' aria-hidden />
+      </span>
+      <span className='mt-2 flex items-baseline gap-1.5'>
+        <span className='text-foreground font-mono text-2xl font-bold tracking-tight tabular-nums sm:text-3xl'>
+          {totalViews.toLocaleString()}
+        </span>
+        <span className='text-muted-foreground font-mono text-[10px] uppercase'>views</span>
+      </span>
+    </div>
+
+    {/* Total Likes Tile */}
+    <div className='border-border flex flex-col justify-between border-t p-3.5 sm:border-t-0'>
+      <span className='text-muted-foreground flex items-center justify-between font-mono text-[10px] tracking-widest uppercase'>
+        Reactions
+        <Heart className='size-3.5 text-rose-500' aria-hidden />
+      </span>
+      <span className='mt-2 flex items-baseline gap-1.5'>
+        <span className='text-foreground font-mono text-2xl font-bold tracking-tight tabular-nums sm:text-3xl'>
+          {totalLikes.toLocaleString()}
+        </span>
+        <span className='text-muted-foreground font-mono text-[10px] uppercase'>likes</span>
+      </span>
+    </div>
+  </div>
+)
+
+type TabSelectorProps = {
+  activeTab: TabOption
+  onTabChange: (tab: TabOption) => void
+  publishedCount: number
+  draftCount: number
+  totalCount: number
+}
+
+const TAB_BUTTON_CLASS =
+  'inline-flex cursor-pointer items-center gap-2 border px-3 py-1.5 font-mono text-xs uppercase tracking-wider transition-all duration-150'
+
+const TabSelector = ({
+  activeTab,
+  onTabChange,
+  publishedCount,
+  draftCount,
+  totalCount
+}: TabSelectorProps) => (
+  <div className='flex flex-wrap items-center gap-1.5' role='tablist'>
+    <button
+      type='button'
+      onClick={() => onTabChange('published')}
+      className={cn(
+        TAB_BUTTON_CLASS,
+        activeTab === 'published'
+          ? 'border-foreground bg-foreground text-background font-semibold shadow-xs'
+          : 'border-border bg-background text-muted-foreground hover:border-foreground/70 hover:text-foreground'
+      )}
+      role='tab'
+      aria-selected={activeTab === 'published'}
+    >
+      <FileCheck2 className='size-3.5' />
+      <span>Published</span>
+      <span className='text-[10px] opacity-75'>[{publishedCount.toString().padStart(2, '0')}]</span>
+    </button>
+
+    <button
+      type='button'
+      onClick={() => onTabChange('drafts')}
+      className={cn(
+        TAB_BUTTON_CLASS,
+        activeTab === 'drafts'
+          ? 'border-foreground bg-foreground text-background font-semibold shadow-xs'
+          : 'border-border bg-background text-muted-foreground hover:border-foreground/70 hover:text-foreground'
+      )}
+      role='tab'
+      aria-selected={activeTab === 'drafts'}
+    >
+      <FileEdit className='size-3.5' />
+      <span>Drafts</span>
+      <span className='text-[10px] opacity-75'>[{draftCount.toString().padStart(2, '0')}]</span>
+    </button>
+
+    <button
+      type='button'
+      onClick={() => onTabChange('all')}
+      className={cn(
+        TAB_BUTTON_CLASS,
+        activeTab === 'all'
+          ? 'border-foreground bg-foreground text-background font-semibold shadow-xs'
+          : 'border-border bg-background text-muted-foreground hover:border-foreground/70 hover:text-foreground'
+      )}
+      role='tab'
+      aria-selected={activeTab === 'all'}
+    >
+      <FolderOpen className='size-3.5' />
+      <span>All Posts</span>
+      <span className='text-[10px] opacity-75'>[{totalCount.toString().padStart(2, '0')}]</span>
+    </button>
+  </div>
+)
+
+const SortChips = ({
+  sortBy,
+  onSortChange
+}: {
+  sortBy: SortOption
+  onSortChange: (option: SortOption) => void
+}) => (
+  <div className='border-border mt-3 flex flex-wrap items-center gap-1.5 border-t pt-3'>
+    <span className='text-muted-foreground mr-1 font-mono text-[10px] tracking-widest uppercase'>
+      Sort
+    </span>
+    {(['newest', 'views', 'popular', 'title'] as SortOption[]).map((option) => (
+      <button
+        key={option}
+        type='button'
+        onClick={() => onSortChange(option)}
+        aria-pressed={sortBy === option}
+        className={cn(
+          'inline-flex cursor-pointer items-center gap-1.5 border px-2 py-1 font-mono text-[10px] tracking-wider uppercase transition-colors',
+          sortBy === option
+            ? 'border-foreground bg-foreground text-background font-semibold'
+            : 'border-border/70 bg-background text-muted-foreground hover:border-foreground hover:text-foreground'
+        )}
+      >
+        {sortLabels[option].icon}
+        {sortLabels[option].label}
+      </button>
+    ))}
+  </div>
+)
 
 export const PostsClient = ({ posts, user }: ContentProps) => {
   const searchParams = useSearchParams()
@@ -68,7 +269,6 @@ export const PostsClient = ({ posts, user }: ContentProps) => {
   const [activeTab, setActiveTab] = useState<TabOption>(tabParam)
   const [search, setSearch] = useState('')
   const [sortBy, setSortBy] = useState<SortOption>('newest')
-  const [showSortMenu, setShowSortMenu] = useState(false)
   const [isDeleteAllOpen, setIsDeleteAllOpen] = useState(false)
 
   const isAdmin = user.role === 'admin'
@@ -89,31 +289,14 @@ export const PostsClient = ({ posts, user }: ContentProps) => {
   }
 
   // Calculate Metrics
-  const publishedPosts = useMemo(
-    () => posts.filter((post) => post.published),
-    [posts]
-  )
-  const draftPosts = useMemo(
-    () => posts.filter((post) => !post.published),
-    [posts]
-  )
-  const totalViews = useMemo(
-    () => posts.reduce((acc, p) => acc + p.views, 0),
-    [posts]
-  )
-  const totalLikes = useMemo(
-    () => posts.reduce((acc, p) => acc + (p.likeCount || 0), 0),
-    [posts]
-  )
+  const publishedPosts = useMemo(() => posts.filter((post) => post.published), [posts])
+  const draftPosts = useMemo(() => posts.filter((post) => !post.published), [posts])
+  const totalViews = useMemo(() => posts.reduce((acc, p) => acc + p.views, 0), [posts])
+  const totalLikes = useMemo(() => posts.reduce((acc, p) => acc + (p.likeCount || 0), 0), [posts])
 
   // Regular user: liked posts
   const likedPosts = useMemo(
-    () =>
-      posts.filter(
-        (p) =>
-          p.likes.some((like) => like.id === user.id) ||
-          p.likeCount > 0
-      ),
+    () => posts.filter((p) => p.likes.some((like) => like.id === user.id) || p.likeCount > 0),
     [posts, user.id]
   )
 
@@ -143,9 +326,7 @@ export const PostsClient = ({ posts, user }: ContentProps) => {
     const list = [...searchFilteredPosts]
     switch (sortBy) {
       case 'newest': {
-        return list.sort(
-          (a, b) => b.createdAt.getTime() - a.createdAt.getTime()
-        )
+        return list.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
       }
       case 'views': {
         return list.sort((a, b) => b.views - a.views)
@@ -169,317 +350,170 @@ export const PostsClient = ({ posts, user }: ContentProps) => {
     router.push(`/me/posts?${params.toString()}`, { scroll: false })
   }
 
-  const sortLabels: Record<SortOption, { label: string; icon: React.ReactNode }> = {
-    newest: { label: 'Newest First', icon: <Clock className="size-3" /> },
-    views: { label: 'Most Views', icon: <Eye className="size-3" /> },
-    popular: { label: 'Most Liked', icon: <Heart className="size-3" /> },
-    title: { label: 'Alphabetical', icon: <ArrowUpDown className="size-3" /> }
+  let emptyAction: React.ReactNode = null
+  if (search) {
+    emptyAction = (
+      <Button
+        variant='outline'
+        size='sm'
+        onClick={() => setSearch('')}
+        className='cursor-pointer font-mono text-xs uppercase'
+      >
+        Clear search
+      </Button>
+    )
+  } else if (isAdmin) {
+    emptyAction = (
+      <NewPostButton className='border-foreground bg-foreground text-background hover:bg-foreground/90 border font-mono text-xs uppercase' />
+    )
   }
 
   return (
-    <div className="w-full space-y-6 sm:space-y-8">
+    <div className='w-full space-y-6 sm:space-y-8'>
       {/* 1. Blueprint Studio Header Frame */}
-      <Frame as="header">
-        <FrameHeader label={isAdmin ? 'Author Studio' : 'Your Library'}>
-          {isAdmin && (
-            <div className="flex items-center gap-2">
-              <NewPostButton className="inline-flex items-center gap-1.5 border border-border bg-background px-3 py-1 font-mono text-[11px] font-semibold uppercase tracking-wider text-foreground transition-colors hover:border-foreground hover:bg-foreground hover:text-background cursor-pointer" />
-            </div>
-          )}
-        </FrameHeader>
-        <FrameBody className="space-y-5">
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between">
+      <Frame as='header'>
+        <StripHeader
+          left={
+            isAdmin ? (
+              <span className='text-foreground font-semibold'>
+                Author studio // Content library
+              </span>
+            ) : (
+              <span className='text-foreground font-semibold'>
+                Your library // Saved &amp; liked
+              </span>
+            )
+          }
+          right={
+            isAdmin ? (
+              <NewPostButton className='border-border bg-background text-foreground hover:border-foreground hover:bg-foreground hover:text-background inline-flex cursor-pointer items-center gap-1.5 border px-2 py-px text-[9px] font-semibold tracking-widest uppercase transition-colors' />
+            ) : (
+              <span>ID: {user.name || user.email}</span>
+            )
+          }
+        />
+        <FrameBody className='space-y-5'>
+          <div className='flex flex-col gap-2 sm:flex-row sm:items-baseline sm:justify-between'>
             <div>
-              <h1 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+              <h1 className='font-heading text-foreground text-3xl font-semibold tracking-tight sm:text-4xl'>
                 {isAdmin ? 'Content Library' : 'Saved & Liked Articles'}
               </h1>
-              <p className="mt-1 text-sm leading-relaxed text-muted-foreground sm:text-base">
+              <p className='text-muted-foreground mt-1 text-sm leading-relaxed sm:text-base'>
                 {isAdmin
                   ? 'Monitor article metrics, continue editing ongoing drafts, and publish technical write-ups.'
                   : 'Articles and engineering guides you have liked or bookmarked across the space.'}
               </p>
             </div>
-            <span className="font-mono text-xs uppercase tracking-wider text-muted-foreground">
-              ID: {user.name || user.email}
-            </span>
+            {isAdmin && (
+              <span className='text-muted-foreground font-mono text-[10px] tracking-widest uppercase'>
+                ID: {user.name || user.email}
+              </span>
+            )}
           </div>
 
-          {/* 4-Card Blueprint Metrics Grid (Admin) */}
           {isAdmin && (
-            <div className="grid grid-cols-2 gap-2.5 pt-2 sm:grid-cols-4 sm:gap-3">
-              {/* Published Tile */}
-              <button
-                type="button"
-                onClick={() => handleTabChange('published')}
-                className={cn(
-                  'group flex flex-col justify-between border p-3 sm:p-4 text-left transition-all duration-150 cursor-pointer',
-                  activeTab === 'published'
-                    ? 'border-foreground bg-muted/40 shadow-xs'
-                    : 'border-border bg-card/60 hover:border-foreground/60 hover:bg-muted/20'
-                )}
-              >
-                <div className="flex items-center justify-between text-muted-foreground">
-                  <span className="font-mono text-[10px] uppercase tracking-widest">
-                    Published
-                  </span>
-                  <FileCheck2 className="size-3.5 text-foreground" />
-                </div>
-                <div className="mt-2 flex items-baseline gap-2">
-                  <span className="font-mono text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                    {publishedPosts.length.toString().padStart(2, '0')}
-                  </span>
-                  <span className="font-mono text-[10px] text-muted-foreground uppercase">
-                    Live
-                  </span>
-                </div>
-              </button>
-
-              {/* Drafts Tile */}
-              <button
-                type="button"
-                onClick={() => handleTabChange('drafts')}
-                className={cn(
-                  'group flex flex-col justify-between border p-3 sm:p-4 text-left transition-all duration-150 cursor-pointer',
-                  activeTab === 'drafts'
-                    ? 'border-foreground bg-muted/40 shadow-xs'
-                    : 'border-border bg-card/60 hover:border-foreground/60 hover:bg-muted/20'
-                )}
-              >
-                <div className="flex items-center justify-between text-muted-foreground">
-                  <span className="font-mono text-[10px] uppercase tracking-widest">
-                    Drafts
-                  </span>
-                  <FileEdit className="size-3.5 text-foreground" />
-                </div>
-                <div className="mt-2 flex items-baseline gap-2">
-                  <span className="font-mono text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                    {draftPosts.length.toString().padStart(2, '0')}
-                  </span>
-                  <span className="font-mono text-[10px] text-muted-foreground uppercase">
-                    WIP
-                  </span>
-                </div>
-              </button>
-
-              {/* Total Views Tile */}
-              <div className="flex flex-col justify-between border border-border bg-card/60 p-3 sm:p-4">
-                <div className="flex items-center justify-between text-muted-foreground">
-                  <span className="font-mono text-[10px] uppercase tracking-widest">
-                    Total Reads
-                  </span>
-                  <Eye className="size-3.5 text-foreground" />
-                </div>
-                <div className="mt-2 flex items-baseline gap-2">
-                  <span className="font-mono text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                    {totalViews.toLocaleString()}
-                  </span>
-                  <span className="font-mono text-[10px] text-muted-foreground uppercase">
-                    Views
-                  </span>
-                </div>
-              </div>
-
-              {/* Total Likes Tile */}
-              <div className="flex flex-col justify-between border border-border bg-card/60 p-3 sm:p-4">
-                <div className="flex items-center justify-between text-muted-foreground">
-                  <span className="font-mono text-[10px] uppercase tracking-widest">
-                    Reactions
-                  </span>
-                  <Heart className="size-3.5 text-rose-500" />
-                </div>
-                <div className="mt-2 flex items-baseline gap-2">
-                  <span className="font-mono text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                    {totalLikes.toLocaleString()}
-                  </span>
-                  <span className="font-mono text-[10px] text-muted-foreground uppercase">
-                    Likes
-                  </span>
-                </div>
-              </div>
-            </div>
+            <MetricsRow
+              activeTab={activeTab}
+              onTabChange={handleTabChange}
+              publishedCount={publishedPosts.length}
+              draftCount={draftPosts.length}
+              totalViews={totalViews}
+              totalLikes={totalLikes}
+            />
           )}
         </FrameBody>
       </Frame>
 
       {/* 2. Unified Filter & Tab Navigation Frame */}
-      <Frame className="relative overflow-visible">
-        <CornerBrackets />
-        <FrameHeader label="View & Filter Console">
-          <div className="flex items-center gap-3">
-            <span className="font-mono text-[10px] text-muted-foreground uppercase">
-              {sortedPosts.length}{' '}
-              {sortedPosts.length === 1 ? 'article' : 'articles'} showing
-            </span>
-            {search && (
-              <button
-                type="button"
-                onClick={() => setSearch('')}
-                className="inline-flex items-center gap-1 border border-border bg-background px-2 py-0.5 font-mono text-[10px] text-muted-foreground transition-colors hover:border-foreground hover:text-foreground cursor-pointer"
-              >
-                <X className="size-3" />
-                Reset search
-              </button>
-            )}
-          </div>
-        </FrameHeader>
+      <Frame className='relative overflow-visible'>
+        <StripHeader
+          left={<span className='text-foreground font-semibold'>View &amp; filter console</span>}
+          right={
+            <>
+              <span>
+                {sortedPosts.length} {sortedPosts.length === 1 ? 'article' : 'articles'} showing
+              </span>
+              {search && (
+                <button
+                  type='button'
+                  onClick={() => setSearch('')}
+                  className='border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground inline-flex cursor-pointer items-center gap-1 border px-2 py-px text-[9px] font-semibold transition-colors'
+                >
+                  <X className='size-2.5' aria-hidden />
+                  Reset
+                </button>
+              )}
+            </>
+          }
+        />
 
         {/* Tab Selector & Controls Bar */}
-        <div className="border-b border-border bg-muted/20 p-3 sm:p-4">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className='border-border bg-muted/20 border-b p-3 sm:p-4'>
+          <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
             {/* Blueprint Segmented Tabs */}
             {isAdmin ? (
-              <div className="flex flex-wrap items-center gap-1.5" role="tablist">
-                <button
-                  type="button"
-                  onClick={() => handleTabChange('published')}
-                  className={cn(
-                    'inline-flex items-center gap-2 border px-3 py-1.5 font-mono text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer',
-                    activeTab === 'published'
-                      ? 'border-foreground bg-foreground text-background font-semibold shadow-xs'
-                      : 'border-border bg-background text-muted-foreground hover:border-foreground/70 hover:text-foreground'
-                  )}
-                  role="tab"
-                  aria-selected={activeTab === 'published'}
-                >
-                  <FileCheck2 className="size-3.5" />
-                  <span>Published</span>
-                  <span className="text-[10px] opacity-75">
-                    [{publishedPosts.length.toString().padStart(2, '0')}]
-                  </span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => handleTabChange('drafts')}
-                  className={cn(
-                    'inline-flex items-center gap-2 border px-3 py-1.5 font-mono text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer',
-                    activeTab === 'drafts'
-                      ? 'border-foreground bg-foreground text-background font-semibold shadow-xs'
-                      : 'border-border bg-background text-muted-foreground hover:border-foreground/70 hover:text-foreground'
-                  )}
-                  role="tab"
-                  aria-selected={activeTab === 'drafts'}
-                >
-                  <FileEdit className="size-3.5" />
-                  <span>Drafts</span>
-                  <span className="text-[10px] opacity-75">
-                    [{draftPosts.length.toString().padStart(2, '0')}]
-                  </span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => handleTabChange('all')}
-                  className={cn(
-                    'inline-flex items-center gap-2 border px-3 py-1.5 font-mono text-xs uppercase tracking-wider transition-all duration-150 cursor-pointer',
-                    activeTab === 'all'
-                      ? 'border-foreground bg-foreground text-background font-semibold shadow-xs'
-                      : 'border-border bg-background text-muted-foreground hover:border-foreground/70 hover:text-foreground'
-                  )}
-                  role="tab"
-                  aria-selected={activeTab === 'all'}
-                >
-                  <FolderOpen className="size-3.5" />
-                  <span>All Posts</span>
-                  <span className="text-[10px] opacity-75">
-                    [{posts.length.toString().padStart(2, '0')}]
-                  </span>
-                </button>
-              </div>
+              <TabSelector
+                activeTab={activeTab}
+                onTabChange={handleTabChange}
+                publishedCount={publishedPosts.length}
+                draftCount={draftPosts.length}
+                totalCount={posts.length}
+              />
             ) : (
-              <div className="flex items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 border border-foreground bg-foreground text-background px-3 py-1 font-mono text-xs uppercase font-semibold">
-                  <Heart className="size-3.5 fill-current" />
+              <div className='flex items-center gap-2'>
+                <span className='border-foreground bg-foreground text-background inline-flex items-center gap-1.5 border px-3 py-1 font-mono text-xs font-semibold uppercase'>
+                  <Heart className='size-3.5 fill-current' />
                   Liked Articles [{likedPosts.length}]
                 </span>
               </div>
             )}
 
-            {/* Search Input & Sort Action */}
-            <div className="flex items-center gap-2">
-              <div className="relative w-full sm:w-60">
-                <Search className="absolute left-2.5 top-1/2 size-3.5 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+            {/* Search Input */}
+            <div className='flex items-center gap-2'>
+              <div className='relative w-full sm:w-60'>
+                <Search className='text-muted-foreground pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2' />
                 <input
-                  type="text"
+                  type='text'
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  placeholder="Filter by title or tag..."
-                  className="h-8 w-full border border-border bg-background pl-8 pr-7 font-mono text-xs text-foreground placeholder:text-muted-foreground/60 outline-none transition-colors focus:border-foreground"
+                  placeholder='Filter by title or tag...'
+                  className='border-border bg-background text-foreground placeholder:text-muted-foreground/60 focus:border-foreground h-8 w-full border pr-7 pl-8 font-mono text-xs transition-colors outline-none'
                 />
                 {search && (
                   <button
-                    type="button"
+                    type='button'
                     onClick={() => setSearch('')}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground cursor-pointer"
-                    aria-label="Clear search"
+                    className='text-muted-foreground hover:text-foreground absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer'
+                    aria-label='Clear search'
                   >
-                    <X className="size-3" />
+                    <X className='size-3' />
                   </button>
                 )}
               </div>
-
-              {/* Sort Toggle Button */}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowSortMenu(!showSortMenu)}
-                className="gap-1.5 font-mono text-xs uppercase cursor-pointer"
-                title="Change sort order"
-              >
-                <ArrowUpDown className="size-3" />
-                <span className="hidden sm:inline">Sort:</span>
-                <span>{sortBy}</span>
-              </Button>
             </div>
           </div>
 
-          {/* Quick Sort Options Dropdown Bar */}
-          {showSortMenu && (
-            <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border pt-3">
-              <span className="font-mono text-[10px] uppercase text-muted-foreground">
-                Sort by:
-              </span>
-              {(['newest', 'views', 'popular', 'title'] as SortOption[]).map((option) => (
-                <button
-                  key={option}
-                  type="button"
-                  onClick={() => {
-                    setSortBy(option)
-                    setShowSortMenu(false)
-                  }}
-                  className={cn(
-                    'inline-flex items-center gap-1.5 border px-2.5 py-1 font-mono text-[11px] uppercase transition-colors cursor-pointer',
-                    sortBy === option
-                      ? 'border-foreground bg-foreground text-background font-semibold'
-                      : 'border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground'
-                  )}
-                >
-                  {sortLabels[option].icon}
-                  {sortLabels[option].label}
-                </button>
-              ))}
-            </div>
-          )}
+          <SortChips sortBy={sortBy} onSortChange={setSortBy} />
         </div>
 
         {/* 3. Drafts Bulk Management Banner (When in drafts tab) */}
         {isAdmin && activeTab === 'drafts' && draftPosts.length > 0 && (
-          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border bg-muted/30 px-4 py-2.5 text-xs text-muted-foreground sm:px-5">
-            <div className="flex items-center gap-2">
-              <span className="flex size-2 rounded-full bg-foreground" aria-hidden />
+          <div className='border-border bg-muted/30 text-muted-foreground flex flex-wrap items-center justify-between gap-3 border-b px-4 py-2.5 text-xs sm:px-5'>
+            <div className='flex items-center gap-2'>
+              <span className='bg-foreground flex size-2 rounded-full' aria-hidden />
               <span>
-                You have <strong className="text-foreground">{draftPosts.length}</strong>{' '}
-                draft {draftPosts.length === 1 ? 'article' : 'articles'} in progress
+                You have <strong className='text-foreground'>{draftPosts.length}</strong> draft{' '}
+                {draftPosts.length === 1 ? 'article' : 'articles'} in progress
               </span>
             </div>
             <Button
-              variant="destructive"
-              size="sm"
+              variant='destructive'
+              size='sm'
               onClick={() => setIsDeleteAllOpen(true)}
               disabled={deleteDraftsAction.isExecuting}
-              className="gap-1.5 font-mono text-[11px] uppercase cursor-pointer"
+              className='cursor-pointer gap-1.5 font-mono text-[11px] uppercase'
             >
-              <Trash2Icon className="size-3.5" />
+              <Trash2Icon className='size-3.5' />
               Delete all drafts
             </Button>
           </div>
@@ -487,40 +521,20 @@ export const PostsClient = ({ posts, user }: ContentProps) => {
 
         {/* 4. Article List / Feed */}
         {sortedPosts.length === 0 ? (
-          <div className="flex flex-col items-center justify-center p-10 text-center sm:p-16">
-            <span className="mb-4 flex size-12 items-center justify-center border border-border bg-muted/30">
-              <Inbox className="size-6 text-muted-foreground" />
+          <div className='flex flex-col items-center justify-center p-10 text-center sm:p-16'>
+            <span className='border-border bg-muted/30 mb-4 flex size-12 items-center justify-center border'>
+              <Inbox className='text-muted-foreground size-6' />
             </span>
-            <p className="font-semibold text-foreground">
-              {getEmptyStateTitle(search, activeTab)}
-            </p>
-            <p className="mt-1 max-w-sm text-xs leading-relaxed text-muted-foreground">
+            <p className='text-foreground font-semibold'>{getEmptyStateTitle(search, activeTab)}</p>
+            <p className='text-muted-foreground mt-1 max-w-sm text-xs leading-relaxed'>
               {getEmptyStateDescription(search, activeTab)}
             </p>
-            <div className="mt-5 flex flex-wrap gap-2">
-              {search ? (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setSearch('')}
-                  className="font-mono text-xs uppercase cursor-pointer"
-                >
-                  Clear search
-                </Button>
-              ) : isAdmin ? (
-                <NewPostButton className="border border-foreground bg-foreground text-background hover:bg-foreground/90 font-mono text-xs uppercase" />
-              ) : null}
-            </div>
+            <div className='mt-5 flex flex-wrap gap-2'>{emptyAction}</div>
           </div>
         ) : (
-          <div className="divide-y divide-border">
+          <div className='divide-border divide-y'>
             {sortedPosts.map((post) => (
-              <PostCard
-                key={post.id}
-                post={post}
-                user={user}
-                showAuthor={!isAdmin}
-              />
+              <PostCard key={post.id} post={post} user={user} showAuthor={!isAdmin} />
             ))}
           </div>
         )}
@@ -530,30 +544,33 @@ export const PostsClient = ({ posts, user }: ContentProps) => {
       <AlertDialog open={isDeleteAllOpen} onOpenChange={setIsDeleteAllOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle className="font-mono uppercase tracking-tight">
+            <AlertDialogTitle className='font-mono tracking-tight uppercase'>
               Delete all drafts?
             </AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete all {draftPosts.length} drafts. Published
-              posts will remain untouched. This action cannot be undone.
+              This will permanently delete all {draftPosts.length} drafts. Published posts will
+              remain untouched. This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel
               disabled={deleteDraftsAction.isExecuting}
-              className="font-mono text-xs uppercase"
+              className='font-mono text-xs uppercase'
             >
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteAllDrafts}
               disabled={deleteDraftsAction.isExecuting}
-              className={buttonVariants({ variant: 'destructive', className: 'font-mono text-xs uppercase gap-1.5' })}
+              className={buttonVariants({
+                variant: 'destructive',
+                className: 'gap-1.5 font-mono text-xs uppercase'
+              })}
             >
               {deleteDraftsAction.isExecuting ? (
-                <Loader2Icon className="size-3.5 animate-spin" />
+                <Loader2Icon className='size-3.5 animate-spin' />
               ) : (
-                <Trash2Icon className="size-3.5" />
+                <Trash2Icon className='size-3.5' />
               )}
               Delete all {draftPosts.length} drafts
             </AlertDialogAction>

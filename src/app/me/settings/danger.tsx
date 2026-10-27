@@ -1,12 +1,12 @@
 'use client'
 
-import { AlertTriangle,Loader2Icon } from 'lucide-react'
+import { AlertTriangle, Loader2Icon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useAction } from 'next-safe-action/hooks'
 import { useState } from 'react'
 
 import { deleteAccountAction } from '@/actions/delete-account-action'
-import { Frame, FrameBody, FrameHeader } from '@/components/frame'
+import { Frame, FrameBody, StripHeader } from '@/components/frame'
 import {
   AlertDialog,
   AlertDialogAction,
@@ -57,32 +57,37 @@ const Danger = () => {
   }
 
   return (
-    <Frame className="border-destructive/40">
-      <FrameHeader label="Danger zone" />
-      <FrameBody className="space-y-4">
-        <div className="flex flex-col items-start gap-4 border-b border-border pb-4 sm:flex-row sm:items-center">
-          <span className="flex size-12 shrink-0 items-center justify-center border border-destructive/40 bg-destructive/10">
-            <AlertTriangle className="size-6 text-destructive" />
+    <Frame className='border-destructive/40'>
+      <StripHeader
+        left={
+          <>
+            <AlertTriangle className='text-destructive size-3' aria-hidden />
+            <span className='text-destructive font-semibold'>Danger zone // Account deletion</span>
+          </>
+        }
+        right={<span>Irreversible</span>}
+        className='border-destructive/30 bg-destructive/5'
+      />
+      <FrameBody className='space-y-4'>
+        <div className='border-border flex flex-col items-start gap-4 border-b pb-4 sm:flex-row sm:items-center'>
+          <span className='border-destructive/40 bg-destructive/10 flex size-12 shrink-0 items-center justify-center border'>
+            <AlertTriangle className='text-destructive size-6' />
           </span>
-          <div className="flex-1">
-            <h4 className="mb-1 text-lg font-semibold text-destructive">
-              Delete account
-            </h4>
-            <p className="text-sm leading-relaxed text-muted-foreground">
-              This action will{' '}
-              <span className="font-semibold text-foreground">permanently</span>{' '}
-              remove all your posts, likes, and personal information. This cannot
-              be undone.
+          <div className='flex-1'>
+            <h4 className='text-destructive mb-1 text-lg font-semibold'>Delete account</h4>
+            <p className='text-muted-foreground text-sm leading-relaxed'>
+              This action will <span className='text-foreground font-semibold'>permanently</span>{' '}
+              remove all your posts, likes, and personal information. This cannot be undone.
             </p>
           </div>
         </div>
 
-        <div className="border border-border bg-muted/30 p-4 text-sm sm:p-5">
-          <div className="mb-3 flex items-center gap-2 font-semibold">
-            <AlertTriangle className="size-4" />
-            What will be deleted:
+        <div className='border-border bg-muted/30 border p-4 text-sm sm:p-5'>
+          <div className='text-muted-foreground mb-3 flex items-center gap-2 font-mono text-[10px] font-semibold tracking-widest uppercase'>
+            <AlertTriangle className='size-3.5' aria-hidden />
+            What will be deleted
           </div>
-          <ul className="ml-1 list-inside list-disc space-y-1.5 text-muted-foreground">
+          <ul className='text-muted-foreground ml-1 list-inside list-disc space-y-1.5'>
             <li>Your profile and account</li>
             <li>All your posts and comments</li>
             <li>All your likes and social data</li>
@@ -93,62 +98,59 @@ const Danger = () => {
         <AlertDialog open={isOpen}>
           <AlertDialogTrigger asChild>
             <Button
-              variant="destructive"
-              size="lg"
-              className="mt-2 w-full font-semibold"
+              variant='destructive'
+              size='lg'
+              className='mt-2 w-full cursor-pointer font-semibold'
               onClick={() => {
                 setIsOpen(true)
               }}
             >
-              <AlertTriangle className="mr-2 size-5" />
+              <AlertTriangle className='mr-2 size-5' />
               Delete my account
             </Button>
           </AlertDialogTrigger>
-          <AlertDialogContent className="max-w-md border-border">
-            <form onSubmit={handleDeleteAccount} className="space-y-5">
+          <AlertDialogContent className='border-border max-w-md'>
+            <form onSubmit={handleDeleteAccount} className='space-y-5'>
               <AlertDialogHeader>
-                <div className="mb-2 flex items-center gap-3">
-                  <span className="flex size-10 items-center justify-center border border-destructive/40 bg-destructive/10">
-                    <AlertTriangle className="size-5 text-destructive" />
+                <div className='mb-2 flex items-center gap-3'>
+                  <span className='border-destructive/40 bg-destructive/10 flex size-10 items-center justify-center border'>
+                    <AlertTriangle className='text-destructive size-5' />
                   </span>
-                  <AlertDialogTitle className="text-lg text-destructive sm:text-xl">
+                  <AlertDialogTitle className='text-destructive text-lg sm:text-xl'>
                     Are you absolutely sure?
                   </AlertDialogTitle>
                 </div>
-                <AlertDialogDescription className="text-sm leading-relaxed">
-                  This action cannot be undone. This will permanently delete your
-                  account and remove your data from our database.
+                <AlertDialogDescription className='text-sm leading-relaxed'>
+                  This action cannot be undone. This will permanently delete your account and remove
+                  your data from our database.
                 </AlertDialogDescription>
               </AlertDialogHeader>
-              <div className="flex flex-col gap-3">
-                <Label htmlFor="confirm" className="text-sm font-medium">
-                  Type{' '}
-                  <span className="font-semibold text-destructive">
-                    delete my account
-                  </span>{' '}
-                  to continue:
+              <div className='flex flex-col gap-3'>
+                <Label htmlFor='confirm' className='text-sm font-medium'>
+                  Type <span className='text-destructive font-semibold'>delete my account</span> to
+                  continue:
                 </Label>
                 <Input
-                  type="text"
-                  id="confirm"
+                  type='text'
+                  id='confirm'
                   onChange={(e) => {
                     setValue(e.target.value)
                   }}
                   required
-                  className="border-destructive/50 focus-visible:ring-destructive"
-                  placeholder="delete my account"
+                  className='border-destructive/50 focus-visible:ring-destructive'
+                  placeholder='delete my account'
                 />
-                <label className="mt-1 flex cursor-pointer items-center gap-2.5 text-sm">
+                <label className='mt-1 flex cursor-pointer items-center gap-2.5 text-sm'>
                   <input
-                    type="checkbox"
+                    type='checkbox'
                     checked={checked}
                     onChange={(e) => setChecked(e.target.checked)}
-                    className="size-4 cursor-pointer accent-destructive"
+                    className='accent-destructive size-4 cursor-pointer'
                   />
                   <span>I understand this action is irreversible</span>
                 </label>
               </div>
-              <AlertDialogFooter className="gap-2 sm:gap-0">
+              <AlertDialogFooter className='gap-2 sm:gap-0'>
                 <AlertDialogCancel
                   onClick={() => {
                     setIsOpen(false)
@@ -163,17 +165,13 @@ const Danger = () => {
                     buttonVariants({ variant: 'destructive', size: 'lg' }),
                     'px-6 font-semibold'
                   )}
-                  type="submit"
-                  disabled={
-                    value !== 'delete my account' ||
-                    !checked ||
-                    action.isExecuting
-                  }
+                  type='submit'
+                  disabled={value !== 'delete my account' || !checked || action.isExecuting}
                 >
                   {action.isExecuting ? (
-                    <Loader2Icon className="mr-2 size-4 animate-spin" />
+                    <Loader2Icon className='mr-2 size-4 animate-spin' />
                   ) : (
-                    <AlertTriangle className="mr-2 size-4" />
+                    <AlertTriangle className='mr-2 size-4' />
                   )}
                   Yes, delete everything
                 </AlertDialogAction>
