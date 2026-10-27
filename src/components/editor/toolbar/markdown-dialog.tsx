@@ -55,18 +55,21 @@ function renderMarkdownWithMath(raw: string): string {
   })
 
   // 2. Inline equations: $ ... $
-  const withAllMath = withBlockMath.replaceAll(/(?<![\\$])\$([^$\n]+?)\$(?!\$)/g, (_match, latex: string) => {
-    const trimmed = latex.trim()
-    try {
-      const rendered = katex.renderToString(trimmed, {
-        displayMode: false,
-        throwOnError: false
-      })
-      return `<span class="tiptap-math inline-block mx-0.5">${rendered}</span>`
-    } catch {
-      return `<span class="text-destructive font-mono text-xs">${trimmed}</span>`
+  const withAllMath = withBlockMath.replaceAll(
+    /(?<![\\$])\$([^$\n]+?)\$(?!\$)/g,
+    (_match, latex: string) => {
+      const trimmed = latex.trim()
+      try {
+        const rendered = katex.renderToString(trimmed, {
+          displayMode: false,
+          throwOnError: false
+        })
+        return `<span class="tiptap-math inline-block mx-0.5">${rendered}</span>`
+      } catch {
+        return `<span class="text-destructive font-mono text-xs">${trimmed}</span>`
+      }
     }
-  })
+  )
 
   return md.render(withAllMath)
 }
@@ -80,11 +83,14 @@ function markdownToTipTapHtml(raw: string): string {
   })
 
   // 2. Inline equations: $ ... $ -> <span data-latex="..." data-display="false"></span>
-  const withAllMath = withBlockMath.replaceAll(/(?<![\\$])\$([^$\n]+?)\$(?!\$)/g, (_match, latex: string) => {
-    const trimmed = latex.trim()
-    const encoded = trimmed.replaceAll('"', '&quot;')
-    return `<span data-latex="${encoded}" data-display="false"></span>`
-  })
+  const withAllMath = withBlockMath.replaceAll(
+    /(?<![\\$])\$([^$\n]+?)\$(?!\$)/g,
+    (_match, latex: string) => {
+      const trimmed = latex.trim()
+      const encoded = trimmed.replaceAll('"', '&quot;')
+      return `<span data-latex="${encoded}" data-display="false"></span>`
+    }
+  )
 
   const html = md.render(withAllMath)
   // Strip empty paragraphs and unwrap any <p><div data-latex ...></div></p>
@@ -283,8 +289,7 @@ export const MarkdownDialog = ({ editor, onMetadataExtracted }: MarkdownDialogPr
     if (!isOpen || activeTab !== 'export') return ''
     try {
       const mdStorage = (editor.storage as Record<string, unknown>).markdown as
-        | { getMarkdown?: () => string }
-        | undefined
+        { getMarkdown?: () => string } | undefined
       if (typeof mdStorage?.getMarkdown === 'function') {
         return mdStorage.getMarkdown()
       }
@@ -345,9 +350,7 @@ export const MarkdownDialog = ({ editor, onMetadataExtracted }: MarkdownDialogPr
       }
 
       toast.success(
-        insertMode === 'replace'
-          ? 'Markdown applied to editor'
-          : 'Markdown inserted at cursor'
+        insertMode === 'replace' ? 'Markdown applied to editor' : 'Markdown inserted at cursor'
       )
       setIsOpen(false)
     } catch (error) {
@@ -386,86 +389,91 @@ export const MarkdownDialog = ({ editor, onMetadataExtracted }: MarkdownDialogPr
     <Dialog open={isOpen} onOpenChange={handleOpen}>
       <DialogTrigger asChild>
         <ToolbarButton
-          tooltip="Import / Export Raw Markdown"
-          shortcut="MD"
+          tooltip='Import / Export Raw Markdown'
+          shortcut='MD'
           icon={
-            <div className="flex items-center gap-0.5 font-mono text-xs font-bold leading-none tracking-tight">
-              <FileCode2Icon className="size-4" />
+            <div className='flex items-center gap-0.5 font-mono text-xs leading-none font-bold tracking-tight'>
+              <FileCode2Icon className='size-4' />
             </div>
           }
         />
       </DialogTrigger>
 
-      <DialogContent className="w-full max-w-[calc(100vw-2rem)] sm:max-w-4xl lg:max-w-5xl xl:max-w-6xl max-h-[92vh] overflow-y-auto overflow-x-hidden min-w-0">
+      <DialogContent className='max-h-[92vh] w-full max-w-[calc(100vw-2rem)] min-w-0 overflow-x-hidden overflow-y-auto sm:max-w-4xl lg:max-w-5xl xl:max-w-6xl'>
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <div className="flex size-7 items-center justify-center rounded-md bg-primary/10 text-primary">
-              <FileCode2Icon className="size-4" />
+          <DialogTitle className='flex items-center gap-2'>
+            <div className='bg-primary/10 text-primary flex size-7 items-center justify-center rounded-md'>
+              <FileCode2Icon className='size-4' />
             </div>
             <span>Raw Markdown Hub</span>
           </DialogTitle>
           <DialogDescription>
-            Input raw Markdown text or import a file to automatically convert it into formatted rich text.
+            Input raw Markdown text or import a file to automatically convert it into formatted rich
+            text.
           </DialogDescription>
         </DialogHeader>
 
-        <Tabs value={activeTab} onValueChange={(val) => setActiveTab(val as 'import' | 'export')} className="w-full">
-          <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="import" className="flex items-center gap-2">
-              <SparklesIcon className="size-3.5" />
+        <Tabs
+          value={activeTab}
+          onValueChange={(val) => setActiveTab(val as 'import' | 'export')}
+          className='w-full'
+        >
+          <TabsList className='grid w-full grid-cols-2'>
+            <TabsTrigger value='import' className='flex items-center gap-2'>
+              <SparklesIcon className='size-3.5' />
               <span>Import & Apply</span>
             </TabsTrigger>
-            <TabsTrigger value="export" className="flex items-center gap-2">
-              <DownloadIcon className="size-3.5" />
+            <TabsTrigger value='export' className='flex items-center gap-2'>
+              <DownloadIcon className='size-3.5' />
               <span>Export & Copy</span>
             </TabsTrigger>
           </TabsList>
 
           {/* TAB 1: IMPORT & APPLY */}
-          <TabsContent value="import" className="space-y-4 pt-3">
+          <TabsContent value='import' className='space-y-4 pt-3'>
             {/* Quick Actions Bar */}
-            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/60 pb-3">
-              <div className="flex flex-wrap items-center gap-1.5">
-                <span className="text-xs font-medium text-muted-foreground mr-1">Templates:</span>
+            <div className='border-border/60 flex flex-wrap items-center justify-between gap-2 border-b pb-3'>
+              <div className='flex flex-wrap items-center gap-1.5'>
+                <span className='text-muted-foreground mr-1 text-xs font-medium'>Templates:</span>
                 {SAMPLE_TEMPLATES.map((tmpl) => (
                   <button
                     key={tmpl.name}
-                    type="button"
+                    type='button'
                     onClick={() => setMarkdownInput(tmpl.content)}
-                    className="rounded border border-border/80 bg-muted/40 px-2 py-1 text-xs font-medium transition-colors hover:bg-accent hover:text-accent-foreground cursor-pointer"
+                    className='border-border/80 bg-muted/40 hover:bg-accent hover:text-accent-foreground cursor-pointer rounded border px-2 py-1 text-xs font-medium transition-colors'
                   >
                     {tmpl.name}
                   </button>
                 ))}
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className='flex items-center gap-2'>
                 <input
-                  type="file"
+                  type='file'
                   ref={fileInputRef}
                   onChange={handleFileUpload}
-                  accept=".md,.markdown,.txt"
-                  className="hidden"
+                  accept='.md,.markdown,.txt'
+                  className='hidden'
                 />
                 <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="h-7 text-xs gap-1.5 cursor-pointer"
+                  type='button'
+                  variant='outline'
+                  size='sm'
+                  className='h-7 cursor-pointer gap-1.5 text-xs'
                   onClick={() => fileInputRef.current?.click()}
                 >
-                  <UploadIcon className="size-3.5" />
+                  <UploadIcon className='size-3.5' />
                   <span>Upload .md file</span>
                 </Button>
                 {markdownInput && (
                   <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="h-7 text-xs text-muted-foreground hover:text-destructive gap-1 cursor-pointer"
+                    type='button'
+                    variant='ghost'
+                    size='sm'
+                    className='text-muted-foreground hover:text-destructive h-7 cursor-pointer gap-1 text-xs'
                     onClick={() => setMarkdownInput('')}
                   >
-                    <Trash2Icon className="size-3.5" />
+                    <Trash2Icon className='size-3.5' />
                     <span>Clear</span>
                   </Button>
                 )}
@@ -473,24 +481,24 @@ export const MarkdownDialog = ({ editor, onMetadataExtracted }: MarkdownDialogPr
             </div>
 
             {/* Input / Preview Switcher */}
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="md-input" className="text-xs font-medium">
+            <div className='space-y-2'>
+              <div className='flex items-center justify-between'>
+                <Label htmlFor='md-input' className='text-xs font-medium'>
                   Paste or Write Raw Markdown
                 </Label>
                 <button
-                  type="button"
+                  type='button'
                   onClick={() => setPreviewMode(!previewMode)}
-                  className="flex items-center gap-1 text-xs text-primary hover:underline cursor-pointer"
+                  className='text-primary flex cursor-pointer items-center gap-1 text-xs hover:underline'
                 >
                   {previewMode ? (
                     <>
-                      <CodeIcon className="size-3.5" />
+                      <CodeIcon className='size-3.5' />
                       <span>Back to Code</span>
                     </>
                   ) : (
                     <>
-                      <EyeIcon className="size-3.5" />
+                      <EyeIcon className='size-3.5' />
                       <span>Quick Preview</span>
                     </>
                   )}
@@ -498,23 +506,25 @@ export const MarkdownDialog = ({ editor, onMetadataExtracted }: MarkdownDialogPr
               </div>
 
               {previewMode ? (
-                <div className="min-h-[220px] sm:min-h-[300px] max-h-[440px] overflow-y-auto overflow-x-hidden rounded-md border border-border bg-background p-4 sm:p-6 text-sm shadow-xs break-words">
+                <div className='border-border bg-background max-h-[440px] min-h-[220px] overflow-x-hidden overflow-y-auto rounded-md border p-4 text-sm break-words shadow-xs sm:min-h-[300px] sm:p-6'>
                   {previewHtml ? (
                     <div
-                      className="prose dark:prose-invert max-w-none text-sm leading-relaxed break-words [&>*:first-child]:mt-0 [&>*:last-child]:mb-0 [&_pre]:overflow-x-auto [&_pre]:max-w-full [&_table]:overflow-x-auto [&_table]:block [&_table]:max-w-full"
+                      className='prose dark:prose-invert max-w-none text-sm leading-relaxed break-words [&_pre]:max-w-full [&_pre]:overflow-x-auto [&_table]:block [&_table]:max-w-full [&_table]:overflow-x-auto [&>*:first-child]:mt-0 [&>*:last-child]:mb-0'
                       dangerouslySetInnerHTML={{ __html: previewHtml }}
                     />
                   ) : (
-                    <p className="text-xs text-muted-foreground italic">Nothing to preview yet. Enter markdown above.</p>
+                    <p className='text-muted-foreground text-xs italic'>
+                      Nothing to preview yet. Enter markdown above.
+                    </p>
                   )}
                 </div>
               ) : (
                 <Textarea
-                  id="md-input"
-                  placeholder="# Hello World&#10;&#10;Write or paste your **markdown** here..."
+                  id='md-input'
+                  placeholder='# Hello World&#10;&#10;Write or paste your **markdown** here...'
                   value={markdownInput}
                   onChange={(e) => setMarkdownInput(e.target.value)}
-                  className="min-h-[220px] sm:min-h-[300px] font-mono text-xs leading-relaxed resize-y break-words"
+                  className='min-h-[220px] resize-y font-mono text-xs leading-relaxed break-words sm:min-h-[300px]'
                   spellCheck={false}
                 />
               )}
@@ -522,32 +532,38 @@ export const MarkdownDialog = ({ editor, onMetadataExtracted }: MarkdownDialogPr
 
             {/* Detected Frontmatter & Options */}
             {Boolean(detectedTitle ?? detectedDescription) && (
-              <div className="rounded-md border border-primary/20 bg-primary/5 p-3 space-y-2">
-                <div className="flex items-center gap-1.5 text-xs font-semibold text-primary">
-                  <SparklesIcon className="size-3.5" />
+              <div className='border-primary/20 bg-primary/5 space-y-2 rounded-md border p-3'>
+                <div className='text-primary flex items-center gap-1.5 text-xs font-semibold'>
+                  <SparklesIcon className='size-3.5' />
                   <span>Detected Metadata in Markdown</span>
                 </div>
-                <div className="space-y-1.5 text-xs">
+                <div className='space-y-1.5 text-xs'>
                   {detectedTitle && (
-                    <label className="flex items-center gap-2 cursor-pointer">
+                    <label className='flex cursor-pointer items-center gap-2'>
                       <input
-                        type="checkbox"
+                        type='checkbox'
                         checked={applyTitle}
                         onChange={(e) => setApplyTitle(e.target.checked)}
-                        className="rounded border-border"
+                        className='border-border rounded'
                       />
-                      <span>Apply Post Title: <strong className="text-foreground">{detectedTitle}</strong></span>
+                      <span>
+                        Apply Post Title:{' '}
+                        <strong className='text-foreground'>{detectedTitle}</strong>
+                      </span>
                     </label>
                   )}
                   {detectedDescription && (
-                    <label className="flex items-center gap-2 cursor-pointer">
+                    <label className='flex cursor-pointer items-center gap-2'>
                       <input
-                        type="checkbox"
+                        type='checkbox'
                         checked={applyDescription}
                         onChange={(e) => setApplyDescription(e.target.checked)}
-                        className="rounded border-border"
+                        className='border-border rounded'
                       />
-                      <span>Apply Post Description: <span className="text-muted-foreground italic">{detectedDescription}</span></span>
+                      <span>
+                        Apply Post Description:{' '}
+                        <span className='text-muted-foreground italic'>{detectedDescription}</span>
+                      </span>
                     </label>
                   )}
                 </div>
@@ -555,29 +571,29 @@ export const MarkdownDialog = ({ editor, onMetadataExtracted }: MarkdownDialogPr
             )}
 
             {/* Insertion Mode */}
-            <div className="flex flex-wrap items-center justify-between gap-3 rounded-md border border-border/80 bg-muted/20 px-3 py-2.5">
-              <div className="space-y-0.5">
-                <span className="text-xs font-medium">Insertion Strategy</span>
-                <p className="text-[11px] text-muted-foreground">
+            <div className='border-border/80 bg-muted/20 flex flex-wrap items-center justify-between gap-3 rounded-md border px-3 py-2.5'>
+              <div className='space-y-0.5'>
+                <span className='text-xs font-medium'>Insertion Strategy</span>
+                <p className='text-muted-foreground text-[11px]'>
                   Choose how the converted markdown is placed into the document
                 </p>
               </div>
-              <div className="flex items-center gap-2">
-                <label className="flex items-center gap-1.5 text-xs cursor-pointer">
+              <div className='flex items-center gap-2'>
+                <label className='flex cursor-pointer items-center gap-1.5 text-xs'>
                   <input
-                    type="radio"
-                    name="insertMode"
-                    value="replace"
+                    type='radio'
+                    name='insertMode'
+                    value='replace'
                     checked={insertMode === 'replace'}
                     onChange={() => setInsertMode('replace')}
                   />
                   <span>Replace Document</span>
                 </label>
-                <label className="flex items-center gap-1.5 text-xs cursor-pointer ml-2">
+                <label className='ml-2 flex cursor-pointer items-center gap-1.5 text-xs'>
                   <input
-                    type="radio"
-                    name="insertMode"
-                    value="insert"
+                    type='radio'
+                    name='insertMode'
+                    value='insert'
                     checked={insertMode === 'insert'}
                     onChange={() => setInsertMode('insert')}
                   />
@@ -586,85 +602,75 @@ export const MarkdownDialog = ({ editor, onMetadataExtracted }: MarkdownDialogPr
               </div>
             </div>
 
-            <DialogFooter className="flex items-center justify-end gap-2 pt-2">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => setIsOpen(false)}
-              >
+            <DialogFooter className='flex items-center justify-end gap-2 pt-2'>
+              <Button type='button' variant='outline' size='sm' onClick={() => setIsOpen(false)}>
                 Cancel
               </Button>
               <Button
-                type="button"
-                size="sm"
+                type='button'
+                size='sm'
                 onClick={handleApplyMarkdown}
                 disabled={!markdownInput.trim()}
-                className="gap-1.5"
+                className='gap-1.5'
               >
-                <CheckIcon className="size-3.5" />
+                <CheckIcon className='size-3.5' />
                 <span>Apply Markdown</span>
               </Button>
             </DialogFooter>
           </TabsContent>
 
           {/* TAB 2: EXPORT & COPY */}
-          <TabsContent value="export" className="space-y-4 pt-3">
-            <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label htmlFor="md-export" className="text-xs font-medium">
+          <TabsContent value='export' className='space-y-4 pt-3'>
+            <div className='space-y-2'>
+              <div className='flex items-center justify-between'>
+                <Label htmlFor='md-export' className='text-xs font-medium'>
                   Current Document in Markdown Format
                 </Label>
-                <span className="text-[11px] text-muted-foreground">
+                <span className='text-muted-foreground text-[11px]'>
                   {exportedMarkdown.length} characters
                 </span>
               </div>
               <Textarea
-                id="md-export"
+                id='md-export'
                 readOnly
                 value={exportedMarkdown}
-                className="min-h-[240px] sm:min-h-[320px] font-mono text-xs leading-relaxed bg-muted/30 resize-y break-words"
-                placeholder="Editor is currently empty..."
+                className='bg-muted/30 min-h-[240px] resize-y font-mono text-xs leading-relaxed break-words sm:min-h-[320px]'
+                placeholder='Editor is currently empty...'
               />
             </div>
 
-            <DialogFooter className="flex flex-wrap items-center justify-between gap-2 pt-2 sm:justify-between">
+            <DialogFooter className='flex flex-wrap items-center justify-between gap-2 pt-2 sm:justify-between'>
               <Button
-                type="button"
-                variant="outline"
-                size="sm"
+                type='button'
+                variant='outline'
+                size='sm'
                 onClick={handleDownloadMarkdown}
                 disabled={!exportedMarkdown.trim()}
-                className="gap-1.5"
+                className='gap-1.5'
               >
-                <DownloadIcon className="size-3.5" />
+                <DownloadIcon className='size-3.5' />
                 <span>Download .md</span>
               </Button>
 
-              <div className="flex items-center gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsOpen(false)}
-                >
+              <div className='flex items-center gap-2'>
+                <Button type='button' variant='outline' size='sm' onClick={() => setIsOpen(false)}>
                   Close
                 </Button>
                 <Button
-                  type="button"
-                  size="sm"
+                  type='button'
+                  size='sm'
                   onClick={handleCopyMarkdown}
                   disabled={!exportedMarkdown.trim()}
-                  className="gap-1.5"
+                  className='gap-1.5'
                 >
                   {copied ? (
                     <>
-                      <CheckIcon className="size-3.5" />
+                      <CheckIcon className='size-3.5' />
                       <span>Copied!</span>
                     </>
                   ) : (
                     <>
-                      <CopyIcon className="size-3.5" />
+                      <CopyIcon className='size-3.5' />
                       <span>Copy Markdown</span>
                     </>
                   )}

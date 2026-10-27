@@ -24,10 +24,7 @@ import { TextStyle } from '@tiptap/extension-text-style'
 import { Typography } from '@tiptap/extension-typography'
 import { Underline } from '@tiptap/extension-underline'
 import { Youtube } from '@tiptap/extension-youtube'
-import {
-  type AnyExtension,
-  ReactNodeViewRenderer
-} from '@tiptap/react'
+import { type AnyExtension, ReactNodeViewRenderer } from '@tiptap/react'
 import { StarterKit } from '@tiptap/starter-kit'
 import { all, createLowlight } from 'lowlight'
 import { Markdown } from 'tiptap-markdown'
@@ -48,12 +45,7 @@ const isHtmlContent = (content: unknown): boolean => {
   if (typeof content !== 'string') return false
   const trimmed = content.trim()
   if (!trimmed) return false
-  return (
-    (trimmed.startsWith('<') && trimmed.endsWith('>')) ||
-    /^<[a-z]/i.test(
-      trimmed
-    )
-  )
+  return (trimmed.startsWith('<') && trimmed.endsWith('>')) || /^<[a-z]/i.test(trimmed)
 }
 
 const SafeMarkdown = Markdown.extend({
@@ -74,10 +66,7 @@ const SafeMarkdown = Markdown.extend({
     }
     // If the initial content was HTML, restore it so markdown-it's parser does not corrupt it
     const editorOptions = this.editor.options as unknown as Record<string, unknown>
-    if (
-      editorOptions.initialContent &&
-      isHtmlContent(editorOptions.initialContent)
-    ) {
+    if (editorOptions.initialContent && isHtmlContent(editorOptions.initialContent)) {
       this.editor.options.content = editorOptions.initialContent
     }
   }
@@ -94,30 +83,30 @@ export const extensions: AnyExtension[] = [
     code: {
       HTMLAttributes: {
         class:
-          'rounded border border-border bg-muted px-1.5 py-0.5 font-mono text-[0.875em] text-foreground',
-      },
+          'rounded border border-border bg-muted px-1.5 py-0.5 font-mono text-[0.875em] text-foreground'
+      }
     },
     heading: {
       levels: [1, 2, 3, 4, 5, 6],
       HTMLAttributes: {
-        class: 'font-bold tracking-tight',
-      },
+        class: 'font-bold tracking-tight'
+      }
     },
     bulletList: {
       HTMLAttributes: {
-        class: 'list-disc list-outside ml-4 space-y-1',
-      },
+        class: 'list-disc list-outside ml-4 space-y-1'
+      }
     },
     orderedList: {
       HTMLAttributes: {
-        class: 'list-decimal list-outside ml-4 space-y-1',
-      },
+        class: 'list-decimal list-outside ml-4 space-y-1'
+      }
     },
     listItem: {
       HTMLAttributes: {
-        class: 'pl-1',
-      },
-    },
+        class: 'pl-1'
+      }
+    }
   }),
 
   // Mathematics (KaTeX / LaTeX)
@@ -133,15 +122,16 @@ export const extensions: AnyExtension[] = [
   Typography,
   TextAlign.configure({
     types: ['heading', 'paragraph', 'blockquote'],
-    alignments: ['left', 'center', 'right', 'justify'],
+    alignments: ['left', 'center', 'right', 'justify']
   }),
 
   // Inline Formatting
   Highlight.configure({
     multicolor: true,
     HTMLAttributes: {
-      class: 'rounded-none bg-foreground/15 text-foreground px-1 py-0.5 border-b border-foreground/40',
-    },
+      class:
+        'rounded-none bg-foreground/15 text-foreground px-1 py-0.5 border-b border-foreground/40'
+    }
   }),
   Underline,
   Subscript,
@@ -150,25 +140,25 @@ export const extensions: AnyExtension[] = [
   // Lists & Tasks
   TaskList.configure({
     HTMLAttributes: {
-      class: 'not-prose pl-0 space-y-1 my-3',
-    },
+      class: 'not-prose pl-0 space-y-1 my-3'
+    }
   }),
   TaskItem.configure({
     nested: true,
     HTMLAttributes: {
-      class: 'flex items-start gap-2 my-1',
-    },
+      class: 'flex items-start gap-2 my-1'
+    }
   }),
 
   // Placeholder
   Placeholder.configure({
     placeholder: ({ node }) => {
       if (node.type.name === 'heading') {
-        return "Heading..."
+        return 'Heading...'
       }
       return 'Start writing your story, notes, or math formulas...'
     },
-    includeChildren: true,
+    includeChildren: true
   }),
 
   // Links
@@ -178,13 +168,12 @@ export const extensions: AnyExtension[] = [
     linkOnPaste: true,
     HTMLAttributes: {
       rel: 'noopener noreferrer nofollow',
-      target: '_blank',
       class:
-        'underline decoration-foreground/40 underline-offset-3 text-primary hover:decoration-foreground transition-colors font-medium',
-    },
+        'underline decoration-foreground/40 underline-offset-3 text-primary hover:decoration-foreground transition-colors font-medium'
+    }
   }).extend({
     inclusive: false,
-    priority: 100,
+    priority: 100
   }),
 
   // Syntax-Highlighted Interactive Code Blocks
@@ -232,9 +221,10 @@ export const extensions: AnyExtension[] = [
     lowlight,
     defaultLanguage: 'plaintext',
     HTMLAttributes: {
-      class: 'not-prose code-block-blueprint relative my-6 w-full border border-border bg-card font-mono text-[13px]',
+      class:
+        'not-prose code-block-blueprint relative my-6 w-full border border-border bg-card font-mono text-[13px]'
     },
-    languageClassPrefix: 'language-',
+    languageClassPrefix: 'language-'
   }),
 
   // Media (Images & YouTube)
@@ -242,61 +232,62 @@ export const extensions: AnyExtension[] = [
     inline: false,
     allowBase64: true,
     HTMLAttributes: {
-      class: 'border border-border max-w-full mx-auto my-6',
-    },
+      class: 'border border-border max-w-full mx-auto my-6'
+    }
   }),
   Youtube.configure({
     inline: false,
     HTMLAttributes: {
-      class: 'border border-border max-w-full mx-auto my-6 aspect-video',
-    },
+      class: 'border border-border max-w-full mx-auto my-6 aspect-video'
+    }
   }),
 
   // Tables
   Table.configure({
     resizable: true,
     HTMLAttributes: {
-      class: 'my-6 w-full border-collapse border border-border overflow-hidden',
-    },
+      class: 'my-6 w-full border-collapse border border-border overflow-hidden'
+    }
   }),
   TableRow.configure({
     HTMLAttributes: {
-      class: 'border-b border-border last:border-0',
-    },
+      class: 'border-b border-border last:border-0'
+    }
   }),
   TableCell.configure({
     HTMLAttributes: {
-      class: 'border-r border-border last:border-0 p-2.5 align-top text-sm',
-    },
+      class: 'border-r border-border last:border-0 p-2.5 align-top text-sm'
+    }
   }),
   TableHeader.configure({
     HTMLAttributes: {
-      class: 'border-r border-border last:border-0 p-2.5 font-semibold bg-muted/80 text-left text-sm',
-    },
+      class:
+        'border-r border-border last:border-0 p-2.5 font-semibold bg-muted/80 text-left text-sm'
+    }
   }),
 
   // Block Dividers & Quotes
   HorizontalRule.configure({
     HTMLAttributes: {
-      class: 'my-8 border-t border-border',
-    },
+      class: 'my-8 border-t border-border'
+    }
   }),
   Blockquote.configure({
     HTMLAttributes: {
-      class: 'border-l-4 border-primary pl-4 my-6 text-muted-foreground italic',
-    },
+      class: 'border-l-4 border-primary pl-4 my-6 text-muted-foreground italic'
+    }
   }),
 
   // Editor Utilities
   HardBreak,
   Dropcursor.configure({
     color: 'var(--primary)',
-    width: 2,
+    width: 2
   }),
   Gapcursor,
   Focus.configure({
     className: 'ring-1 ring-primary/20',
-    mode: 'shallowest',
+    mode: 'shallowest'
   }),
 
   // Markdown Paste & Formatting Support with HTML safety guard
@@ -308,6 +299,6 @@ export const extensions: AnyExtension[] = [
     linkify: true,
     breaks: false,
     transformPastedText: true,
-    transformCopiedText: false,
-  }),
+    transformCopiedText: false
+  })
 ]

@@ -70,10 +70,12 @@ export const CodeBlockNodeView = (props: ReactNodeViewProps) => {
 
   const languageIcon = (
     <>
-      {isMermaid && <LayersIcon className='size-3.5 shrink-0 text-foreground' />}
+      {isMermaid && <LayersIcon className='text-foreground size-3.5 shrink-0' />}
       {isTerminal && <TerminalIcon className='size-3.5 shrink-0' />}
       {isDiff && <GitCompareIcon className='size-3.5 shrink-0' />}
-      {!isTerminal && !isDiff && !isMermaid && <FileCodeIcon className='size-3.5 shrink-0 opacity-70' />}
+      {!isTerminal && !isDiff && !isMermaid && (
+        <FileCodeIcon className='size-3.5 shrink-0 opacity-70' />
+      )}
     </>
   )
 
@@ -223,7 +225,7 @@ export const CodeBlockNodeView = (props: ReactNodeViewProps) => {
           </>
         )}
         {hasCustomizations && (
-          <span className='ml-auto mr-1 border border-foreground/30 bg-foreground/10 px-1.5 py-0.2 font-mono text-[9px] font-medium text-foreground normal-case'>
+          <span className='border-foreground/30 bg-foreground/10 py-0.2 text-foreground mr-1 ml-auto border px-1.5 font-mono text-[9px] font-medium normal-case'>
             Parameters Injected
           </span>
         )}

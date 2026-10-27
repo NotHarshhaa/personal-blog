@@ -83,15 +83,15 @@ export const DiagramDialog = ({ editor }: DiagramDialogProps) => {
     <Dialog open={isOpen} onOpenChange={handleOpen}>
       <DialogTrigger asChild>
         <ToolbarButton
-          tooltip="Insert Architecture Blueprint (Mermaid)"
-          shortcut="$$mermaid"
-          icon={<LayersIcon className="size-4" />}
+          tooltip='Insert Architecture Blueprint (Mermaid)'
+          shortcut='$$mermaid'
+          icon={<LayersIcon className='size-4' />}
         />
       </DialogTrigger>
-      <DialogContent className="w-full max-w-[calc(100vw-2rem)] sm:max-w-2xl max-h-[90vh] overflow-y-auto min-w-0">
+      <DialogContent className='max-h-[90vh] w-full max-w-[calc(100vw-2rem)] min-w-0 overflow-y-auto sm:max-w-2xl'>
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <LayersIcon className="size-5" />
+          <DialogTitle className='flex items-center gap-2'>
+            <LayersIcon className='size-5' />
             <span>Insert Architecture Blueprint</span>
           </DialogTitle>
           <DialogDescription>
@@ -99,22 +99,22 @@ export const DiagramDialog = ({ editor }: DiagramDialogProps) => {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4 py-2 min-w-0 w-full">
+        <div className='w-full min-w-0 space-y-4 py-2'>
           {/* Preset Architecture Templates */}
-          <div className="space-y-1.5 min-w-0 w-full">
-            <span className="text-xs font-medium text-muted-foreground">
+          <div className='w-full min-w-0 space-y-1.5'>
+            <span className='text-muted-foreground text-xs font-medium'>
               Systems Engineering Templates:
             </span>
-            <div className="flex flex-wrap gap-1.5">
+            <div className='flex flex-wrap gap-1.5'>
               {TEMPLATES.map((item) => (
                 <button
                   key={item.name}
-                  type="button"
+                  type='button'
                   onClick={() => {
                     setCode(item.code)
                     setCaption(item.caption)
                   }}
-                  className="border border-border bg-muted/40 hover:bg-muted hover:border-foreground/50 px-2.5 py-1 text-xs font-mono text-foreground transition-colors cursor-pointer"
+                  className='border-border bg-muted/40 hover:bg-muted hover:border-foreground/50 text-foreground cursor-pointer border px-2.5 py-1 font-mono text-xs transition-colors'
                 >
                   +{item.name}
                 </button>
@@ -123,46 +123,41 @@ export const DiagramDialog = ({ editor }: DiagramDialogProps) => {
           </div>
 
           {/* Diagram Definition */}
-          <div className="space-y-1.5 min-w-0 w-full">
-            <Label htmlFor="diagram-code" className="text-xs font-medium">
+          <div className='w-full min-w-0 space-y-1.5'>
+            <Label htmlFor='diagram-code' className='text-xs font-medium'>
               Mermaid Diagram Code
             </Label>
             <Textarea
-              id="diagram-code"
+              id='diagram-code'
               value={code}
               onChange={(e) => setCode(e.target.value)}
-              placeholder="flowchart LR&#10;    A[Gateway] --> B[Service]"
+              placeholder='flowchart LR&#10;    A[Gateway] --> B[Service]'
               rows={8}
-              className="font-mono text-xs w-full min-w-0"
+              className='w-full min-w-0 font-mono text-xs'
             />
           </div>
 
           {/* Blueprint Caption */}
-          <div className="space-y-1.5 min-w-0 w-full">
-            <Label htmlFor="diagram-caption" className="text-xs font-medium">
+          <div className='w-full min-w-0 space-y-1.5'>
+            <Label htmlFor='diagram-caption' className='text-xs font-medium'>
               Figure Caption / Title (Optional)
             </Label>
             <Input
-              id="diagram-caption"
+              id='diagram-caption'
               value={caption}
               onChange={(e) => setCaption(e.target.value)}
-              placeholder="e.g. Multi-Tenant EKS Cluster Topology"
-              className="font-mono text-xs w-full min-w-0"
+              placeholder='e.g. Multi-Tenant EKS Cluster Topology'
+              className='w-full min-w-0 font-mono text-xs'
             />
           </div>
         </div>
 
-        <DialogFooter className="gap-2 sm:gap-0">
-          <Button type="button" variant="outline" onClick={() => setIsOpen(false)}>
+        <DialogFooter className='gap-2 sm:gap-0'>
+          <Button type='button' variant='outline' onClick={() => setIsOpen(false)}>
             Cancel
           </Button>
-          <Button
-            type="button"
-            onClick={handleInsert}
-            disabled={!code.trim()}
-            className="gap-1.5"
-          >
-            <CheckIcon className="size-4" />
+          <Button type='button' onClick={handleInsert} disabled={!code.trim()} className='gap-1.5'>
+            <CheckIcon className='size-4' />
             <span>Insert Blueprint</span>
           </Button>
         </DialogFooter>

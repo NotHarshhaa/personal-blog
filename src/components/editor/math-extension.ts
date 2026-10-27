@@ -93,7 +93,15 @@ export const MathExtension = Node.create({
       // Double dollar for display block equation: $$formula$$
       new InputRule({
         find: /\$\$([^$]+)\$\$$/,
-        handler: ({ range, match, commands }: { range: Range; match: ExtendedRegExpMatchArray; commands: SingleCommands }) => {
+        handler: ({
+          range,
+          match,
+          commands
+        }: {
+          range: Range
+          match: ExtendedRegExpMatchArray
+          commands: SingleCommands
+        }) => {
           const latex = match[1]?.trim()
           if (!latex) return
 
@@ -109,7 +117,15 @@ export const MathExtension = Node.create({
       // Single dollar for inline equation: $formula$
       new InputRule({
         find: /(?:^|\s)\$([^$]+)\$$/,
-        handler: ({ range, match, commands }: { range: Range; match: ExtendedRegExpMatchArray; commands: SingleCommands }) => {
+        handler: ({
+          range,
+          match,
+          commands
+        }: {
+          range: Range
+          match: ExtendedRegExpMatchArray
+          commands: SingleCommands
+        }) => {
           const latex = match[1]?.trim()
           if (!latex) return
 

@@ -64,11 +64,7 @@ const ARCHITECTURE_TEMPLATES = [
   }
 ]
 
-export const DiagramNodeView = ({
-  node,
-  updateAttributes,
-  editor
-}: ReactNodeViewProps) => {
+export const DiagramNodeView = ({ node, updateAttributes, editor }: ReactNodeViewProps) => {
   const rawCode = (node.attrs.code as string) || DEFAULT_DIAGRAM_TEMPLATE
   const caption = (node.attrs.caption as string) || ''
 
@@ -167,9 +163,7 @@ export const DiagramNodeView = ({
         setRenderError(null)
       } catch (error) {
         setRenderError(
-          error instanceof Error
-            ? error.message
-            : 'Syntax error in architecture diagram definition'
+          error instanceof Error ? error.message : 'Syntax error in architecture diagram definition'
         )
       }
     },
@@ -237,37 +231,36 @@ export const DiagramNodeView = ({
     setTimeout(() => setCopiedSvg(false), 2000)
   }
 
-
   return (
     <NodeViewWrapper
       className={cn(
-        'not-prose my-6 w-full border border-border bg-card font-mono transition-all',
+        'not-prose border-border bg-card my-6 w-full border font-mono transition-all',
         isFullscreen &&
-          'fixed inset-4 z-50 my-0 max-h-[calc(100vh-2rem)] shadow-2xl overflow-hidden'
+          'fixed inset-4 z-50 my-0 max-h-[calc(100vh-2rem)] overflow-hidden shadow-2xl'
       )}
     >
       <CornerBrackets />
 
       {/* Blueprint Header */}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border bg-muted/40 px-3.5 py-2 select-none sm:px-4">
-        <div className="flex items-center gap-2">
-          <LayersIcon className="size-3.5 text-foreground" />
-          <span className="text-[11px] font-semibold tracking-wider uppercase text-foreground">
+      <div className='border-border bg-muted/40 flex flex-wrap items-center justify-between gap-2 border-b px-3.5 py-2 select-none sm:px-4'>
+        <div className='flex items-center gap-2'>
+          <LayersIcon className='text-foreground size-3.5' />
+          <span className='text-foreground text-[11px] font-semibold tracking-wider uppercase'>
             Architecture Blueprint // System Topology
           </span>
           {caption && (
-            <span className="hidden sm:inline border border-border bg-background px-1.5 py-0.2 text-[9px] text-muted-foreground">
+            <span className='border-border bg-background py-0.2 text-muted-foreground hidden border px-1.5 text-[9px] sm:inline'>
               {caption}
             </span>
           )}
         </div>
 
         {/* Action Controls */}
-        <div className="flex items-center gap-1 text-[11px]">
+        <div className='flex items-center gap-1 text-[11px]'>
           {editor.isEditable && (
-            <div className="mr-2 flex items-center border border-border bg-background">
+            <div className='border-border bg-background mr-2 flex items-center border'>
               <button
-                type="button"
+                type='button'
                 onClick={() => setActiveTab('code')}
                 className={cn(
                   'inline-flex items-center gap-1 px-2 py-0.5 text-[10px] transition-colors',
@@ -276,11 +269,11 @@ export const DiagramNodeView = ({
                     : 'text-muted-foreground hover:text-foreground'
                 )}
               >
-                <CodeIcon className="size-2.5" />
+                <CodeIcon className='size-2.5' />
                 <span>Code</span>
               </button>
               <button
-                type="button"
+                type='button'
                 onClick={() => setActiveTab('preview')}
                 className={cn(
                   'inline-flex items-center gap-1 px-2 py-0.5 text-[10px] transition-colors',
@@ -289,7 +282,7 @@ export const DiagramNodeView = ({
                     : 'text-muted-foreground hover:text-foreground'
                 )}
               >
-                <EyeIcon className="size-2.5" />
+                <EyeIcon className='size-2.5' />
                 <span>Preview</span>
               </button>
             </div>
@@ -299,64 +292,68 @@ export const DiagramNodeView = ({
           {activeTab === 'preview' && (
             <>
               <button
-                type="button"
+                type='button'
                 onClick={zoomOut}
-                title="Zoom Out (-25%)"
-                className="border border-border bg-background p-1 text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
+                title='Zoom Out (-25%)'
+                className='border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground border p-1 transition-colors'
               >
-                <ZoomOutIcon className="size-3" />
+                <ZoomOutIcon className='size-3' />
               </button>
-              <span className="min-w-10 text-center text-[10px] font-medium text-muted-foreground">
+              <span className='text-muted-foreground min-w-10 text-center text-[10px] font-medium'>
                 {Math.round(scale * 100)}%
               </span>
               <button
-                type="button"
+                type='button'
                 onClick={zoomIn}
-                title="Zoom In (+25%)"
-                className="border border-border bg-background p-1 text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
+                title='Zoom In (+25%)'
+                className='border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground border p-1 transition-colors'
               >
-                <ZoomInIcon className="size-3" />
+                <ZoomInIcon className='size-3' />
               </button>
               <button
-                type="button"
+                type='button'
                 onClick={resetView}
-                title="Reset Pan & Zoom (1:1)"
-                className="border border-border bg-background p-1 text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
+                title='Reset Pan & Zoom (1:1)'
+                className='border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground border p-1 transition-colors'
               >
-                <RotateCcwIcon className="size-3" />
+                <RotateCcwIcon className='size-3' />
               </button>
             </>
           )}
 
           <button
-            type="button"
+            type='button'
             onClick={handleCopyCode}
-            title="Copy Mermaid Code"
-            className="border border-border bg-background p-1 text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
+            title='Copy Mermaid Code'
+            className='border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground border p-1 transition-colors'
           >
-            {copiedCode ? <CheckIcon className="size-3 text-foreground" /> : <CopyIcon className="size-3" />}
+            {copiedCode ? (
+              <CheckIcon className='text-foreground size-3' />
+            ) : (
+              <CopyIcon className='size-3' />
+            )}
           </button>
 
           <button
-            type="button"
+            type='button'
             onClick={handleCopySvg}
-            title="Copy Clean SVG"
-            className="hidden sm:inline-flex items-center gap-1 border border-border bg-background px-1.5 py-0.5 text-[10px] text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
+            title='Copy Clean SVG'
+            className='border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground hidden items-center gap-1 border px-1.5 py-0.5 text-[10px] transition-colors sm:inline-flex'
           >
-            {copiedSvg ? <CheckIcon className="size-2.5 text-foreground" /> : null}
+            {copiedSvg ? <CheckIcon className='text-foreground size-2.5' /> : null}
             <span>SVG</span>
           </button>
 
           <button
-            type="button"
+            type='button'
             onClick={() => setIsFullscreen((prev) => !prev)}
             title={isFullscreen ? 'Exit Fullscreen' : 'Expand Fullscreen'}
-            className="border border-border bg-background p-1 text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
+            className='border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground border p-1 transition-colors'
           >
             {isFullscreen ? (
-              <Minimize2Icon className="size-3" />
+              <Minimize2Icon className='size-3' />
             ) : (
-              <Maximize2Icon className="size-3" />
+              <Maximize2Icon className='size-3' />
             )}
           </button>
         </div>
@@ -364,18 +361,18 @@ export const DiagramNodeView = ({
 
       {/* Editor Tab (Authoring Mode) */}
       {editor.isEditable && activeTab === 'code' && (
-        <div className="space-y-3 p-3.5 sm:p-4">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <label htmlFor={textareaId} className="text-[11px] font-medium text-muted-foreground">
+        <div className='space-y-3 p-3.5 sm:p-4'>
+          <div className='flex flex-wrap items-center justify-between gap-2'>
+            <label htmlFor={textareaId} className='text-muted-foreground text-[11px] font-medium'>
               Mermaid Diagram Code:
             </label>
-            <div className="flex flex-wrap gap-1">
+            <div className='flex flex-wrap gap-1'>
               {ARCHITECTURE_TEMPLATES.map((tmpl) => (
                 <button
                   key={tmpl.label}
-                  type="button"
+                  type='button'
                   onClick={() => updateAttributes({ code: tmpl.code })}
-                  className="border border-border bg-background px-2 py-0.5 text-[10px] text-muted-foreground transition-colors hover:border-foreground hover:text-foreground"
+                  className='border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground border px-2 py-0.5 text-[10px] transition-colors'
                 >
                   +{tmpl.label}
                 </button>
@@ -388,21 +385,21 @@ export const DiagramNodeView = ({
             value={rawCode}
             onChange={(e) => updateAttributes({ code: e.target.value })}
             rows={8}
-            className="w-full border border-border bg-background p-2.5 font-mono text-xs text-foreground focus:border-foreground focus:outline-none"
-            placeholder="flowchart LR&#10;    A[Client] --> B[Server]"
+            className='border-border bg-background text-foreground focus:border-foreground w-full border p-2.5 font-mono text-xs focus:outline-none'
+            placeholder='flowchart LR&#10;    A[Client] --> B[Server]'
           />
 
-          <div className="flex items-center gap-2">
-            <label htmlFor={captionInputId} className="shrink-0 text-[11px] text-muted-foreground">
+          <div className='flex items-center gap-2'>
+            <label htmlFor={captionInputId} className='text-muted-foreground shrink-0 text-[11px]'>
               Caption:
             </label>
             <input
               id={captionInputId}
-              type="text"
+              type='text'
               value={caption}
               onChange={(e) => updateAttributes({ caption: e.target.value })}
-              placeholder="e.g. Production Ingress & Event-Driven Topology"
-              className="w-full border border-border bg-background px-2.5 py-1 text-xs text-foreground focus:border-foreground focus:outline-none"
+              placeholder='e.g. Production Ingress & Event-Driven Topology'
+              className='border-border bg-background text-foreground focus:border-foreground w-full border px-2.5 py-1 text-xs focus:outline-none'
             />
           </div>
         </div>
@@ -410,17 +407,17 @@ export const DiagramNodeView = ({
 
       {/* Interactive Blueprint Canvas Tab */}
       {activeTab === 'preview' && (
-        <div className="relative overflow-hidden bg-background/50">
+        <div className='bg-background/50 relative overflow-hidden'>
           {renderError ? (
-            <div className="p-4 text-xs font-mono text-destructive">
-              <p className="font-semibold">Blueprint Render Error:</p>
-              <pre className="mt-1 whitespace-pre-wrap">{renderError}</pre>
+            <div className='text-destructive p-4 font-mono text-xs'>
+              <p className='font-semibold'>Blueprint Render Error:</p>
+              <pre className='mt-1 whitespace-pre-wrap'>{renderError}</pre>
             </div>
           ) : (
             <div
               ref={viewportRef}
               className={cn(
-                'relative flex min-h-[300px] w-full items-center justify-center p-6 select-none overflow-hidden',
+                'relative flex min-h-[300px] w-full items-center justify-center overflow-hidden p-6 select-none',
                 isDragging ? 'cursor-grabbing' : 'cursor-grab',
                 isFullscreen ? 'h-[calc(100vh-8rem)]' : 'max-h-[560px]'
               )}
@@ -432,13 +429,13 @@ export const DiagramNodeView = ({
                   transformOrigin: 'center center',
                   transition: isDragging ? 'none' : 'transform 0.1s ease-out'
                 }}
-                className="flex items-center justify-center w-full max-w-full pointer-events-none"
+                className='pointer-events-none flex w-full max-w-full items-center justify-center'
                 dangerouslySetInnerHTML={{ __html: svgHtml }}
               />
 
               {/* Floating pan instructions */}
-              <div className="pointer-events-none absolute bottom-2 right-2 flex items-center gap-1 border border-border/80 bg-background/90 px-1.5 py-0.5 text-[9px] text-muted-foreground opacity-70">
-                <MoveIcon className="size-2.5" />
+              <div className='border-border/80 bg-background/90 text-muted-foreground pointer-events-none absolute right-2 bottom-2 flex items-center gap-1 border px-1.5 py-0.5 text-[9px] opacity-70'>
+                <MoveIcon className='size-2.5' />
                 <span>Drag to pan · + / - to zoom</span>
               </div>
             </div>
@@ -448,7 +445,7 @@ export const DiagramNodeView = ({
 
       {/* Footer Caption */}
       {caption && (
-        <div className="border-t border-border bg-muted/20 px-3 py-1.5 text-center font-mono text-[11px] text-muted-foreground">
+        <div className='border-border bg-muted/20 text-muted-foreground border-t px-3 py-1.5 text-center font-mono text-[11px]'>
           FIG // {caption}
         </div>
       )}

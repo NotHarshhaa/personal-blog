@@ -25,7 +25,10 @@ type MathDialogProps = {
 }
 
 const FORMULA_TEMPLATES = [
-  { label: 'AI Parameters', latex: '27\\text{ B Parameters} \\times 2\\text{ bytes} \\approx 54\\text{ GB}' },
+  {
+    label: 'AI Parameters',
+    latex: '27\\text{ B Parameters} \\times 2\\text{ bytes} \\approx 54\\text{ GB}'
+  },
   { label: 'Fraction', latex: '\\frac{a}{b}' },
   { label: 'Power', latex: 'x^{2}' },
   { label: 'Subscript', latex: 'x_{i}' },
@@ -72,33 +75,36 @@ export const MathDialog = ({ editor }: MathDialogProps) => {
     <Dialog open={isOpen} onOpenChange={handleOpen}>
       <DialogTrigger asChild>
         <ToolbarButton
-          tooltip="Insert Math Formula (LaTeX)"
-          shortcut="$$"
-          icon={<SigmaIcon className="size-4" />}
+          tooltip='Insert Math Formula (LaTeX)'
+          shortcut='$$'
+          icon={<SigmaIcon className='size-4' />}
         />
       </DialogTrigger>
-      <DialogContent className="w-full max-w-[calc(100vw-2rem)] sm:max-w-2xl max-h-[90vh] overflow-y-auto min-w-0">
+      <DialogContent className='max-h-[90vh] w-full max-w-[calc(100vw-2rem)] min-w-0 overflow-y-auto sm:max-w-2xl'>
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <SigmaIcon className="size-5" />
+          <DialogTitle className='flex items-center gap-2'>
+            <SigmaIcon className='size-5' />
             <span>Insert Math Formula</span>
           </DialogTitle>
           <DialogDescription>
-            Write LaTeX mathematical expressions and formulas. Supports both inline and centered display mode.
+            Write LaTeX mathematical expressions and formulas. Supports both inline and centered
+            display mode.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4 py-2 min-w-0 w-full">
+        <div className='w-full min-w-0 space-y-4 py-2'>
           {/* Quick templates */}
-          <div className="space-y-1.5 min-w-0 w-full">
-            <span className="text-xs font-medium text-muted-foreground">Quick Symbols & Templates:</span>
-            <div className="flex flex-wrap gap-1.5">
+          <div className='w-full min-w-0 space-y-1.5'>
+            <span className='text-muted-foreground text-xs font-medium'>
+              Quick Symbols & Templates:
+            </span>
+            <div className='flex flex-wrap gap-1.5'>
               {FORMULA_TEMPLATES.map((item) => (
                 <button
                   key={item.label}
-                  type="button"
+                  type='button'
                   onClick={() => setLatex((prev) => (prev ? `${prev} ${item.latex}` : item.latex))}
-                  className="rounded-md border border-border/80 bg-muted/40 px-2 py-1 text-xs font-medium transition-colors hover:bg-accent hover:text-accent-foreground cursor-pointer"
+                  className='border-border/80 bg-muted/40 hover:bg-accent hover:text-accent-foreground cursor-pointer rounded-md border px-2 py-1 text-xs font-medium transition-colors'
                 >
                   {item.label}
                 </button>
@@ -106,66 +112,52 @@ export const MathDialog = ({ editor }: MathDialogProps) => {
             </div>
           </div>
 
-          <div className="space-y-2 min-w-0 w-full">
-            <Label htmlFor="math-latex" className="text-sm font-medium">
+          <div className='w-full min-w-0 space-y-2'>
+            <Label htmlFor='math-latex' className='text-sm font-medium'>
               LaTeX Equation
             </Label>
             <Textarea
-              id="math-latex"
-              placeholder="e.g. \text{Establish Baseline} \longrightarrow \text{Profile Bottleneck}"
+              id='math-latex'
+              placeholder='e.g. \text{Establish Baseline} \longrightarrow \text{Profile Bottleneck}'
               value={latex}
               onChange={(e) => setLatex(e.target.value)}
-              className="min-h-[85px] w-full min-w-0 max-w-full font-mono text-xs break-all resize-y"
+              className='min-h-[85px] w-full max-w-full min-w-0 resize-y font-mono text-xs break-all'
             />
           </div>
 
           {/* Display mode toggle */}
-          <div className="flex items-center justify-between rounded-md border border-border bg-muted/20 px-3 py-2 min-w-0 w-full gap-4">
-            <div className="space-y-0.5 min-w-0">
-              <Label htmlFor="display-mode" className="text-xs font-medium cursor-pointer">
+          <div className='border-border bg-muted/20 flex w-full min-w-0 items-center justify-between gap-4 rounded-md border px-3 py-2'>
+            <div className='min-w-0 space-y-0.5'>
+              <Label htmlFor='display-mode' className='cursor-pointer text-xs font-medium'>
                 Centered Block Equation
               </Label>
-              <p className="text-[11px] text-muted-foreground">
+              <p className='text-muted-foreground text-[11px]'>
                 Render formula as a standalone centered block ($$) instead of inline ($)
               </p>
             </div>
-            <Switch
-              id="display-mode"
-              checked={isDisplay}
-              onCheckedChange={setIsDisplay}
-            />
+            <Switch id='display-mode' checked={isDisplay} onCheckedChange={setIsDisplay} />
           </div>
 
           {/* Live Preview */}
-          <div className="min-w-0 w-full rounded-lg border border-border bg-background p-4 shadow-xs">
-            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+          <div className='border-border bg-background w-full min-w-0 rounded-lg border p-4 shadow-xs'>
+            <span className='text-muted-foreground text-xs font-semibold tracking-wider uppercase'>
               Live Preview:
             </span>
-            <div className="mt-2 flex min-h-[50px] w-full max-w-full items-center justify-center overflow-x-auto p-2 text-base">
+            <div className='mt-2 flex min-h-[50px] w-full max-w-full items-center justify-center overflow-x-auto p-2 text-base'>
               <div
                 dangerouslySetInnerHTML={{ __html: livePreviewHtml }}
-                className="tiptap-katex-render max-w-full overflow-x-auto py-1"
+                className='tiptap-katex-render max-w-full overflow-x-auto py-1'
               />
             </div>
           </div>
         </div>
 
-        <DialogFooter className="flex items-center justify-end gap-2 w-full pt-1">
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={() => setIsOpen(false)}
-          >
+        <DialogFooter className='flex w-full items-center justify-end gap-2 pt-1'>
+          <Button type='button' variant='outline' size='sm' onClick={() => setIsOpen(false)}>
             Cancel
           </Button>
-          <Button
-            type="button"
-            size="sm"
-            onClick={handleInsert}
-            disabled={!latex.trim()}
-          >
-            <CheckIcon className="mr-1.5 size-3.5" />
+          <Button type='button' size='sm' onClick={handleInsert} disabled={!latex.trim()}>
+            <CheckIcon className='mr-1.5 size-3.5' />
             Insert Equation
           </Button>
         </DialogFooter>

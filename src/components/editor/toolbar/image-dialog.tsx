@@ -26,12 +26,14 @@ export const ImageDialog = ({ editor }: ImageDialogProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [src, setSrc] = useState('')
   const [alt, setAlt] = useState('')
+  const [title, setTitle] = useState('')
   const [previewError, setPreviewError] = useState(false)
 
   const handleOpen = (open: boolean) => {
     if (open) {
       setSrc('')
       setAlt('')
+      setTitle('')
       setPreviewError(false)
     }
     setIsOpen(open)
@@ -46,7 +48,8 @@ export const ImageDialog = ({ editor }: ImageDialogProps) => {
       .focus()
       .setImage({
         src: trimmedSrc,
-        alt: alt.trim() || undefined
+        alt: alt.trim() || undefined,
+        title: title.trim() || undefined
       })
       .run()
 
@@ -56,12 +59,9 @@ export const ImageDialog = ({ editor }: ImageDialogProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={handleOpen}>
       <DialogTrigger asChild>
-        <ToolbarButton
-          tooltip="Insert Image"
-          icon={<ImageIcon className="size-4" />}
-        />
+        <ToolbarButton tooltip='Insert Image' icon={<ImageIcon className='size-4' />} />
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className='sm:max-w-md'>
         <DialogHeader>
           <DialogTitle>Insert Image</DialogTitle>
           <DialogDescription>
@@ -74,70 +74,95 @@ export const ImageDialog = ({ editor }: ImageDialogProps) => {
             e.preventDefault()
             handleInsert()
           }}
-          className="space-y-4 py-2"
+          className='space-y-4 py-2'
         >
-          <div className="space-y-2">
-            <Label htmlFor="image-src" className="text-sm font-medium">
+          <div className='space-y-2'>
+            <Label htmlFor='image-src' className='text-sm font-medium'>
               Image URL
             </Label>
             <Input
-              id="image-src"
-              type="url"
-              placeholder="https://example.com/image.jpg"
+              id='image-src'
+              type='url'
+              placeholder='https://example.com/image.jpg'
               value={src}
               onChange={(e) => {
                 setSrc(e.target.value)
                 setPreviewError(false)
               }}
               required
-              className="h-9"
+              className='h-9 font-mono text-xs'
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="image-alt" className="text-sm font-medium">
-              Alt Text <span className="text-xs text-muted-foreground">(optional)</span>
-            </Label>
-            <Input
-              id="image-alt"
-              type="text"
-              placeholder="Brief description of the image"
-              value={alt}
-              onChange={(e) => setAlt(e.target.value)}
-              className="h-9"
-            />
+          <div className='grid grid-cols-2 gap-3'>
+            <div className='space-y-2'>
+              <Label htmlFor='image-alt' className='text-sm font-medium'>
+                Alt text <span className='text-muted-foreground text-xs'>(required for SEO)</span>
+              </Label>
+              <Input
+                id='image-alt'
+                type='text'
+                placeholder='Describe the image'
+                value={alt}
+                onChange={(e) => setAlt(e.target.value)}
+                className='h-9'
+              />
+            </div>
+            <div className='space-y-2'>
+              <Label htmlFor='image-title' className='text-sm font-medium'>
+                Title <span className='text-muted-foreground text-xs'>(hover tooltip)</span>
+              </Label>
+              <Input
+                id='image-title'
+                type='text'
+                placeholder='Optional caption'
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className='h-9'
+              />
+            </div>
           </div>
 
           {/* Live Preview */}
           {src.trim() ? (
-            <div className="overflow-hidden rounded-md border border-border bg-muted/30 p-2">
-              <span className="text-xs font-medium text-muted-foreground">Preview:</span>
-              <div className="mt-1 flex max-h-40 items-center justify-center overflow-hidden">
+            <div className='border-border bg-muted/30 border p-2'>
+              <div className='flex items-center justify-between'>
+                <span className='text-muted-foreground font-mono text-[10px] tracking-widest uppercase'>
+                  Preview
+                </span>
+                {previewError && (
+                  <span className='text-destructive font-mono text-[10px]'>Failed to load</span>
+                )}
+              </div>
+              <div className='border-border/60 bg-background mt-1 flex max-h-40 items-center justify-center overflow-hidden border'>
                 {previewError ? (
-                  <span className="text-xs text-destructive">Failed to load preview image</span>
+                  <span className='text-destructive p-4 text-xs'>
+                    The URL did not resolve to a loadable image
+                  </span>
                 ) : (
                   // eslint-disable-next-line @next/next/no-img-element -- previewing user entered image url
                   <img
                     src={src.trim()}
                     alt={alt || 'Preview'}
                     onError={() => setPreviewError(true)}
-                    className="max-h-36 max-w-full rounded object-contain"
+                    className='max-h-36 max-w-full object-contain'
                   />
                 )}
               </div>
             </div>
           ) : null}
 
-          <DialogFooter className="flex items-center justify-end gap-2">
+          <DialogFooter className='flex items-center justify-end gap-2'>
             <Button
-              type="button"
-              variant="outline"
-              size="sm"
+              type='button'
+              variant='outline'
+              size='sm'
               onClick={() => setIsOpen(false)}
+              className='cursor-pointer'
             >
               Cancel
             </Button>
-            <Button type="submit" size="sm" disabled={!src.trim()}>
+            <Button type='submit' size='sm' disabled={!src.trim()} className='cursor-pointer'>
               Insert
             </Button>
           </DialogFooter>
