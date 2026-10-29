@@ -1,5 +1,6 @@
 Edsger
 GenAI
+Hacktron
 Harshhaa
 LLMOps
 MLOps
@@ -9,6 +10,7 @@ Sakib
 apos
 gamified
 genai
+hacktron
 harshhaareddy
 hasn
 honghong
@@ -18,5 +20,7 @@ mlops
 nosniff
 notharshhaa
 notif
+oneline
+sysinfo
 tszhong0411
 xlink

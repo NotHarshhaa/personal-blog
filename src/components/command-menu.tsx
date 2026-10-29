@@ -5,6 +5,7 @@ import {
   CheckIcon,
   CompassIcon,
   CopyIcon,
+  DicesIcon,
   FileTextIcon,
   HomeIcon,
   LaptopIcon,
@@ -52,6 +53,8 @@ type SearchPost = {
 
 const STATIC_ITEM_FILTERS = [
   'home blog articles',
+  'random article shuffle surprise dice lucky open something read',
+  'guest shell terminal console homepage tty interactive',
   'snippets vault til cli one-liners commands copy paste curl micro dispatches',
   'manage snippets admin vault editor',
   'roadmaps series learning tracks guides devops ai',
@@ -204,6 +207,21 @@ export const CommandMenu = ({
     [setIsOpen]
   )
 
+  const handleRandomArticle = useCallback(() => {
+    const source = posts.length > 0 ? posts : hybridPosts
+    if (source.length === 0) {
+      toast.error('No published articles to shuffle yet')
+      return
+    }
+    const pick = source[Math.floor(Math.random() * source.length)]
+    if (!pick) {
+      toast.error('No published articles to shuffle yet')
+      return
+    }
+    setIsOpen(false)
+    router.push(`/posts/${pick.id}`)
+  }, [posts, hybridPosts, router, setIsOpen])
+
   const handleCopyUrl = () => {
     void globalThis.navigator.clipboard.writeText(globalThis.location.href)
     setCopiedUrl(true)
@@ -338,6 +356,7 @@ export const CommandMenu = ({
               isLoggedIn={isLoggedIn}
               runCommand={runCommand}
               router={router}
+              onRandomArticle={handleRandomArticle}
             />
           </CommandGroup>
 
@@ -441,9 +460,17 @@ type NavItemsProps = {
   isLoggedIn: boolean
   runCommand: (command: () => void) => void
   router: ReturnType<typeof useRouter>
+  onRandomArticle: () => void
 }
 
-const NavItems = ({ matches, userRole, isLoggedIn, runCommand, router }: NavItemsProps) => (
+const NavItems = ({
+  matches,
+  userRole,
+  isLoggedIn,
+  runCommand,
+  router,
+  onRandomArticle
+}: NavItemsProps) => (
   <>
     {matches('home blog articles') && (
       <CommandItem
@@ -453,6 +480,30 @@ const NavItems = ({ matches, userRole, isLoggedIn, runCommand, router }: NavItem
       >
         <HomeIcon className='text-muted-foreground size-4 shrink-0' />
         <span>Home</span>
+      </CommandItem>
+    )}
+
+    {matches('random article shuffle surprise dice lucky open something read') && (
+      <CommandItem
+        value='random article shuffle surprise dice lucky open something read'
+        onSelect={() => runCommand(onRandomArticle)}
+        className='cursor-pointer'
+      >
+        <DicesIcon className='text-muted-foreground size-4 shrink-0' />
+        <span>Open a Random Article</span>
+        <CommandShortcut className='font-mono text-[10px]'>Random</CommandShortcut>
+      </CommandItem>
+    )}
+
+    {matches('guest shell terminal console homepage tty interactive') && (
+      <CommandItem
+        value='guest shell terminal console homepage tty interactive'
+        onSelect={() => runCommand(() => router.push('/#terminal'))}
+        className='cursor-pointer'
+      >
+        <SquareTerminalIcon className='text-muted-foreground size-4 shrink-0' />
+        <span>Guest Shell — interactive reader terminal</span>
+        <CommandShortcut className='font-mono text-[10px]'>Shell</CommandShortcut>
       </CommandItem>
     )}
 

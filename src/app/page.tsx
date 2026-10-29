@@ -1,5 +1,7 @@
 import { Suspense } from 'react'
 
+import DispatchLog from '@/components/dispatch-log'
+import DispatchTerminal from '@/components/dispatch-terminal'
 import { Frame, FrameBody, StripHeader } from '@/components/frame'
 import GithubActivity from '@/components/github-activity'
 import HacktronHero from '@/components/hacktron-hero'
@@ -38,6 +40,26 @@ const HomePage = () => {
           <Frame>
             <StripHeader
               left={
+                <span className='text-foreground font-semibold'>
+                  Dispatch log // git log --oneline
+                </span>
+              }
+              right={<span>Traversing history...</span>}
+            />
+            <FrameBody className='text-muted-foreground py-8 text-center font-mono text-sm'>
+              git log: traversing commit history...
+            </FrameBody>
+          </Frame>
+        }
+      >
+        <DispatchLog />
+      </Suspense>
+
+      <Suspense
+        fallback={
+          <Frame>
+            <StripHeader
+              left={
                 <span className='text-foreground font-semibold'>Trending // Top this week</span>
               }
               right={<span>Loading...</span>}
@@ -51,7 +73,7 @@ const HomePage = () => {
         <TrendingPosts />
       </Suspense>
 
-      <section aria-label='Posts'>
+      <section aria-label='Posts' id='archive' className='scroll-mt-24'>
         <Suspense
           fallback={
             <Frame>
@@ -74,6 +96,24 @@ const HomePage = () => {
       </section>
 
       <TechStack />
+
+      <section aria-label='Interactive guest terminal' id='terminal' className='scroll-mt-24'>
+        <Suspense
+          fallback={
+            <Frame>
+              <StripHeader
+                left={<span className='text-foreground font-semibold'>Guest shell // tty1</span>}
+                right={<span>Booting...</span>}
+              />
+              <FrameBody className='text-muted-foreground py-8 text-center font-mono text-sm'>
+                BOOTING GUEST SHELL...
+              </FrameBody>
+            </Frame>
+          }
+        >
+          <DispatchTerminal />
+        </Suspense>
+      </section>
     </div>
   )
 }
