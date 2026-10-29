@@ -11,15 +11,7 @@ import {
   Volume2Icon,
   VolumeXIcon
 } from 'lucide-react'
-import {
-  createContext,
-  use,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState
-} from 'react'
+import { createContext, use, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { CornerBrackets } from '@/components/frame'
 import { Button } from '@/components/ui'
@@ -66,6 +58,61 @@ type AudioDispatchProviderProps = {
 
 const PLAYBACK_RATES = [1, 1.25, 1.5, 2]
 
+/**
+ * Chrome's synthesis engine silently stalls on long utterances (no event, no
+ * audio) — narration is queued as short chunks instead of one giant utterance.
+ */
+const CHUNK_CHAR_LIMIT = 220
+
+const chunkNarration = (text: string): string[] => {
+  const words = text.replaceAll(/\s+/g, ' ').trim().split(' ')
+  const chunks: string[] = []
+  let current = ''
+
+  for (const word of words) {
+    if (current && `${current} ${word}`.length > CHUNK_CHAR_LIMIT) {
+      chunks.push(current)
+      current = word
+    } else {
+      current = current ? `${current} ${word}` : word
+    }
+  }
+  if (current) chunks.push(current)
+
+  return chunks
+}
+
+const pickPreferredVoice = (voices: SpeechSynthesisVoice[]) =>
+  voices.find(
+    (v) =>
+      v.lang.startsWith('en') &&
+      (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Samantha'))
+  ) ?? voices.find((v) => v.lang.startsWith('en'))
+
+/** Voices load asynchronously in Chromium — wait briefly for voiceschanged. */
+const waitForVoices = (synth: SpeechSynthesis): Promise<SpeechSynthesisVoice[]> =>
+  new Promise((resolve) => {
+    const existing = synth.getVoices()
+    if (existing.length > 0) {
+      resolve(existing)
+      return
+    }
+
+    const timer = setTimeout(() => {
+      synth.removeEventListener('voiceschanged', onChange)
+      resolve(synth.getVoices())
+    }, 2000)
+    const onChange = () => {
+      const voices = synth.getVoices()
+      if (voices.length > 0) {
+        clearTimeout(timer)
+        synth.removeEventListener('voiceschanged', onChange)
+        resolve(voices)
+      }
+    }
+    synth.addEventListener('voiceschanged', onChange)
+  })
+
 export function AudioDispatchProvider(props: Readonly<AudioDispatchProviderProps>) {
   const { title, description, content, minutes, audioUrl, children } = props
   const isDeepDive = minutes >= 7
@@ -75,6 +122,7 @@ export function AudioDispatchProvider(props: Readonly<AudioDispatchProviderProps
   const [playbackRate, setPlaybackRate] = useState(1)
   const [isMuted, setIsMuted] = useState(false)
   const [audioDuration, setAudioDuration] = useState(minutes * 60)
+  const [ttsUnavailable, setTtsUnavailable] = useState(false)
 
   // Waveform visualization bars
   const NUM_BARS = 36
@@ -86,9 +134,22 @@ export function AudioDispatchProvider(props: Readonly<AudioDispatchProviderProps
   )
 
   const audioRef = useRef<HTMLAudioElement | null>(null)
-  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null)
   const animFrameRef = useRef<number | null>(null)
   const speechTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const watchdogRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Narration queue machinery (chunked Web Speech synthesis)
+  const narrationChunksRef = useRef<string[]>([])
+  const chunkDurationsRef = useRef<number[]>([])
+  const chunkStartsRef = useRef<number[]>([])
+  const queueIndexRef = useRef(0)
+  const pendingBaseRef = useRef(0)
+  const queueBaseTimeRef = useRef(0)
+  const chunkStartedAtRef = useRef(0)
+  const stallTicksRef = useRef(0)
+  const mutedRef = useRef(false)
+  const playbackRateRef = useRef(playbackRate)
+  const audioDurationRef = useRef(audioDuration)
 
   // Extract clean narration script from post description + content
   const narrationText = useMemo(() => {
@@ -102,6 +163,26 @@ export function AudioDispatchProvider(props: Readonly<AudioDispatchProviderProps
     const descSnippet = description ? `${description}. ` : ''
     return `${title}. ${descSnippet}Beginning architectural overview. ${textSnippet}`
   }, [title, description, content])
+
+  useEffect(() => {
+    playbackRateRef.current = playbackRate
+  }, [playbackRate])
+
+  useEffect(() => {
+    audioDurationRef.current = audioDuration
+  }, [audioDuration])
+
+  useEffect(() => {
+    mutedRef.current = isMuted
+  }, [isMuted])
+
+  // Detect a missing synthesis engine after mount — reading `speechSynthesis`
+  // during the initial render would mismatch the server output
+  useEffect(() => {
+    if (!('speechSynthesis' in globalThis)) {
+      setTtsUnavailable(true)
+    }
+  }, [])
 
   // Setup native Audio element if audioUrl exists
   useEffect(() => {
@@ -149,7 +230,8 @@ export function AudioDispatchProvider(props: Readonly<AudioDispatchProviderProps
       frame += 0.15 * playbackRate
       setWaveAmplitudes((prev) =>
         prev.map((base, idx) => {
-          const wobble = Math.sin(frame + idx * 0.45) * 0.35 + Math.cos(frame * 0.8 + idx * 0.2) * 0.25
+          const wobble =
+            Math.sin(frame + idx * 0.45) * 0.35 + Math.cos(frame * 0.8 + idx * 0.2) * 0.25
           return Math.max(0.12, Math.min(1, base * 0.6 + wobble * 0.4 + 0.2))
         })
       )
@@ -163,73 +245,183 @@ export function AudioDispatchProvider(props: Readonly<AudioDispatchProviderProps
     }
   }, [isPlaying, playbackRate])
 
-  // Web Speech API Synthesis Handler (Fallback when no pre-recorded audio file)
-  const stopWebSpeech = useCallback(() => {
-    if ('speechSynthesis' in globalThis) {
-      globalThis.speechSynthesis.cancel()
+  // ---- Web Speech API engine (fallback when no pre-recorded audio file) ----
+
+  const clearWatchdog = useCallback(() => {
+    if (watchdogRef.current) {
+      clearTimeout(watchdogRef.current)
+      watchdogRef.current = null
     }
+  }, [])
+
+  const stopSpeechClock = useCallback(() => {
     if (speechTimerRef.current) {
       clearInterval(speechTimerRef.current)
       speechTimerRef.current = null
     }
   }, [])
 
-  const startWebSpeech = useCallback(
-    (startSec = 0) => {
-      if (!('speechSynthesis' in globalThis)) {
+  /** Engine failed to produce audio — surface an honest offline state. */
+  const failSpeech = useCallback(() => {
+    clearWatchdog()
+    stopSpeechClock()
+    if ('speechSynthesis' in globalThis) {
+      globalThis.speechSynthesis.cancel()
+    }
+    setTtsUnavailable(true)
+    setIsPlaying(false)
+  }, [clearWatchdog, stopSpeechClock])
+
+  const finishSpeech = useCallback(() => {
+    clearWatchdog()
+    stopSpeechClock()
+    setIsPlaying(false)
+    setCurrentTime(0)
+  }, [clearWatchdog, stopSpeechClock])
+
+  const speakChunkRef = useRef<((index: number, partialText?: string) => void) | null>(null)
+
+  const speakChunk = useCallback(
+    (index: number, partialText?: string) => {
+      const synth = globalThis.speechSynthesis
+      const chunks = narrationChunksRef.current
+
+      if (index >= chunks.length) {
+        finishSpeech()
         return
       }
 
-      globalThis.speechSynthesis.cancel()
-
-      // Calculate text offset based on scrubbed time
-      const charRatio = Math.min(1, startSec / audioDuration)
-      const startChar = Math.floor(narrationText.length * charRatio)
-      const remainingText = narrationText.slice(startChar)
-
-      const utterance = new SpeechSynthesisUtterance(remainingText)
-      utterance.rate = playbackRate
+      queueIndexRef.current = index
+      const utterance = new SpeechSynthesisUtterance(partialText ?? chunks[index])
+      utterance.rate = playbackRateRef.current
       utterance.pitch = 0.95 // slightly deeper, neutral technical tone
+      utterance.volume = mutedRef.current ? 0 : 1
 
-      // Pick crisp English voice if available
-      const voices = globalThis.speechSynthesis.getVoices()
-      const preferredVoice =
-        voices.find(
-          (v) =>
-            v.lang.startsWith('en') &&
-            (v.name.includes('Natural') ||
-              v.name.includes('Google') ||
-              v.name.includes('Samantha'))
-        ) ?? voices.find((v) => v.lang.startsWith('en'))
-      if (preferredVoice) utterance.voice = preferredVoice
+      const voice = pickPreferredVoice(synth.getVoices())
+      if (voice) utterance.voice = voice
 
+      utterance.addEventListener('start', () => {
+        clearWatchdog()
+        chunkStartedAtRef.current = Date.now()
+        queueBaseTimeRef.current = pendingBaseRef.current
+      })
+      utterance.addEventListener('boundary', clearWatchdog)
       utterance.addEventListener('end', () => {
-        setIsPlaying(false)
-        setCurrentTime(0)
-        stopWebSpeech()
+        clearWatchdog()
+        speakChunkRef.current?.(index + 1)
+      })
+      utterance.addEventListener('error', (event) => {
+        if (event.error === 'canceled' || event.error === 'interrupted') return
+        failSpeech()
       })
 
-      utterance.addEventListener('error', () => {
-        setIsPlaying(false)
-        stopWebSpeech()
-      })
+      if (partialText === undefined) {
+        pendingBaseRef.current = chunkStartsRef.current[index] ?? queueBaseTimeRef.current
+      }
 
-      utteranceRef.current = utterance
-      globalThis.speechSynthesis.speak(utterance)
+      synth.speak(utterance)
 
-      // Time accumulator
-      speechTimerRef.current = setInterval(() => {
-        setCurrentTime((prev) => {
-          if (prev >= audioDuration) {
-            stopWebSpeech()
-            setIsPlaying(false)
-            return 0
-          }
-          return prev + 1 * playbackRate
-        })
-      }, 1000)
+      // Watchdog: engine idle with no start/boundary event → synthesis is offline
+      clearWatchdog()
+      watchdogRef.current = setTimeout(() => {
+        if (!synth.speaking && !synth.pending) {
+          failSpeech()
+        }
+      }, 4000)
     },
-    [audioDuration, narrationText, playbackRate, stopWebSpeech]
+    [clearWatchdog, failSpeech, finishSpeech]
+  )
+
+  useEffect(() => {
+    speakChunkRef.current = speakChunk
+  }, [speakChunk])
+
+  const stopWebSpeech = useCallback(() => {
+    clearWatchdog()
+    stopSpeechClock()
+    if ('speechSynthesis' in globalThis) {
+      globalThis.speechSynthesis.cancel()
+    }
+  }, [clearWatchdog, stopSpeechClock])
+
+  const startSpeechFrom = useCallback(
+    (startSec: number) => {
+      const synth = 'speechSynthesis' in globalThis ? globalThis.speechSynthesis : null
+      if (!synth) {
+        setTtsUnavailable(true)
+        return
+      }
+
+      // Chunk the narration and precompute each chunk's start time
+      const chunks = chunkNarration(narrationText)
+      narrationChunksRef.current = chunks
+      const totalChars = chunks.reduce((sum, chunk) => sum + chunk.length, 0) || 1
+      const durations = chunks.map(
+        (chunk) => (chunk.length / totalChars) * audioDurationRef.current
+      )
+      chunkDurationsRef.current = durations
+      const starts: number[] = []
+      let accumulated = 0
+      for (const duration of durations) {
+        starts.push(accumulated)
+        accumulated += duration
+      }
+      chunkStartsRef.current = starts
+
+      void waitForVoices(synth).then((voices) => {
+        if (voices.length === 0) {
+          failSpeech()
+          return
+        }
+
+        synth.cancel()
+
+        // Locate the chunk containing startSec and slice into it proportionally
+        const clamped = Math.max(0, Math.min(audioDurationRef.current, startSec))
+        let index = 0
+        let offsetRatio = 0
+        for (let i = 0; i < chunks.length; i++) {
+          const duration = durations[i] ?? 0
+          const chunkStart = starts[i] ?? 0
+          if (clamped < chunkStart + duration || i === chunks.length - 1) {
+            index = i
+            offsetRatio =
+              duration > 0 ? Math.max(0, Math.min(1, (clamped - chunkStart) / duration)) : 0
+            break
+          }
+        }
+
+        pendingBaseRef.current = clamped
+        stallTicksRef.current = 0
+        const activeChunk = chunks[index]
+        const partialText =
+          activeChunk && offsetRatio > 0.01
+            ? activeChunk.slice(Math.floor(activeChunk.length * offsetRatio))
+            : undefined
+        speakChunkRef.current?.(index, partialText)
+
+        // Narration clock — advances only while the engine is actually speaking
+        speechTimerRef.current = setInterval(() => {
+          if (!synth.speaking && !synth.pending) {
+            stallTicksRef.current += 1
+            if (stallTicksRef.current > 6) {
+              failSpeech()
+            }
+            return
+          }
+
+          stallTicksRef.current = 0
+          const elapsedReal = (Date.now() - chunkStartedAtRef.current) / 1000
+          setCurrentTime(
+            Math.min(
+              audioDurationRef.current,
+              queueBaseTimeRef.current + elapsedReal * playbackRateRef.current
+            )
+          )
+        }, 500)
+      })
+    },
+    [narrationText, failSpeech]
   )
 
   const togglePlay = useCallback(() => {
@@ -241,16 +433,18 @@ export function AudioDispatchProvider(props: Readonly<AudioDispatchProviderProps
         stopWebSpeech()
       }
       setIsPlaying(false)
-    } else {
-      // Play
-      if (audioRef.current) {
-        void audioRef.current.play()
-      } else {
-        startWebSpeech(currentTime)
-      }
+      return
+    }
+
+    // Play
+    if (audioRef.current) {
+      void audioRef.current.play()
+      setIsPlaying(true)
+    } else if (!ttsUnavailable) {
+      startSpeechFrom(currentTime)
       setIsPlaying(true)
     }
-  }, [isPlaying, currentTime, startWebSpeech, stopWebSpeech])
+  }, [isPlaying, currentTime, ttsUnavailable, startSpeechFrom, stopWebSpeech])
 
   const seek = useCallback(
     (percentage: number) => {
@@ -259,11 +453,11 @@ export function AudioDispatchProvider(props: Readonly<AudioDispatchProviderProps
 
       if (audioRef.current) {
         audioRef.current.currentTime = targetTime
-      } else if (isPlaying) {
-        startWebSpeech(targetTime)
+      } else if (isPlaying && !ttsUnavailable) {
+        startSpeechFrom(targetTime)
       }
     },
-    [audioDuration, isPlaying, startWebSpeech]
+    [audioDuration, isPlaying, ttsUnavailable, startSpeechFrom]
   )
 
   const skip = useCallback(
@@ -273,11 +467,11 @@ export function AudioDispatchProvider(props: Readonly<AudioDispatchProviderProps
 
       if (audioRef.current) {
         audioRef.current.currentTime = targetTime
-      } else if (isPlaying) {
-        startWebSpeech(targetTime)
+      } else if (isPlaying && !ttsUnavailable) {
+        startSpeechFrom(targetTime)
       }
     },
-    [audioDuration, currentTime, isPlaying, startWebSpeech]
+    [audioDuration, currentTime, isPlaying, ttsUnavailable, startSpeechFrom]
   )
 
   const setRate = useCallback(
@@ -285,22 +479,28 @@ export function AudioDispatchProvider(props: Readonly<AudioDispatchProviderProps
       setPlaybackRate(rate)
       if (audioRef.current) {
         audioRef.current.playbackRate = rate
-      } else if (isPlaying) {
-        startWebSpeech(currentTime)
+      } else if (isPlaying && !ttsUnavailable) {
+        startSpeechFrom(currentTime)
       }
     },
-    [currentTime, isPlaying, startWebSpeech]
+    [currentTime, isPlaying, ttsUnavailable, startSpeechFrom]
   )
 
   const toggleMute = useCallback(() => {
     setIsMuted((prev) => {
       const next = !prev
+      mutedRef.current = next
       if (audioRef.current) {
         audioRef.current.muted = next
       }
       return next
     })
-  }, [])
+    // TTS utterances carry their own volume — restart the active chunk so the
+    // toggle is heard immediately instead of at the next chunk boundary.
+    if (isPlaying && !audioRef.current && !ttsUnavailable) {
+      startSpeechFrom(currentTime)
+    }
+  }, [isPlaying, currentTime, ttsUnavailable, startSpeechFrom])
 
   // Cleanup on unmount
   useEffect(() => {
@@ -326,7 +526,7 @@ export function AudioDispatchProvider(props: Readonly<AudioDispatchProviderProps
       waveformHeights: waveAmplitudes,
       title,
       minutes,
-      audioAvailable: true
+      audioAvailable: !ttsUnavailable
     }),
     [
       isPlaying,
@@ -342,15 +542,12 @@ export function AudioDispatchProvider(props: Readonly<AudioDispatchProviderProps
       toggleMute,
       waveAmplitudes,
       title,
-      minutes
+      minutes,
+      ttsUnavailable
     ]
   )
 
-  return (
-    <AudioDispatchContext value={value}>
-      {children}
-    </AudioDispatchContext>
-  )
+  return <AudioDispatchContext value={value}>{children}</AudioDispatchContext>
 }
 
 function formatTime(seconds: number): string {
@@ -372,54 +569,53 @@ export function AudioDispatchTopBar() {
     seek,
     setRate,
     waveformHeights,
-    isDeepDive
+    isDeepDive,
+    audioAvailable
   } = useAudioDispatch()
 
   const [isCollapsed, setIsCollapsed] = useState(false)
   const progressRatio = duration > 0 ? currentTime / duration : 0
 
-  // Only render on deep dive articles
-  if (!isDeepDive) return null
+  // Only render on deep dive articles with a working synthesis engine
+  if (!isDeepDive || !audioAvailable) return null
 
   return (
     <aside
-      aria-label="Audio dispatch briefing player"
+      aria-label='Audio dispatch briefing player'
       className={cn(
-        'fixed inset-x-0 top-[3px] z-40 border-b border-border bg-background/95 backdrop-blur-md transition-transform duration-200 select-none font-mono',
+        'border-border bg-background/95 fixed inset-x-0 top-[3px] z-40 border-b font-mono backdrop-blur-md transition-transform duration-200 select-none',
         isCollapsed ? '-translate-y-[calc(100%-8px)]' : 'translate-y-0'
       )}
     >
-      <div className="mx-auto flex h-9 max-w-7xl items-center justify-between gap-3 px-3 sm:px-6 text-xs">
+      <div className='mx-auto flex h-9 max-w-7xl items-center justify-between gap-3 px-3 text-xs sm:px-6'>
         {/* Left: Play/Pause & Telemetry Tag */}
-        <div className="flex items-center gap-2">
+        <div className='flex items-center gap-2'>
           <button
-            type="button"
+            type='button'
             onClick={togglePlay}
-            className="flex size-6 items-center justify-center border border-border bg-card text-foreground transition-colors hover:border-foreground active:translate-y-px cursor-pointer"
+            className='border-border bg-card text-foreground hover:border-foreground flex size-6 cursor-pointer items-center justify-center border transition-colors active:translate-y-px'
             aria-label={isPlaying ? 'Pause audio briefing' : 'Play audio briefing'}
           >
             {isPlaying ? (
-              <PauseIcon className="size-3 fill-foreground" />
+              <PauseIcon className='fill-foreground size-3' />
             ) : (
-              <PlayIcon className="size-3 fill-foreground ml-0.5" />
+              <PlayIcon className='fill-foreground ml-0.5 size-3' />
             )}
           </button>
 
-          <div className="flex items-center gap-1.5 text-[10px] uppercase text-muted-foreground">
-            <HeadphonesIcon className="size-3 text-foreground" />
-            <span className="hidden sm:inline font-semibold text-foreground">
-              AUDIO DISPATCH
-            </span>
-            <span className="text-muted-foreground/60">{'//'}</span>
-            <span className="text-muted-foreground">COMMUTER BRIEF</span>
+          <div className='text-muted-foreground flex items-center gap-1.5 text-[10px] uppercase'>
+            <HeadphonesIcon className='text-foreground size-3' />
+            <span className='text-foreground hidden font-semibold sm:inline'>AUDIO DISPATCH</span>
+            <span className='text-muted-foreground/60'>{'//'}</span>
+            <span className='text-muted-foreground'>COMMUTER BRIEF</span>
           </div>
         </div>
 
         {/* Center: Monochrome Interactive Waveform Visualizer */}
         <div
-          role="slider"
+          role='slider'
           tabIndex={0}
-          aria-label="Audio waveform progress scrubber"
+          aria-label='Audio waveform progress scrubber'
           aria-valuemin={0}
           aria-valuemax={100}
           aria-valuenow={Math.round(progressRatio * 100)}
@@ -432,7 +628,7 @@ export function AudioDispatchTopBar() {
             if (e.key === 'ArrowRight') seek(progressRatio + 0.05)
             if (e.key === 'ArrowLeft') seek(progressRatio - 0.05)
           }}
-          className="flex h-5 flex-1 max-w-sm sm:max-w-md items-center justify-center gap-0.5 sm:gap-1 px-2 cursor-pointer outline-none"
+          className='flex h-5 max-w-sm flex-1 cursor-pointer items-center justify-center gap-0.5 px-2 outline-none sm:max-w-md sm:gap-1'
         >
           {waveformHeights.map((amp, idx) => {
             const barProgress = idx / waveformHeights.length
@@ -444,10 +640,8 @@ export function AudioDispatchTopBar() {
                 key={idx}
                 style={{ height: `${heightPx}px` }}
                 className={cn(
-                  'w-0.5 sm:w-1 transition-all duration-75',
-                  isPassed
-                    ? 'bg-foreground'
-                    : 'bg-muted-foreground/30 hover:bg-muted-foreground/60'
+                  'w-0.5 transition-all duration-75 sm:w-1',
+                  isPassed ? 'bg-foreground' : 'bg-muted-foreground/30 hover:bg-muted-foreground/60'
                 )}
               />
             )
@@ -455,40 +649,38 @@ export function AudioDispatchTopBar() {
         </div>
 
         {/* Right: Timestamp, Speed Toggle & Collapse */}
-        <div className="flex items-center gap-2 text-[10px]">
-          <span className="tabular-nums text-muted-foreground hidden xs:inline">
-            <span className="text-foreground font-semibold">
-              {formatTime(currentTime)}
-            </span>
-            <span className="text-muted-foreground/50"> / </span>
+        <div className='flex items-center gap-2 text-[10px]'>
+          <span className='text-muted-foreground xs:inline hidden tabular-nums'>
+            <span className='text-foreground font-semibold'>{formatTime(currentTime)}</span>
+            <span className='text-muted-foreground/50'> / </span>
             <span>{formatTime(duration)}</span>
           </span>
 
           {/* Speed Toggle */}
           <button
-            type="button"
+            type='button'
             onClick={() => {
               const currentIdx = PLAYBACK_RATES.indexOf(playbackRate)
               const nextRate = PLAYBACK_RATES[(currentIdx + 1) % PLAYBACK_RATES.length]
               if (nextRate) setRate(nextRate)
             }}
-            className="border border-border/80 bg-muted/40 px-1.5 py-0.5 text-muted-foreground transition-colors hover:border-foreground hover:text-foreground cursor-pointer"
-            title="Adjust audio playback rate"
+            className='border-border/80 bg-muted/40 text-muted-foreground hover:border-foreground hover:text-foreground cursor-pointer border px-1.5 py-0.5 transition-colors'
+            title='Adjust audio playback rate'
           >
             {playbackRate}x
           </button>
 
           {/* Collapse/Expand Toggle */}
           <button
-            type="button"
+            type='button'
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="p-1 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+            className='text-muted-foreground hover:text-foreground cursor-pointer p-1 transition-colors'
             title={isCollapsed ? 'Expand audio player' : 'Collapse audio player'}
           >
             {isCollapsed ? (
-              <ChevronDownIcon className="size-3" />
+              <ChevronDownIcon className='size-3' />
             ) : (
-              <ChevronUpIcon className="size-3" />
+              <ChevronUpIcon className='size-3' />
             )}
           </button>
         </div>
@@ -514,41 +706,66 @@ export function AudioDispatchHero() {
     toggleMute,
     waveformHeights,
     minutes,
-    isDeepDive
+    isDeepDive,
+    audioAvailable
   } = useAudioDispatch()
 
   if (!isDeepDive) return null
 
   const progressRatio = duration > 0 ? currentTime / duration : 0
 
+  // No synthesis engine (or it failed to start) — say so instead of faking playback
+  if (!audioAvailable) {
+    return (
+      <div className='border-border bg-card relative border p-4 font-mono text-xs select-none sm:p-5'>
+        <CornerBrackets />
+        <div className='border-border/80 flex flex-wrap items-center justify-between gap-2 border-b pb-3'>
+          <div className='text-muted-foreground flex items-center gap-2'>
+            <VolumeXIcon className='size-4' aria-hidden />
+            <span className='text-xs font-bold tracking-wider uppercase'>
+              Audio dispatch // engine offline
+            </span>
+          </div>
+          <span className='border-border/80 bg-muted/40 text-muted-foreground border px-1.5 py-0.5 text-[9px] uppercase'>
+            DEEP DIVE ({minutes} MIN READ)
+          </span>
+        </div>
+        <p className='text-muted-foreground/70 mt-3'>
+          No speech synthesis engine is available in this browser — the text dispatch below carries
+          the full briefing.
+        </p>
+      </div>
+    )
+  }
+
   return (
-    <div className="relative border border-border bg-card p-4 sm:p-5 font-mono text-xs select-none">
+    <div className='border-border bg-card relative border p-4 font-mono text-xs select-none sm:p-5'>
       <CornerBrackets />
 
       {/* Top Protocol Header */}
-      <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/80 pb-3">
-        <div className="flex items-center gap-2">
-          <HeadphonesIcon className="size-4 text-foreground" />
-          <span className="text-xs font-bold tracking-wider uppercase text-foreground">
+      <div className='border-border/80 flex flex-wrap items-center justify-between gap-2 border-b pb-3'>
+        <div className='flex items-center gap-2'>
+          <HeadphonesIcon className='text-foreground size-4' />
+          <span className='text-foreground text-xs font-bold tracking-wider uppercase'>
             Audio Dispatch // Commuter Briefing
           </span>
-          <span className="border border-border/80 bg-muted/40 px-1.5 py-0.2 text-[9px] text-muted-foreground uppercase">
+          <span className='border-border/80 bg-muted/40 py-0.2 text-muted-foreground border px-1.5 text-[9px] uppercase'>
             DEEP DIVE ({minutes} MIN READ)
           </span>
         </div>
 
-        <div className="flex items-center gap-2 text-[10px] text-muted-foreground">
-          <span className="size-1.5 bg-foreground" />
+        <div className='text-muted-foreground flex items-center gap-2 text-[10px]'>
+          <span className='bg-foreground size-1.5' />
           <span>FORMAT: 0PX WAVEFORM TTS</span>
         </div>
       </div>
 
       {/* Large Scrubbable Waveform Visualizer */}
-      <div className="py-4">
+      <div className='py-4'>
         <div
-          role="slider"
+          role='slider'
           tabIndex={0}
-          aria-label="Scrub audio briefing position"
+          aria-label='Scrub audio briefing position'
           aria-valuemin={0}
           aria-valuemax={100}
           aria-valuenow={Math.round(progressRatio * 100)}
@@ -561,7 +778,7 @@ export function AudioDispatchHero() {
             if (e.key === 'ArrowRight') seek(progressRatio + 0.05)
             if (e.key === 'ArrowLeft') seek(progressRatio - 0.05)
           }}
-          className="flex h-12 w-full items-center justify-between gap-1 border border-border/60 bg-muted/20 px-3 cursor-pointer outline-none transition-colors hover:border-foreground/40"
+          className='border-border/60 bg-muted/20 hover:border-foreground/40 flex h-12 w-full cursor-pointer items-center justify-between gap-1 border px-3 transition-colors outline-none'
         >
           {waveformHeights.map((amp, idx) => {
             const barProgress = idx / waveformHeights.length
@@ -574,9 +791,7 @@ export function AudioDispatchHero() {
                 style={{ height: `${heightPx}px` }}
                 className={cn(
                   'flex-1 transition-all duration-75',
-                  isPassed
-                    ? 'bg-foreground'
-                    : 'bg-muted-foreground/25 hover:bg-muted-foreground/60'
+                  isPassed ? 'bg-foreground' : 'bg-muted-foreground/25 hover:bg-muted-foreground/60'
                 )}
               />
             )
@@ -585,72 +800,70 @@ export function AudioDispatchHero() {
       </div>
 
       {/* Control Actions & Time Row */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
+      <div className='flex flex-wrap items-center justify-between gap-3 pt-1'>
         {/* Playback Transport Buttons */}
-        <div className="flex items-center gap-1.5">
+        <div className='flex items-center gap-1.5'>
           <Button
-            variant="default"
-            size="sm"
+            variant='default'
+            size='sm'
             corners
             onClick={togglePlay}
-            className="gap-1.5"
+            className='gap-1.5'
             aria-label={isPlaying ? 'Pause briefing' : 'Play briefing'}
           >
             {isPlaying ? (
               <>
-                <PauseIcon className="size-3.5 fill-background" />
+                <PauseIcon className='fill-background size-3.5' />
                 <span>Pause</span>
               </>
             ) : (
               <>
-                <PlayIcon className="size-3.5 fill-background ml-0.5" />
+                <PlayIcon className='fill-background ml-0.5 size-3.5' />
                 <span>Listen Briefing</span>
               </>
             )}
           </Button>
 
           <Button
-            variant="outline"
-            size="sm"
+            variant='outline'
+            size='sm'
             onClick={() => skip(-15)}
-            title="Rewind 15 seconds"
-            className="px-2"
+            title='Rewind 15 seconds'
+            className='px-2'
           >
-            <RewindIcon className="size-3" />
-            <span className="text-[10px]">15s</span>
+            <RewindIcon className='size-3' />
+            <span className='text-[10px]'>15s</span>
           </Button>
 
           <Button
-            variant="outline"
-            size="sm"
+            variant='outline'
+            size='sm'
             onClick={() => skip(15)}
-            title="Skip forward 15 seconds"
-            className="px-2"
+            title='Skip forward 15 seconds'
+            className='px-2'
           >
-            <FastForwardIcon className="size-3" />
-            <span className="text-[10px]">15s</span>
+            <FastForwardIcon className='size-3' />
+            <span className='text-[10px]'>15s</span>
           </Button>
         </div>
 
         {/* Time Elapsed & Duration Display */}
-        <div className="flex items-center gap-2">
-          <div className="border border-border/80 bg-background px-2 py-1 font-mono text-[11px] tabular-nums">
-            <span className="font-semibold text-foreground">
-              {formatTime(currentTime)}
-            </span>
-            <span className="text-muted-foreground/60"> / </span>
-            <span className="text-muted-foreground">{formatTime(duration)}</span>
+        <div className='flex items-center gap-2'>
+          <div className='border-border/80 bg-background border px-2 py-1 font-mono text-[11px] tabular-nums'>
+            <span className='text-foreground font-semibold'>{formatTime(currentTime)}</span>
+            <span className='text-muted-foreground/60'> / </span>
+            <span className='text-muted-foreground'>{formatTime(duration)}</span>
           </div>
 
           {/* Speed Pills */}
-          <div className="flex items-center border border-border/80 bg-background">
+          <div className='border-border/80 bg-background flex items-center border'>
             {PLAYBACK_RATES.map((rate) => (
               <button
                 key={rate}
-                type="button"
+                type='button'
                 onClick={() => setRate(rate)}
                 className={cn(
-                  'px-2 py-1 text-[10px] transition-colors cursor-pointer',
+                  'cursor-pointer px-2 py-1 text-[10px] transition-colors',
                   playbackRate === rate
                     ? 'bg-foreground text-background font-semibold'
                     : 'text-muted-foreground hover:text-foreground'
@@ -663,16 +876,12 @@ export function AudioDispatchHero() {
 
           {/* Mute Button */}
           <button
-            type="button"
+            type='button'
             onClick={toggleMute}
-            className="border border-border/80 bg-background p-1 text-muted-foreground transition-colors hover:border-foreground hover:text-foreground cursor-pointer"
+            className='border-border/80 bg-background text-muted-foreground hover:border-foreground hover:text-foreground cursor-pointer border p-1 transition-colors'
             title={isMuted ? 'Unmute audio' : 'Mute audio'}
           >
-            {isMuted ? (
-              <VolumeXIcon className="size-3.5" />
-            ) : (
-              <Volume2Icon className="size-3.5" />
-            )}
+            {isMuted ? <VolumeXIcon className='size-3.5' /> : <Volume2Icon className='size-3.5' />}
           </button>
         </div>
       </div>
