@@ -449,7 +449,7 @@ export function AudioDispatchProvider(props: Readonly<AudioDispatchProviderProps
 
     const onEnded = () => {
       setIsPlaying(false)
-      setCurrentTime(0)
+      setCurrentTime(Number.isFinite(audio.duration) ? audio.duration : 0)
     }
 
     audio.addEventListener('loadedmetadata', onLoadedMetadata)
@@ -522,7 +522,7 @@ export function AudioDispatchProvider(props: Readonly<AudioDispatchProviderProps
     clearWatchdog()
     stopSpeechClock()
     setIsPlaying(false)
-    setCurrentTime(0)
+    setCurrentTime(audioDurationRef.current)
   }, [clearWatchdog, stopSpeechClock])
 
   const speakChunkRef = useRef<((index: number, partialText?: string) => void) | null>(null)
@@ -704,13 +704,19 @@ export function AudioDispatchProvider(props: Readonly<AudioDispatchProviderProps
 
     // Play
     if (audioRef.current) {
-      void audioRef.current.play()
+      if (currentTime >= audioDuration) {
+        audioRef.current.currentTime = 0
+        setCurrentTime(0)
+      }
+      void audioRef.current.play().catch(() => setIsPlaying(false))
       setIsPlaying(true)
     } else if (!ttsUnavailable) {
-      startSpeechFrom(currentTime)
+      const startTime = currentTime >= audioDuration ? 0 : currentTime
+      if (startTime === 0 && currentTime > 0) setCurrentTime(0)
+      startSpeechFrom(startTime)
       setIsPlaying(true)
     }
-  }, [isPlaying, currentTime, ttsUnavailable, startSpeechFrom, stopWebSpeech])
+  }, [isPlaying, currentTime, audioDuration, ttsUnavailable, startSpeechFrom, stopWebSpeech])
 
   const seek = useCallback(
     (percentage: number) => {
@@ -897,6 +903,9 @@ export function AudioDispatchTopBar() {
 
   const [isCollapsed, setIsCollapsed] = useState(false)
   const progressRatio = duration > 0 ? currentTime / duration : 0
+  let playbackStatus = 'READY'
+  if (isPlaying) playbackStatus = 'ON AIR'
+  else if (currentTime > 0) playbackStatus = 'PAUSED'
 
   // Only render on deep dive articles with a working synthesis engine
   if (!isDeepDive || !audioAvailable) return null
@@ -930,6 +939,9 @@ export function AudioDispatchTopBar() {
             <span className='text-foreground hidden font-semibold sm:inline'>AUDIO DISPATCH</span>
             <span className='text-muted-foreground/60'>{'//'}</span>
             <span className='text-muted-foreground'>COMMUTER BRIEF</span>
+            <span className='border-border/80 bg-card text-foreground ml-1 border px-1 py-0.5 text-[8px] tracking-wider'>
+              {playbackStatus}
+            </span>
           </div>
         </div>
 
@@ -941,6 +953,7 @@ export function AudioDispatchTopBar() {
           aria-valuemin={0}
           aria-valuemax={100}
           aria-valuenow={Math.round(progressRatio * 100)}
+          aria-valuetext={`${formatTime(currentTime)} of ${formatTime(duration)}`}
           onClick={(e) => {
             const rect = e.currentTarget.getBoundingClientRect()
             const clickPos = (e.clientX - rect.left) / rect.width
@@ -949,8 +962,10 @@ export function AudioDispatchTopBar() {
           onKeyDown={(e) => {
             if (e.key === 'ArrowRight') seek(progressRatio + 0.05)
             if (e.key === 'ArrowLeft') seek(progressRatio - 0.05)
+            if (e.key === 'Home') seek(0)
+            if (e.key === 'End') seek(1)
           }}
-          className='flex h-5 max-w-sm flex-1 cursor-pointer items-center justify-center gap-0.5 px-2 outline-none sm:max-w-md sm:gap-1'
+          className='focus-visible:outline-foreground flex h-7 max-w-sm flex-1 cursor-pointer items-center justify-center gap-0.5 px-2 outline-none focus-visible:outline-2 focus-visible:outline-offset-2 sm:max-w-md sm:gap-1'
         >
           {waveformHeights.map((amp, idx) => {
             const barProgress = idx / waveformHeights.length
@@ -1083,7 +1098,7 @@ export function AudioDispatchHero() {
 
         <div className='text-muted-foreground flex items-center gap-2 text-[10px]'>
           <span className='bg-foreground size-1.5' />
-          <span>FORMAT: 0PX WAVEFORM TTS</span>
+          <span>SOURCE: BROWSER VOICE</span>
         </div>
       </div>
 
@@ -1096,6 +1111,7 @@ export function AudioDispatchHero() {
           aria-valuemin={0}
           aria-valuemax={100}
           aria-valuenow={Math.round(progressRatio * 100)}
+          aria-valuetext={`${formatTime(currentTime)} of ${formatTime(duration)}`}
           onClick={(e) => {
             const rect = e.currentTarget.getBoundingClientRect()
             const clickPos = (e.clientX - rect.left) / rect.width
@@ -1104,8 +1120,10 @@ export function AudioDispatchHero() {
           onKeyDown={(e) => {
             if (e.key === 'ArrowRight') seek(progressRatio + 0.05)
             if (e.key === 'ArrowLeft') seek(progressRatio - 0.05)
+            if (e.key === 'Home') seek(0)
+            if (e.key === 'End') seek(1)
           }}
-          className='border-border/60 bg-muted/20 hover:border-foreground/40 flex h-12 w-full cursor-pointer items-center justify-between gap-1 border px-3 transition-colors outline-none'
+          className='border-border/60 bg-muted/20 hover:border-foreground/40 focus-visible:outline-foreground flex h-12 w-full cursor-pointer items-center justify-between gap-1 border px-3 transition-colors outline-none focus-visible:outline-2 focus-visible:outline-offset-2'
         >
           {waveformHeights.map((amp, idx) => {
             const barProgress = idx / waveformHeights.length
@@ -1148,7 +1166,7 @@ export function AudioDispatchHero() {
         </select>
 
         <div className='border-border flex items-center border'>
-          {(['auto', 'female', 'male'] as const).map((gender) => (
+          {(['auto', 'female', 'male', 'neutral'] as const).map((gender) => (
             <button
               key={gender}
               type='button'
@@ -1204,6 +1222,7 @@ export function AudioDispatchHero() {
             size='sm'
             onClick={() => skip(-15)}
             title='Rewind 15 seconds'
+            aria-label='Rewind 15 seconds'
             className='px-2'
           >
             <RewindIcon className='size-3' />
@@ -1215,6 +1234,7 @@ export function AudioDispatchHero() {
             size='sm'
             onClick={() => skip(15)}
             title='Skip forward 15 seconds'
+            aria-label='Skip forward 15 seconds'
             className='px-2'
           >
             <FastForwardIcon className='size-3' />
@@ -1237,6 +1257,8 @@ export function AudioDispatchHero() {
                 key={rate}
                 type='button'
                 onClick={() => setRate(rate)}
+                aria-label={`Play at ${rate} times speed`}
+                aria-pressed={playbackRate === rate}
                 className={cn(
                   'cursor-pointer px-2 py-1 text-[10px] transition-colors',
                   playbackRate === rate
@@ -1254,6 +1276,7 @@ export function AudioDispatchHero() {
             type='button'
             onClick={toggleMute}
             className='border-border/80 bg-background text-muted-foreground hover:border-foreground hover:text-foreground cursor-pointer border p-1 transition-colors'
+            aria-label={isMuted ? 'Unmute audio' : 'Mute audio'}
             title={isMuted ? 'Unmute audio' : 'Mute audio'}
           >
             {isMuted ? <VolumeXIcon className='size-3.5' /> : <Volume2Icon className='size-3.5' />}
