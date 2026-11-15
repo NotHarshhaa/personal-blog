@@ -29,6 +29,11 @@ export const TableOfContents = ({ content, className }: TableOfContentsProps) =>
   const [headings, setHeadings] = useState<Heading[]>([])
   const [activeId, setActiveId] = useState<string>('')
   const [isMobileOpen, setIsMobileOpen] = useState(false)
+  const activeHeadingIdRef = useRef(activeId)
+
+  useEffect(() => {
+    activeHeadingIdRef.current = activeId
+  }, [activeId])
 
   useEffect(() => {
     let retryTimer: ReturnType<typeof setTimeout> | undefined
@@ -73,7 +78,11 @@ export const TableOfContents = ({ content, className }: TableOfContentsProps) =>
       }
 
       setHeadings(extractedHeadings)
-      if (extractedHeadings.length > 0 && !activeId && extractedHeadings[0]?.id) {
+      if (
+        extractedHeadings.length > 0 &&
+        !extractedHeadings.some((heading) => heading.id === activeHeadingIdRef.current) &&
+        extractedHeadings[0]?.id
+      ) {
         setActiveId(extractedHeadings[0].id)
       }
     }
@@ -90,7 +99,7 @@ export const TableOfContents = ({ content, className }: TableOfContentsProps) =>
       observer.disconnect()
       if (retryTimer) clearTimeout(retryTimer)
     }
-  }, [content, activeId])
+  }, [content])
 
   useEffect(() => {
     if (headings.length === 0) return

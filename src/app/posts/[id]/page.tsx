@@ -405,11 +405,7 @@ const PostPage = async (props: PostPageProps) => {
 
         <GiscusComments postId={id} postTitle={title} />
 
-        <RelatedPosts
-          currentPostId={id}
-          currentPostTitle={title}
-          currentPostDescription={description}
-        />
+        <RelatedPosts currentPostId={id} currentPostTags={tags} />
       </article>
     </AudioDispatchProvider>
   )

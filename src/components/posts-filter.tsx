@@ -144,16 +144,9 @@ export const PostsFilter = ({ posts, user }: PostsFilterProps) => {
 
     if (selectedTag) {
       const lowerTag = selectedTag.toLowerCase().trim()
-      result = result.filter((post) => {
-        const matchTag =
-          post.tags?.some((t) => {
-            const tl = t.toLowerCase().trim()
-            return tl === lowerTag || tl.includes(lowerTag) || lowerTag.includes(tl)
-          }) ?? false
-        const matchTitle = post.title.toLowerCase().includes(lowerTag)
-        const matchDesc = post.description?.toLowerCase().includes(lowerTag) ?? false
-        return matchTag || matchTitle || matchDesc
-      })
+      result = result.filter(
+        (post) => post.tags?.some((tag) => tag.toLowerCase().trim() === lowerTag) ?? false
+      )
     }
 
     if (searchQuery.trim()) {
@@ -282,7 +275,11 @@ export const PostsFilter = ({ posts, user }: PostsFilterProps) => {
         <div className='border-border bg-muted/20 border-b px-3 py-2.5 sm:px-4'>
           <div className='flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between'>
             {/* Category Filter Tabs */}
-            <div className='flex flex-wrap items-center gap-1.5' role='tablist'>
+            <div
+              className='flex flex-wrap items-center gap-1.5'
+              role='group'
+              aria-label='Topic categories'
+            >
               {CATEGORY_TABS.map((tab) => {
                 const isTabActive = activeCategory === tab.id
                 return (
@@ -296,8 +293,7 @@ export const PostsFilter = ({ posts, user }: PostsFilterProps) => {
                         ? 'border-foreground bg-foreground text-background font-semibold shadow-xs'
                         : 'border-border/80 bg-background text-muted-foreground hover:border-foreground/60 hover:text-foreground'
                     )}
-                    role='tab'
-                    aria-selected={isTabActive}
+                    aria-pressed={isTabActive}
                   >
                     {tab.label}
                   </button>
