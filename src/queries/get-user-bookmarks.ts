@@ -16,6 +16,7 @@ export const getUserBookmarks = async (userId: string) => {
           description: true,
           createdAt: true,
           published: true,
+          visibility: true,
           views: true,
           baselineViews: true,
           baselineLikes: true,
@@ -41,7 +42,7 @@ export const getUserBookmarks = async (userId: string) => {
 
   // Filter out any posts that might be unpublished/deleted
   const bookmarkedPosts = result.flatMap((b) =>
-    b.post.published ? [withPostEngagement(b.post)] : []
+    b.post.published && b.post.visibility === 'public' ? [withPostEngagement(b.post)] : []
   )
 
   return {

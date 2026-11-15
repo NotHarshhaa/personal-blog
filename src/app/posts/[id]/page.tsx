@@ -109,6 +109,7 @@ const PostPage = async (props: PostPageProps) => {
     createdAt,
     user: author,
     likes,
+    bookmarks,
     likeCount,
     views,
     tags
@@ -383,6 +384,9 @@ const PostPage = async (props: PostPageProps) => {
                       tags
                     }}
                     userId={user?.id}
+                    initiallyBookmarked={Boolean(
+                      user && bookmarks.some((bookmark) => bookmark.userId === user.id)
+                    )}
                   />
                 </div>
 

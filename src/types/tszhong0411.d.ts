@@ -64,7 +64,7 @@ declare module '@/components/ui' {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any -- react-hook-form Control type is complex
     control?: any
     name: string
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any -- mirrors react-hook-form's generic field value
     render: ({ field }: { field: any }) => React.ReactElement
   }
 
@@ -114,7 +114,11 @@ declare module '@/components/ui' {
     error: (message: string | undefined) => void
   }
   export const Toaster: React.FC<ComponentProps<'div'>>
-  export const buttonVariants: (props: { variant?: ButtonProps['variant']; size?: ButtonProps['size']; className?: string }) => string
+  export const buttonVariants: (props: {
+    variant?: ButtonProps['variant']
+    size?: ButtonProps['size']
+    className?: string
+  }) => string
 
   // AlertDialog components
   export const AlertDialog: React.FC<AlertDialogProps>

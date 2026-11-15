@@ -2,7 +2,7 @@
 
 import { BookmarkIcon } from 'lucide-react'
 import { usePathname, useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui'
@@ -18,10 +18,31 @@ type BookmarkButtonProps = {
     tags?: string[]
   }
   userId?: string | null
+  initiallyBookmarked?: boolean
 }
 
-export const BookmarkButton = ({ post, userId }: BookmarkButtonProps) => {
-  const { isBookmarked, toggleBookmark, isLoaded } = useBookmarks(userId)
+export const BookmarkButton = ({
+  post,
+  userId,
+  initiallyBookmarked = false
+}: BookmarkButtonProps) => {
+  const initialBookmarks = useMemo(
+    () =>
+      initiallyBookmarked
+        ? [
+            {
+              ...post,
+              description: post.description ?? null,
+              createdAt: post.createdAt
+                ? new Date(post.createdAt).toISOString()
+                : new Date().toISOString(),
+              tags: post.tags ?? []
+            }
+          ]
+        : [],
+    [initiallyBookmarked, post]
+  )
+  const { isBookmarked, toggleBookmark, isLoaded } = useBookmarks(userId, initialBookmarks)
   const [isAnimating, setIsAnimating] = useState(false)
   const router = useRouter()
   const pathname = usePathname()
@@ -55,12 +76,12 @@ export const BookmarkButton = ({ post, userId }: BookmarkButtonProps) => {
   }
 
   return (
-    <div className="group relative">
+    <div className='group relative'>
       <Button
         corners
-        variant="outline"
+        variant='outline'
         className={cn(
-          'flex items-center gap-2 px-3.5 py-1.5 text-xs font-mono uppercase tracking-wider transition-all cursor-pointer',
+          'flex cursor-pointer items-center gap-2 px-3.5 py-1.5 font-mono text-xs tracking-wider uppercase transition-all',
           active
             ? 'border-foreground bg-foreground text-background hover:bg-foreground/90 hover:text-background'
             : 'border-border bg-background text-foreground hover:border-foreground/60 hover:bg-muted/40',
@@ -70,7 +91,7 @@ export const BookmarkButton = ({ post, userId }: BookmarkButtonProps) => {
         onClick={handleToggle}
         aria-pressed={active}
         aria-label={getAriaLabel()}
-        type="button"
+        type='button'
       >
         <BookmarkIcon
           className={cn(
@@ -78,13 +99,13 @@ export const BookmarkButton = ({ post, userId }: BookmarkButtonProps) => {
             active ? 'fill-current' : 'text-muted-foreground'
           )}
         />
-        <span className="font-mono text-xs uppercase tracking-wider">
+        <span className='font-mono text-xs tracking-wider uppercase'>
           {active ? 'Saved' : 'Bookmark'}
         </span>
       </Button>
 
       {/* Tooltip */}
-      <span className="pointer-events-none absolute left-1/2 top-full z-20 mt-1 w-max -translate-x-1/2 scale-95 border border-border bg-card px-2 py-1 text-xs text-foreground opacity-0 shadow transition-all group-hover:opacity-100 group-focus-within:opacity-100">
+      <span className='border-border bg-card text-foreground pointer-events-none absolute top-full left-1/2 z-20 mt-1 w-max -translate-x-1/2 scale-95 border px-2 py-1 text-xs opacity-0 shadow transition-all group-focus-within:opacity-100 group-hover:opacity-100'>
         {getTooltip()}
       </span>
     </div>

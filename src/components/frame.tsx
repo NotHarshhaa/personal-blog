@@ -54,7 +54,7 @@ export function Frame({
   ...props
 }: Readonly<FrameProps>) {
   return (
-    <Comp className={cn('border-border bg-card relative border', className)} {...props}>
+    <Comp data-panel className={cn('border-border bg-card relative border', className)} {...props}>
       {corners && <CornerBrackets />}
       {children}
     </Comp>

@@ -1,6 +1,6 @@
 'use client'
 
-import { type ReactNode,useEffect, useRef, useState } from 'react'
+import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 
 const CIPHER_CHARACTERS =
   'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*<>/{}[]='
@@ -33,7 +33,7 @@ export const CipherText = ({
   const [displayText, setDisplayText] = useState(originalText)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
 
-  const scramble = () => {
+  const scramble = useCallback(() => {
     if (!originalText) return
     let frame = 0
     const intervalMs = 40
@@ -57,9 +57,7 @@ export const CipherText = ({
             return char
           }
 
-          return CIPHER_CHARACTERS[
-            Math.floor(Math.random() * CIPHER_CHARACTERS.length)
-          ]
+          return CIPHER_CHARACTERS[Math.floor(Math.random() * CIPHER_CHARACTERS.length)]
         })
         .join('')
 
@@ -70,7 +68,7 @@ export const CipherText = ({
         setDisplayText(originalText)
       }
     }, intervalMs)
-  }
+  }, [duration, originalText])
 
   useEffect(() => {
     setDisplayText(originalText)
@@ -80,12 +78,12 @@ export const CipherText = ({
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current)
     }
-  }, [originalText, scrambleOnMount])
+  }, [originalText, scramble, scrambleOnMount])
 
   return (
     <span
       className={className}
-      role="button"
+      role='button'
       tabIndex={0}
       onMouseEnter={scrambleOnHover ? scramble : undefined}
       onKeyDown={(e) => {

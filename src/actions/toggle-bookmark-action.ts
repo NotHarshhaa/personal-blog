@@ -18,7 +18,7 @@ export const toggleBookmarkAction = authenticatedActionClient
       const [post] = await tx
         .select({ id: posts.id })
         .from(posts)
-        .where(and(eq(posts.id, postId), eq(posts.published, true)))
+        .where(and(eq(posts.id, postId), eq(posts.published, true), eq(posts.visibility, 'public')))
         .for('update')
 
       if (!post) {

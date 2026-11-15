@@ -12,11 +12,14 @@ const MIN_PROGRESS = 0.05
 const MAX_PROGRESS = 0.95
 const SAVE_INTERVAL_MS = 2000
 
-type ProgressData = Record<string, {
+type ProgressData = Record<
+  string,
+  {
     progress: number
     timestamp: number
     title?: string
-  }>
+  }
+>
 
 const getStoredProgress = (): ProgressData => {
   try {

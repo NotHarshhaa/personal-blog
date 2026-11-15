@@ -1,6 +1,6 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
 import { toggleBookmarkAction } from '@/actions/toggle-bookmark-action'
@@ -14,11 +14,16 @@ export type LocalBookmark = {
 }
 
 const STORAGE_KEY = 'blog_bookmarks_v1'
+const EMPTY_BOOKMARKS: LocalBookmark[] = []
 
-export const useBookmarks = (userId?: string | null) => {
+export const useBookmarks = (
+  userId?: string | null,
+  initialBookmarks: LocalBookmark[] = EMPTY_BOOKMARKS
+) => {
   const [bookmarkedIds, setBookmarkedIds] = useState<string[]>([])
   const [localBookmarks, setLocalBookmarks] = useState<LocalBookmark[]>([])
   const [isLoaded, setIsLoaded] = useState(false)
+  const hasLoadedRef = useRef(false)
 
   // Load from localStorage
   const reloadFromStorage = useCallback(() => {
@@ -26,19 +31,31 @@ export const useBookmarks = (userId?: string | null) => {
       const raw = globalThis.localStorage.getItem(STORAGE_KEY)
       if (raw) {
         const parsed = JSON.parse(raw) as LocalBookmark[]
-        setLocalBookmarks(parsed)
-        setBookmarkedIds(parsed.map((item) => item.id))
+        const bookmarks = hasLoadedRef.current
+          ? parsed
+          : Array.from(
+              new Map([...parsed, ...initialBookmarks].map((item) => [item.id, item])).values()
+            )
+        setLocalBookmarks(bookmarks)
+        setBookmarkedIds(bookmarks.map((item) => item.id))
+        if (!hasLoadedRef.current && initialBookmarks.length > 0) {
+          globalThis.localStorage.setItem(STORAGE_KEY, JSON.stringify(bookmarks))
+        }
       } else {
-        setLocalBookmarks([])
-        setBookmarkedIds([])
+        setLocalBookmarks(initialBookmarks)
+        setBookmarkedIds(initialBookmarks.map((item) => item.id))
+        if (initialBookmarks.length > 0) {
+          globalThis.localStorage.setItem(STORAGE_KEY, JSON.stringify(initialBookmarks))
+        }
       }
     } catch {
-      setLocalBookmarks([])
-      setBookmarkedIds([])
+      setLocalBookmarks(initialBookmarks)
+      setBookmarkedIds(initialBookmarks.map((item) => item.id))
     } finally {
+      hasLoadedRef.current = true
       setIsLoaded(true)
     }
-  }, [])
+  }, [initialBookmarks])
 
   useEffect(() => {
     reloadFromStorage()
@@ -76,23 +93,25 @@ export const useBookmarks = (userId?: string | null) => {
       let updatedList: LocalBookmark[]
       if (currentlyBookmarked) {
         updatedList = localBookmarks.filter((item) => item.id !== postId)
-        toast.success('Removed from bookmarks')
       } else {
         const newBookmark: LocalBookmark = {
           id: postId,
           title: post.title,
           description: post.description ?? null,
-          createdAt: post.createdAt ? new Date(post.createdAt).toISOString() : new Date().toISOString(),
+          createdAt: post.createdAt
+            ? new Date(post.createdAt).toISOString()
+            : new Date().toISOString(),
           tags: post.tags ?? []
         }
         updatedList = [newBookmark, ...localBookmarks]
-        toast.success('Saved to bookmarks')
       }
+
+      setLocalBookmarks(updatedList)
+      setBookmarkedIds(updatedList.map((item) => item.id))
+      toast.success(currentlyBookmarked ? 'Removed from bookmarks' : 'Saved to bookmarks')
 
       try {
         globalThis.localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedList))
-        setLocalBookmarks(updatedList)
-        setBookmarkedIds(updatedList.map((item) => item.id))
         globalThis.dispatchEvent(new Event('bookmarks-updated'))
       } catch {
         // storage quota error ignore

@@ -15,7 +15,8 @@ const getPost = async (id: string) => {
       views: true,
       baselineViews: true,
       createdAt: true,
-      published: true
+      published: true,
+      visibility: true
     }
   })
 }
@@ -26,20 +27,18 @@ const getHybridViews = (post: {
   baselineViews: number
   createdAt: Date
   published: boolean
+  visibility: string
 }) => {
   const baselineViews = getBaselineEngagement(post.id, post.createdAt).baselineViews
   return getDisplayViewCount(post.views, baselineViews, post.published)
 }
 
-export async function GET(
-  _request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
     const post = await getPost(id)
 
-    if (!post?.published) {
+    if (!post?.published || post.visibility !== 'public') {
       return NextResponse.json({ error: 'Post not found' }, { status: 404 })
     }
 
@@ -50,22 +49,19 @@ export async function GET(
   }
 }
 
-export async function POST(
-  _request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function POST(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
     const post = await getPost(id)
 
-    if (!post?.published) {
+    if (!post?.published || post.visibility !== 'public') {
       return NextResponse.json({ error: 'Post not found' }, { status: 404 })
     }
 
     const [updated] = await db
       .update(posts)
       .set({ views: sql`${posts.views} + 1` })
-      .where(and(eq(posts.id, id), eq(posts.published, true)))
+      .where(and(eq(posts.id, id), eq(posts.published, true), eq(posts.visibility, 'public')))
       .returning({ views: posts.views })
 
     if (!updated) {

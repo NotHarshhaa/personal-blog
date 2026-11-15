@@ -10,6 +10,7 @@ const DEFAULT_VIEWS = 577_988
 export function ViewsBadge({ className }: { readonly className?: string }) {
   const [displayViews, setDisplayViews] = useState<number>(DEFAULT_VIEWS)
   const [targetViews, setTargetViews] = useState<number>(DEFAULT_VIEWS)
+  const displayViewsRef = useRef(displayViews)
   const animFrameRef = useRef<number | null>(null)
 
   // On client mount, check cached views first
@@ -63,11 +64,12 @@ export function ViewsBadge({ className }: { readonly className?: string }) {
     const reducedMotion = globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches
 
     if (reducedMotion) {
+      displayViewsRef.current = targetViews
       setDisplayViews(targetViews)
       return
     }
 
-    const startVal = displayViews
+    const startVal = displayViewsRef.current
     const endVal = targetViews
     if (startVal === endVal) return
 
@@ -81,6 +83,7 @@ export function ViewsBadge({ className }: { readonly className?: string }) {
       const ease = 1 - Math.pow(1 - progress, 3)
       const current = Math.round(startVal + (endVal - startVal) * ease)
 
+      displayViewsRef.current = current
       setDisplayViews(current)
 
       if (progress < 1) {
@@ -100,13 +103,13 @@ export function ViewsBadge({ className }: { readonly className?: string }) {
   return (
     <div
       className={`text-muted-foreground relative inline-flex items-center gap-1.5 px-2 py-1 text-sm ${className ?? ''}`}
-      title="Total reads across the site"
+      title='Total reads across the site'
     >
       <CornerBrackets />
-      <Eye className="size-4 shrink-0 text-foreground/80" />
+      <Eye className='text-foreground/80 size-4 shrink-0' />
       <span
         suppressHydrationWarning
-        className="font-mono text-xs font-semibold tabular-nums text-foreground tracking-tight"
+        className='text-foreground font-mono text-xs font-semibold tracking-tight tabular-nums'
       >
         {displayViews.toLocaleString('en-US')}
       </span>

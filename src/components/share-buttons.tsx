@@ -1,6 +1,6 @@
 'use client'
 
-import { Copy, Link, SendIcon, Share2, X } from 'lucide-react'
+import { Copy, Link as LinkIcon, SendIcon, Share2, X } from 'lucide-react'
 
 import { Button, buttonVariants } from '@/components/ui'
 import { SITE_URL } from '@/lib/constants'
@@ -26,9 +26,10 @@ const ShareButtons = ({ title, description, postId, className }: ShareButtonsPro
   }
 
   const handleShare = async () => {
-    if (navigator.share) {
+    const share = Reflect.get(navigator, 'share')
+    if (typeof share === 'function') {
       try {
-        await navigator.share({
+        await share.call(navigator, {
           title,
           text: description,
           url: postUrl
@@ -52,65 +53,68 @@ const ShareButtons = ({ title, description, postId, className }: ShareButtonsPro
   return (
     <div className={`flex flex-wrap items-center gap-2 ${className}`}>
       <Button
-        variant="outline"
-        size="sm"
+        variant='outline'
+        size='sm'
         onClick={handleShare}
-        className="flex items-center gap-2"
-        aria-label="Share post"
+        className='flex items-center gap-2'
+        aria-label='Share post'
       >
-        <Share2 className="size-4" />
-        <span className="hidden sm:inline">Share</span>
+        <Share2 className='size-4' />
+        <span className='hidden sm:inline'>Share</span>
       </Button>
 
       <Button
-        variant="outline"
-        size="sm"
+        variant='outline'
+        size='sm'
         onClick={handleCopy}
-        className="flex items-center gap-2"
-        aria-label="Copy link"
+        className='flex items-center gap-2'
+        aria-label='Copy link'
       >
-        <Copy className="size-4" />
-        <span className="hidden sm:inline">Copy</span>
+        <Copy className='size-4' />
+        <span className='hidden sm:inline'>Copy</span>
       </Button>
 
-      <div className="flex items-center gap-1">
+      <div className='flex items-center gap-1'>
         <a
           href={shareLinks.twitter}
-          target="_blank"
-          rel="noopener noreferrer"
+          target='_blank'
+          rel='noopener noreferrer'
           className={cn(
             buttonVariants({ variant: 'ghost', size: 'sm' }),
-            'h-9 w-9 p-0 flex items-center justify-center'
+            'flex h-9 w-9 items-center justify-center p-0'
           )}
-          aria-label="Share on Twitter"
+          aria-label='Share on Twitter'
         >
-          <X className="size-4" />
+          <X className='size-4' />
+          <span className='sr-only'>Share on Twitter</span>
         </a>
 
         <a
           href={shareLinks.linkedin}
-          target="_blank"
-          rel="noopener noreferrer"
+          target='_blank'
+          rel='noopener noreferrer'
           className={cn(
             buttonVariants({ variant: 'ghost', size: 'sm' }),
-            'h-9 w-9 p-0 flex items-center justify-center'
+            'flex h-9 w-9 items-center justify-center p-0'
           )}
-          aria-label="Share on LinkedIn"
+          aria-label='Share on LinkedIn'
         >
-          <Link className="size-4" />
+          <LinkIcon className='size-4' />
+          <span className='sr-only'>Share on LinkedIn</span>
         </a>
 
         <a
           href={shareLinks.facebook}
-          target="_blank"
-          rel="noopener noreferrer"
+          target='_blank'
+          rel='noopener noreferrer'
           className={cn(
             buttonVariants({ variant: 'ghost', size: 'sm' }),
-            'h-9 w-9 p-0 flex items-center justify-center'
+            'flex h-9 w-9 items-center justify-center p-0'
           )}
-          aria-label="Share on Facebook"
+          aria-label='Share on Facebook'
         >
-          <SendIcon className="size-4" />
+          <SendIcon className='size-4' />
+          <span className='sr-only'>Share on Facebook</span>
         </a>
       </div>
     </div>
@@ -118,4 +122,3 @@ const ShareButtons = ({ title, description, postId, className }: ShareButtonsPro
 }
 
 export default ShareButtons
-

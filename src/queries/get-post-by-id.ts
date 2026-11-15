@@ -6,7 +6,7 @@ import { withPostEngagement } from '@/utils/get-seeded-view-count'
 
 export const getPostById = async (id: string) => {
   const result = await db.query.posts.findFirst({
-    where: and(eq(posts.id, id), eq(posts.published, true)),
+    where: and(eq(posts.id, id), eq(posts.published, true), eq(posts.visibility, 'public')),
     columns: {
       id: true,
       title: true,

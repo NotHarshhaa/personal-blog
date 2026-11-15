@@ -313,6 +313,7 @@ export const PostsFilter = ({ posts, user }: PostsFilterProps) => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder='Filter articles...'
+                aria-label='Filter articles'
                 className='border-border bg-background text-foreground placeholder:text-muted-foreground/60 focus:border-foreground h-7.5 w-full border pr-7 pl-8 font-mono text-xs transition-colors outline-none'
               />
               {searchQuery && (

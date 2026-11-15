@@ -60,9 +60,7 @@ const RoadmapsPage = async () => {
       posts: allPosts
         .filter((p) =>
           p.tags.some((t) =>
-            ['devops', 'kubernetes', 'cloud', 'platform engineering'].includes(
-              t.toLowerCase()
-            )
+            ['devops', 'kubernetes', 'cloud', 'platform engineering'].includes(t.toLowerCase())
           )
         )
         .slice(0, 4)
@@ -83,9 +81,7 @@ const RoadmapsPage = async () => {
       posts: allPosts
         .filter((p) =>
           p.tags.some((t) =>
-            ['ai', 'mlops', 'llmops', 'genai', 'ai infrastructure'].includes(
-              t.toLowerCase()
-            )
+            ['ai', 'mlops', 'llmops', 'genai', 'ai infrastructure'].includes(t.toLowerCase())
           )
         )
         .slice(0, 4)
@@ -136,40 +132,41 @@ const RoadmapsPage = async () => {
   ]
 
   return (
-    <div className="relative z-10 w-full space-y-8 sm:space-y-10">
+    <div className='relative z-10 w-full space-y-8 sm:space-y-10'>
       {/* HEADER HERO */}
-      <Frame as="header">
-        <FrameHeader label="CURRICULUM // ENGINEERING SYLLABUS">
-          <div className="flex items-center gap-2 font-mono text-[10px] text-muted-foreground">
-            <span className="inline-flex items-center gap-1 border border-border/80 bg-muted/30 px-1.5 py-0.5">
-              <span className="size-1.5 rounded-full bg-foreground" />
+      <Frame as='header'>
+        <FrameHeader label='CURRICULUM // ENGINEERING SYLLABUS'>
+          <div className='text-muted-foreground flex items-center gap-2 font-mono text-[10px]'>
+            <span className='border-border/80 bg-muted/30 inline-flex items-center gap-1 border px-1.5 py-0.5'>
+              <span className='bg-foreground size-1.5 rounded-full' />
               <span>{tracks.length} PRODUCTION TRACKS ACTIVE</span>
             </span>
           </div>
         </FrameHeader>
-        <FrameBody className="space-y-4">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2 font-mono text-xs text-muted-foreground">
-              <CompassIcon className="size-3.5 text-foreground" />
+        <FrameBody className='space-y-4'>
+          <div className='space-y-2'>
+            <div className='text-muted-foreground flex items-center gap-2 font-mono text-xs'>
+              <CompassIcon className='text-foreground size-3.5' />
               <span>SYSTEMATIC STEP-BY-STEP MASTERY</span>
             </div>
-            <h1 className="text-3xl font-bold tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+            <h1 className='text-foreground text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl'>
               DevOps & AI Architecture Roadmaps
             </h1>
-            <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-              Step-by-step sequential learning pipelines designed to take you from foundational concepts
-              to multi-region production platforms without skipping the edge cases or engineering trade-offs.
+            <p className='text-muted-foreground max-w-3xl text-sm leading-relaxed sm:text-base'>
+              Step-by-step sequential learning pipelines designed to take you from foundational
+              concepts to multi-region production platforms without skipping the edge cases or
+              engineering trade-offs.
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 pt-2 font-mono text-xs text-muted-foreground">
-            <span className="border border-border bg-background px-2.5 py-1">
+          <div className='text-muted-foreground flex flex-wrap items-center gap-3 pt-2 font-mono text-xs'>
+            <span className='border-border bg-background border px-2.5 py-1'>
               ✓ SEQUENTIAL LEARNING TRACKS
             </span>
-            <span className="border border-border bg-background px-2.5 py-1">
+            <span className='border-border bg-background border px-2.5 py-1'>
               ✓ REAL REPOSITORIES & CODE
             </span>
-            <span className="border border-border bg-background px-2.5 py-1">
+            <span className='border-border bg-background border px-2.5 py-1'>
               ✓ PRODUCTION DEPLOYMENT VALIDATED
             </span>
           </div>
@@ -179,13 +176,13 @@ const RoadmapsPage = async () => {
       {/* TRACKS LIST */}
       {tracks.length === 0 ? (
         <Frame>
-          <FrameHeader label="ROADMAP STATUS" />
-          <FrameBody className="py-16 text-center text-muted-foreground space-y-3 font-mono text-xs">
+          <FrameHeader label='ROADMAP STATUS' />
+          <FrameBody className='text-muted-foreground space-y-3 py-16 text-center font-mono text-xs'>
             <p>No structured tracks published in database yet.</p>
             <div>
               <Link
-                href="/"
-                className="inline-flex items-center gap-1.5 border border-border bg-foreground px-4 py-2 text-background font-semibold uppercase hover:bg-foreground/90 transition-colors"
+                href='/'
+                className='border-border bg-foreground text-background hover:bg-foreground/90 inline-flex items-center gap-1.5 border px-4 py-2 font-semibold uppercase transition-colors'
               >
                 <span>Browse All Articles [→]</span>
               </Link>
@@ -193,7 +190,7 @@ const RoadmapsPage = async () => {
           </FrameBody>
         </Frame>
       ) : (
-        <div className="space-y-8">
+        <div className='space-y-8'>
           {tracks.map((track, trackIdx) => {
             let totalMinutes = 0
             for (const p of track.posts) {
@@ -202,10 +199,10 @@ const RoadmapsPage = async () => {
             }
 
             return (
-              <Frame key={track.id} className="relative">
+              <Frame key={track.id} className='relative'>
                 <FrameHeader label={`TRACK // 0${trackIdx + 1}`}>
-                  <div className="flex flex-wrap items-center gap-2 sm:gap-3 font-mono text-xs text-muted-foreground">
-                    <span className="border border-border/80 bg-muted/40 px-2 py-0.5 text-[10px] text-foreground font-semibold">
+                  <div className='text-muted-foreground flex flex-wrap items-center gap-2 font-mono text-xs sm:gap-3'>
+                    <span className='border-border/80 bg-muted/40 text-foreground border px-2 py-0.5 text-[10px] font-semibold'>
                       {track.difficulty}
                     </span>
                     <span>{track.posts.length} MODULES</span>
@@ -214,31 +211,31 @@ const RoadmapsPage = async () => {
                   </div>
                 </FrameHeader>
 
-                <FrameBody className="space-y-6">
+                <FrameBody className='space-y-6'>
                   {/* Track Overview */}
-                  <div className="space-y-2 border-b border-border pb-5">
-                    <h2 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+                  <div className='border-border space-y-2 border-b pb-5'>
+                    <h2 className='text-foreground text-xl font-bold tracking-tight sm:text-2xl'>
                       {track.title}
                     </h2>
                     {track.description && (
-                      <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground">
+                      <p className='text-muted-foreground max-w-3xl text-sm leading-relaxed'>
                         {track.description}
                       </p>
                     )}
                   </div>
 
                   {/* Competencies Checklist */}
-                  <div className="space-y-2.5">
-                    <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                      // CORE COMPETENCIES COVERED IN THIS TRACK:
+                  <div className='space-y-2.5'>
+                    <p className='text-muted-foreground font-mono text-[10px] font-bold tracking-widest uppercase'>
+                      {'// CORE COMPETENCIES COVERED IN THIS TRACK:'}
                     </p>
-                    <div className="grid gap-2 sm:grid-cols-2">
+                    <div className='grid gap-2 sm:grid-cols-2'>
                       {track.competencies.map((comp) => (
                         <div
                           key={comp}
-                          className="flex items-start gap-2 border border-border/70 bg-muted/20 p-2.5 font-mono text-xs text-muted-foreground"
+                          className='border-border/70 bg-muted/20 text-muted-foreground flex items-start gap-2 border p-2.5 font-mono text-xs'
                         >
-                          <CheckCircle2Icon className="size-3.5 text-foreground shrink-0 mt-0.5" />
+                          <CheckCircle2Icon className='text-foreground mt-0.5 size-3.5 shrink-0' />
                           <span>{comp}</span>
                         </div>
                       ))}
@@ -246,19 +243,19 @@ const RoadmapsPage = async () => {
                   </div>
 
                   {/* Sequential Architecture Pipeline Nodes */}
-                  <div className="space-y-3 pt-2">
-                    <div className="flex items-center justify-between">
-                      <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-                        // SEQUENTIAL MODULE PIPELINE
+                  <div className='space-y-3 pt-2'>
+                    <div className='flex items-center justify-between'>
+                      <p className='text-muted-foreground font-mono text-[10px] font-bold tracking-widest uppercase'>
+                        {'// SEQUENTIAL MODULE PIPELINE'}
                       </p>
-                      <span className="font-mono text-[11px] text-muted-foreground">
+                      <span className='text-muted-foreground font-mono text-[11px]'>
                         READ IN ORDER
                       </span>
                     </div>
 
-                    <div className="relative space-y-3">
+                    <div className='relative space-y-3'>
                       {/* Vertical timeline connector line */}
-                      <div className="absolute left-[1.125rem] top-4 bottom-4 w-px bg-border hidden sm:block pointer-events-none" />
+                      <div className='bg-border pointer-events-none absolute top-4 bottom-4 left-[1.125rem] hidden w-px sm:block' />
 
                       {track.posts.map((post, stepIdx) => {
                         const readStats = readingTime(post.description ?? post.title).text
@@ -268,50 +265,50 @@ const RoadmapsPage = async () => {
                         return (
                           <HoverMark
                             key={post.id}
-                            label="Open Module"
-                            className="relative border border-border bg-card transition-colors hover:bg-muted/30 p-4 sm:p-5"
+                            label='Open Module'
+                            className='border-border bg-card hover:bg-muted/30 relative border p-4 transition-colors sm:p-5'
                           >
-                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                              <div className="flex items-start gap-3.5 min-w-0 flex-1">
+                            <div className='flex flex-col justify-between gap-4 sm:flex-row sm:items-center'>
+                              <div className='flex min-w-0 flex-1 items-start gap-3.5'>
                                 {/* Step number badge with connector node */}
-                                <div className="relative z-10 flex size-9 shrink-0 items-center justify-center border border-border bg-background font-mono text-xs font-bold text-foreground">
+                                <div className='border-border bg-background text-foreground relative z-10 flex size-9 shrink-0 items-center justify-center border font-mono text-xs font-bold'>
                                   0{stepIdx + 1}
                                 </div>
 
-                                <div className="space-y-1 min-w-0 flex-1">
-                                  <div className="flex flex-wrap items-center gap-2 font-mono text-[10px] text-muted-foreground">
-                                    <span className="text-foreground font-semibold">
+                                <div className='min-w-0 flex-1 space-y-1'>
+                                  <div className='text-muted-foreground flex flex-wrap items-center gap-2 font-mono text-[10px]'>
+                                    <span className='text-foreground font-semibold'>
                                       {phaseName}
                                     </span>
                                     <span>•</span>
-                                    <div className="flex items-center gap-1">
-                                      <ClockIcon className="size-3" />
+                                    <div className='flex items-center gap-1'>
+                                      <ClockIcon className='size-3' />
                                       <span>{readStats}</span>
                                     </div>
                                   </div>
 
                                   <Link
                                     href={`/posts/${post.id}`}
-                                    className="block text-base font-bold tracking-tight text-foreground hover:underline decoration-1 underline-offset-4"
+                                    className='text-foreground block text-base font-bold tracking-tight decoration-1 underline-offset-4 hover:underline'
                                   >
                                     {post.title}
                                   </Link>
 
                                   {post.description && (
-                                    <p className="line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+                                    <p className='text-muted-foreground line-clamp-2 text-xs leading-relaxed'>
                                       {post.description}
                                     </p>
                                   )}
                                 </div>
                               </div>
 
-                              <div className="flex shrink-0 items-center justify-end pt-1 sm:pt-0 self-end sm:self-center">
+                              <div className='flex shrink-0 items-center justify-end self-end pt-1 sm:self-center sm:pt-0'>
                                 <Link
                                   href={`/posts/${post.id}`}
-                                  className="inline-flex items-center gap-1.5 border border-border bg-foreground px-3.5 py-1.5 font-mono text-xs font-semibold uppercase text-background hover:bg-foreground/90 transition-colors"
+                                  className='border-border bg-foreground text-background hover:bg-foreground/90 inline-flex items-center gap-1.5 border px-3.5 py-1.5 font-mono text-xs font-semibold uppercase transition-colors'
                                 >
                                   <span>Start Module</span>
-                                  <ArrowRightIcon className="size-3" />
+                                  <ArrowRightIcon className='size-3' />
                                 </Link>
                               </div>
                             </div>
@@ -328,60 +325,63 @@ const RoadmapsPage = async () => {
       )}
 
       {/* LOCAL PRACTICE LAB BLUEPRINT */}
-      <section aria-labelledby="lab-heading">
+      <section aria-labelledby='lab-heading'>
         <Frame>
-          <FrameHeader label="EXECUTION LAB // RECOMMENDED LOCAL TOOLING">
-            <div className="flex items-center gap-2 font-mono text-[10px] text-muted-foreground">
+          <FrameHeader label='EXECUTION LAB // RECOMMENDED LOCAL TOOLING'>
+            <div className='text-muted-foreground flex items-center gap-2 font-mono text-[10px]'>
               <span>ZERO-COST TESTING LABS</span>
             </div>
           </FrameHeader>
-          <FrameBody className="space-y-4">
-            <div className="space-y-1">
-              <h3 id="lab-heading" className="text-lg font-bold text-foreground">
+          <FrameBody className='space-y-4'>
+            <div className='space-y-1'>
+              <h3 id='lab-heading' className='text-foreground text-lg font-bold'>
                 How to Practice These Architectures Locally
               </h3>
-              <p className="max-w-2xl text-xs leading-relaxed text-muted-foreground sm:text-sm">
-                You don't need a multi-thousand-dollar cloud bill to master these roadmaps. Every configuration
-                in these tracks can be spun up in lightweight local sandboxes:
+              <p className='text-muted-foreground max-w-2xl text-xs leading-relaxed sm:text-sm'>
+                You don't need a multi-thousand-dollar cloud bill to master these roadmaps. Every
+                configuration in these tracks can be spun up in lightweight local sandboxes:
               </p>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-3 font-mono text-xs">
-              <div className="border border-border/80 bg-muted/20 p-3.5 space-y-2">
-                <div className="flex items-center gap-2 text-foreground font-bold">
-                  <LayersIcon className="size-4 text-foreground" />
+            <div className='grid gap-3 font-mono text-xs sm:grid-cols-3'>
+              <div className='border-border/80 bg-muted/20 space-y-2 border p-3.5'>
+                <div className='text-foreground flex items-center gap-2 font-bold'>
+                  <LayersIcon className='text-foreground size-4' />
                   <span>KIND / K3D</span>
                 </div>
-                <p className="text-[11px] text-muted-foreground leading-relaxed">
-                  Run multi-node Kubernetes clusters inside Docker containers in seconds. Supports Cilium eBPF installation.
+                <p className='text-muted-foreground text-[11px] leading-relaxed'>
+                  Run multi-node Kubernetes clusters inside Docker containers in seconds. Supports
+                  Cilium eBPF installation.
                 </p>
-                <div className="bg-background border border-border/60 p-2 text-[10px] text-muted-foreground">
+                <div className='bg-background border-border/60 text-muted-foreground border p-2 text-[10px]'>
                   <code>kind create cluster --config k8s.yaml</code>
                 </div>
               </div>
 
-              <div className="border border-border/80 bg-muted/20 p-3.5 space-y-2">
-                <div className="flex items-center gap-2 text-foreground font-bold">
-                  <FileCodeIcon className="size-4 text-foreground" />
+              <div className='border-border/80 bg-muted/20 space-y-2 border p-3.5'>
+                <div className='text-foreground flex items-center gap-2 font-bold'>
+                  <FileCodeIcon className='text-foreground size-4' />
                   <span>LOCALSTACK</span>
                 </div>
-                <p className="text-[11px] text-muted-foreground leading-relaxed">
-                  Emulate AWS services (S3, SQS, IAM, DynamoDB, VPC) locally on your laptop without AWS credentials or charges.
+                <p className='text-muted-foreground text-[11px] leading-relaxed'>
+                  Emulate AWS services (S3, SQS, IAM, DynamoDB, VPC) locally on your laptop without
+                  AWS credentials or charges.
                 </p>
-                <div className="bg-background border border-border/60 p-2 text-[10px] text-muted-foreground">
+                <div className='bg-background border-border/60 text-muted-foreground border p-2 text-[10px]'>
                   <code>docker run -p 4566:4566 localstack</code>
                 </div>
               </div>
 
-              <div className="border border-border/80 bg-muted/20 p-3.5 space-y-2">
-                <div className="flex items-center gap-2 text-foreground font-bold">
-                  <CpuIcon className="size-4 text-foreground" />
+              <div className='border-border/80 bg-muted/20 space-y-2 border p-3.5'>
+                <div className='text-foreground flex items-center gap-2 font-bold'>
+                  <CpuIcon className='text-foreground size-4' />
                   <span>OLLAMA / vLLM</span>
                 </div>
-                <p className="text-[11px] text-muted-foreground leading-relaxed">
-                  Benchmark OpenAI-compatible model serving APIs locally with quantized weights (Q4/AWQ) on consumer GPUs or Apple Silicon.
+                <p className='text-muted-foreground text-[11px] leading-relaxed'>
+                  Benchmark OpenAI-compatible model serving APIs locally with quantized weights
+                  (Q4/AWQ) on consumer GPUs or Apple Silicon.
                 </p>
-                <div className="bg-background border border-border/60 p-2 text-[10px] text-muted-foreground">
+                <div className='bg-background border-border/60 text-muted-foreground border p-2 text-[10px]'>
                   <code>vllm serve meta-llama/Llama-3-8B</code>
                 </div>
               </div>

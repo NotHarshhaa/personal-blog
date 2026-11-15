@@ -50,31 +50,25 @@ export const BookmarksView = ({
   initialPosts = EMPTY_INITIAL_POSTS,
   userId
 }: BookmarksViewProps) => {
-  const { bookmarks: localBookmarks, toggleBookmark, isLoaded } = useBookmarks(userId)
+  const serverBookmarks = useMemo(
+    () =>
+      initialPosts.map((post) => ({
+        ...post,
+        createdAt: new Date(post.createdAt).toISOString()
+      })),
+    [initialPosts]
+  )
+  const {
+    bookmarks: localBookmarks,
+    toggleBookmark,
+    isLoaded
+  } = useBookmarks(userId, serverBookmarks)
   const [search, setSearch] = useState('')
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
   const [sortBy, setSortBy] = useState<SortOption>('newest')
   const [confirmClearAll, setConfirmClearAll] = useState(false)
 
-  // Merge server initial posts with local storage bookmarks
-  const mergedMap = useMemo(() => {
-    const map = new Map<string, BookmarkedPost>()
-    for (const post of initialPosts) {
-      map.set(post.id, post)
-    }
-    for (const lb of localBookmarks) {
-      map.set(lb.id, {
-        id: lb.id,
-        title: lb.title,
-        description: lb.description,
-        createdAt: lb.createdAt,
-        tags: lb.tags
-      })
-    }
-    return map
-  }, [initialPosts, localBookmarks])
-
-  const allPosts = useMemo(() => Array.from(mergedMap.values()), [mergedMap])
+  const allPosts = localBookmarks
 
   // Extract all unique tags
   const allTags = useMemo(() => {
@@ -439,6 +433,7 @@ export const BookmarksView = ({
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder='Filter saved articles by title, keywords...'
+                  aria-label='Filter saved articles'
                   className='border-border bg-background text-foreground placeholder:text-muted-foreground/60 focus:border-foreground h-9 w-full border pr-3 pl-9 font-mono text-xs transition-colors outline-none'
                 />
               </div>

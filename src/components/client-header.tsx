@@ -34,8 +34,9 @@ type Props = {
 type SearchPost = {
   id: string
   title: string
-  description: string
+  description: string | null
   createdAt: string
+  tags?: string[]
   user: {
     id: string
     name: string
@@ -153,29 +154,47 @@ const ClientHeader = ({ user }: Props) => {
   }, [isSearchOpen, isMobileMenuOpen])
 
   useEffect(() => {
-    if (search.trim().length === 0) {
+    const query = search.trim()
+    if (query.length === 0) {
       setResults([])
       setShowDropdown(false)
+      setLoading(false)
       return
     }
 
+    const controller = new AbortController()
     const timeoutId = setTimeout(() => {
       setLoading(true)
-      fetch('/api/posts/search')
-        .then((res) => res.json())
+      fetch(`/api/posts/search?q=${encodeURIComponent(query)}`, { signal: controller.signal })
+        .then((res) => {
+          if (!res.ok) throw new Error('Search request failed')
+          return res.json()
+        })
         .then((data: { posts: SearchPost[] }) => {
+          const normalizedQuery = query.toLowerCase()
           const filtered = data.posts.filter(
             (post) =>
-              post.title.toLowerCase().includes(search.toLowerCase()) ||
-              post.description.toLowerCase().includes(search.toLowerCase())
+              post.title.toLowerCase().includes(normalizedQuery) ||
+              (post.description?.toLowerCase().includes(normalizedQuery) ?? false) ||
+              post.tags?.some((tag) => tag.toLowerCase().includes(normalizedQuery))
           )
           setResults(filtered)
           setShowDropdown(true)
         })
-        .finally(() => setLoading(false))
+        .catch((error: unknown) => {
+          if (error instanceof Error && error.name === 'AbortError') return
+          setResults([])
+          setShowDropdown(true)
+        })
+        .finally(() => {
+          if (!controller.signal.aborted) setLoading(false)
+        })
     }, 300)
 
-    return () => clearTimeout(timeoutId)
+    return () => {
+      clearTimeout(timeoutId)
+      controller.abort()
+    }
   }, [search])
 
   useEffect(() => {
@@ -365,6 +384,7 @@ const ClientHeader = ({ user }: Props) => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder='Search posts...'
+          aria-label='Search posts'
           className='placeholder:text-muted-foreground w-full bg-transparent text-sm outline-none'
           onFocus={() => search && setShowDropdown(true)}
         />

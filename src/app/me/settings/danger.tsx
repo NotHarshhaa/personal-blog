@@ -95,7 +95,16 @@ const Danger = () => {
           </ul>
         </div>
 
-        <AlertDialog open={isOpen}>
+        <AlertDialog
+          open={isOpen}
+          onOpenChange={(open) => {
+            setIsOpen(open)
+            if (!open) {
+              setValue('')
+              setChecked(false)
+            }
+          }}
+        >
           <AlertDialogTrigger asChild>
             <Button
               variant='destructive'
