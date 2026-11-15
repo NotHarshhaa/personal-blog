@@ -218,14 +218,18 @@ function parseYaml(yamlBlock: string): Record<string, string> {
   return result
 }
 
-function findFirstH1(body: string): string | undefined {
+function findFirstHeading(body: string): string | undefined {
+  let firstH2: string | undefined
   for (const line of body.split('\n')) {
     const trimmedLine = line.trim()
     if (trimmedLine.startsWith('# ')) {
       return trimmedLine.slice(2).trim()
     }
+    if (!firstH2 && trimmedLine.startsWith('## ')) {
+      firstH2 = trimmedLine.slice(3).trim()
+    }
   }
-  return undefined
+  return firstH2
 }
 
 function parseMarkdownWithFrontmatter(raw: string): {
@@ -243,7 +247,7 @@ function parseMarkdownWithFrontmatter(raw: string): {
     return {
       frontmatter,
       body,
-      detectedTitle: frontmatter.title ?? findFirstH1(body),
+      detectedTitle: frontmatter.title ?? findFirstHeading(body),
       detectedDescription: frontmatter.description
     }
   }
@@ -251,7 +255,7 @@ function parseMarkdownWithFrontmatter(raw: string): {
   return {
     frontmatter: {},
     body: raw,
-    detectedTitle: findFirstH1(raw),
+    detectedTitle: findFirstHeading(raw),
     detectedDescription: undefined
   }
 }

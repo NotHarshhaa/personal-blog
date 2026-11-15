@@ -69,6 +69,9 @@ const Form = (props: FormProps) => {
   const [visibility, setVisibility] = useState<Visibility>(post.visibility as Visibility)
   const [isOpen, setIsOpen] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
+  const [submittingAction, setSubmittingAction] = useState<
+    'draft' | 'publish' | 'visibility' | null
+  >(null)
   const router = useRouter()
   const action = useAction(updatePostAction, {
     onSuccess: ({ input }) => {
@@ -85,7 +88,16 @@ const Form = (props: FormProps) => {
       toast.success('Post saved')
     },
     onError: ({ error }) => {
-      toast.error(error.serverError ?? 'An error occurred')
+      const validationErrorMessage =
+        error.validationErrors?.title?.[0] ??
+        error.validationErrors?.description?.[0] ??
+        error.validationErrors?.content?.[0] ??
+        error.validationErrors?.tags?.[0] ??
+        (error.validationErrors
+          ? Object.values(error.validationErrors).flat()[0]
+          : undefined)
+
+      toast.error(error.serverError ?? validationErrorMessage ?? 'An error occurred')
     }
   })
 
@@ -118,21 +130,41 @@ const Form = (props: FormProps) => {
   }
 
   const handleUpdatePost = async (published = false) => {
-    await action.executeAsync({
-      postId: post.id,
-      title,
-      content,
-      description,
-      tags,
-      published
-    })
+    const trimmedTitle = title.trim()
+    if (published && !trimmedTitle) {
+      toast.error('Please enter a post title before publishing')
+      return
+    }
+    if (trimmedTitle.length > 200) {
+      toast.error('Post title cannot exceed 200 characters')
+      return
+    }
+
+    setSubmittingAction(published ? 'publish' : 'draft')
+    try {
+      await action.executeAsync({
+        postId: post.id,
+        title: trimmedTitle || undefined,
+        content,
+        description,
+        tags,
+        published
+      })
+    } finally {
+      setSubmittingAction(null)
+    }
   }
 
   const handleVisibilityChange = async () => {
-    await action.executeAsync({
-      postId: post.id,
-      visibility
-    })
+    setSubmittingAction('visibility')
+    try {
+      await action.executeAsync({
+        postId: post.id,
+        visibility
+      })
+    } finally {
+      setSubmittingAction(null)
+    }
   }
 
   // Ctrl/Cmd + S saves in place (keeps current publish state)
@@ -266,7 +298,7 @@ const Form = (props: FormProps) => {
                         onClick={handleVisibilityChange}
                         className='w-full cursor-pointer sm:w-auto'
                       >
-                        {action.isExecuting ? (
+                        {action.isExecuting && submittingAction === 'visibility' ? (
                           <Loader2Icon className='mr-2 size-4 animate-spin' />
                         ) : null}
                         Save changes
@@ -287,6 +319,7 @@ const Form = (props: FormProps) => {
                 id='title'
                 placeholder='Post title...'
                 value={title}
+                maxLength={200}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => {
                   setTitle(e.target.value)
                 }}
@@ -478,7 +511,9 @@ const Form = (props: FormProps) => {
                   variant='outline'
                   className='cursor-pointer'
                 >
-                  {action.isExecuting && <Loader2Icon className='mr-2 size-4 animate-spin' />}
+                  {action.isExecuting && submittingAction === 'draft' && (
+                    <Loader2Icon className='mr-2 size-4 animate-spin' />
+                  )}
                   Save as draft
                 </Button>
               )}
@@ -487,7 +522,9 @@ const Form = (props: FormProps) => {
                 disabled={action.isExecuting}
                 className='cursor-pointer'
               >
-                {action.isExecuting && <Loader2Icon className='mr-2 size-4 animate-spin' />}
+                {action.isExecuting && submittingAction === 'publish' && (
+                  <Loader2Icon className='mr-2 size-4 animate-spin' />
+                )}
                 {post.published ? 'Update post' : 'Publish post'}
               </Button>
             </div>

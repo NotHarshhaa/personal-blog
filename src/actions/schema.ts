@@ -3,7 +3,11 @@ import { z } from 'zod'
 import { Visibility } from '@/db/schema'
 
 export const createPostSchema = z.object({
-  title: z.string().min(1).max(100)
+  title: z
+    .string()
+    .trim()
+    .min(1, 'Title cannot be empty')
+    .max(200, 'Title cannot exceed 200 characters')
 })
 
 export const deletePostSchema = z.object({
@@ -20,7 +24,12 @@ export const toggleBookmarkSchema = z.object({
 
 export const updatePostSchema = z.object({
   postId: z.string(),
-  title: z.string().min(1).max(100).optional(),
+  title: z
+    .string()
+    .trim()
+    .min(1, 'Title cannot be empty')
+    .max(200, 'Title cannot exceed 200 characters')
+    .optional(),
   content: z.string().nullable().optional(),
   description: z.string().nullable().optional(),
   published: z.boolean().optional(),
