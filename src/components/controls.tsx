@@ -130,7 +130,7 @@ const Controls = (props: ControlsProps) => {
     touchStartRef.current = null;
   };
 
-  const isAuthor = user?.id === authorId;
+  const canManage = user?.role === "admin" || user?.id === authorId;
 
   return (
     <>
@@ -178,7 +178,7 @@ const Controls = (props: ControlsProps) => {
               <Share2Icon className="size-3.5" />
               Share
             </DropdownMenuItem>
-            {isAuthor && (
+            {canManage && (
               <>
                 <DropdownMenuItem asChild className="cursor-pointer gap-2">
                   <Link href={`/editor/${id}`}>

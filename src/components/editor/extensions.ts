@@ -8,7 +8,6 @@ import { Gapcursor } from '@tiptap/extension-gapcursor'
 import { HardBreak } from '@tiptap/extension-hard-break'
 import { Highlight } from '@tiptap/extension-highlight'
 import { HorizontalRule } from '@tiptap/extension-horizontal-rule'
-import { Image } from '@tiptap/extension-image'
 import { Link } from '@tiptap/extension-link'
 import { Placeholder } from '@tiptap/extension-placeholder'
 import { Subscript } from '@tiptap/extension-subscript'
@@ -31,6 +30,7 @@ import { Markdown } from 'tiptap-markdown'
 
 import { CodeBlockNodeView } from './code-block-node-view'
 import { DiagramExtension } from './diagram-extension'
+import { CustomImage } from './image-extension'
 import { MathExtension } from './math-extension'
 
 const lowlight = createLowlight(all)
@@ -228,12 +228,9 @@ export const extensions: AnyExtension[] = [
   }),
 
   // Media (Images & YouTube)
-  Image.configure({
+  CustomImage.configure({
     inline: false,
-    allowBase64: true,
-    HTMLAttributes: {
-      class: 'border border-border max-w-full mx-auto my-6'
-    }
+    allowBase64: true
   }),
   Youtube.configure({
     inline: false,

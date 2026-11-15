@@ -10,6 +10,7 @@ import {
   AudioDispatchProvider,
   AudioDispatchTopBar
 } from '@/components/audio-dispatch-player'
+import Controls from '@/components/controls'
 import BookmarkButton from '@/components/bookmark-button'
 import Editor from '@/components/editor'
 import { CornerBrackets, Frame, FrameBody, FrameHeader, StripHeader } from '@/components/frame'
@@ -263,6 +264,8 @@ const PostPage = async (props: PostPageProps) => {
               <time dateTime={dateTime}>{formatPostDate(createdAt, { relative: true })}</time>
               <span aria-hidden>·</span>
               <PostViews postId={id} initialViews={views} className='text-xs' />
+              <span aria-hidden>·</span>
+              <Controls id={id} user={user} authorId={author.id} postTitle={title} />
             </div>
 
             {/* Tags Pills */}

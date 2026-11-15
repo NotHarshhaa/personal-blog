@@ -110,12 +110,12 @@ export const ImageDialog = ({ editor }: ImageDialogProps) => {
             </div>
             <div className='space-y-2'>
               <Label htmlFor='image-title' className='text-sm font-medium'>
-                Title <span className='text-muted-foreground text-xs'>(hover tooltip)</span>
+                Caption <span className='text-muted-foreground text-xs'>(shown below image & in lightbox)</span>
               </Label>
               <Input
                 id='image-title'
                 type='text'
-                placeholder='Optional caption'
+                placeholder='e.g. NVIDIA GB200 NVL72 liquid-cooled rack architecture'
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 className='h-9'
@@ -123,30 +123,54 @@ export const ImageDialog = ({ editor }: ImageDialogProps) => {
             </div>
           </div>
 
+          {/* Quick preset for uploaded post images */}
+          <div className='flex items-center gap-1.5 pt-0.5'>
+            <span className='text-muted-foreground font-mono text-[10px] uppercase'>Preset:</span>
+            <button
+              type='button'
+              onClick={() => {
+                setSrc('/images/posts/nvidia-gb200-nvl72.jpg')
+                setAlt('NVIDIA GB200 NVL72 liquid-cooled rack architecture')
+                setTitle('NVIDIA GB200 NVL72 liquid-cooled rack architecture. Source: NVIDIA Developer')
+                setPreviewError(false)
+              }}
+              className='border-border hover:border-foreground hover:text-foreground text-muted-foreground inline-flex cursor-pointer items-center gap-1 border px-2 py-0.5 font-mono text-[10px] transition-colors'
+            >
+              + NVIDIA GB200 NVL72 Rack
+            </button>
+          </div>
+
           {/* Live Preview */}
           {src.trim() ? (
-            <div className='border-border bg-muted/30 border p-2'>
+            <div className='border-border bg-muted/30 border p-3 rounded-lg'>
               <div className='flex items-center justify-between'>
                 <span className='text-muted-foreground font-mono text-[10px] tracking-widest uppercase'>
-                  Preview
+                  Preview (Clickable with rounded corners)
                 </span>
                 {previewError && (
                   <span className='text-destructive font-mono text-[10px]'>Failed to load</span>
                 )}
               </div>
-              <div className='border-border/60 bg-background mt-1 flex max-h-40 items-center justify-center overflow-hidden border'>
+              <div className='mt-2 flex flex-col items-center justify-center overflow-hidden'>
                 {previewError ? (
                   <span className='text-destructive p-4 text-xs'>
                     The URL did not resolve to a loadable image
                   </span>
                 ) : (
-                  // eslint-disable-next-line @next/next/no-img-element -- previewing user entered image url
-                  <img
-                    src={src.trim()}
-                    alt={alt || 'Preview'}
-                    onError={() => setPreviewError(true)}
-                    className='max-h-36 max-w-full object-contain'
-                  />
+                  <>
+                    {/* eslint-disable-next-line @next/next/no-img-element -- previewing user entered image url */}
+                    <img
+                      src={src.trim()}
+                      alt={alt || title || 'Preview'}
+                      onError={() => setPreviewError(true)}
+                      className='max-h-48 max-w-full rounded-2xl border border-border/80 object-contain shadow-sm'
+                    />
+                    {(title || alt) && (
+                      <p className='mt-2 text-center font-sans text-xs italic text-muted-foreground'>
+                        {title || alt}
+                      </p>
+                    )}
+                  </>
                 )}
               </div>
             </div>

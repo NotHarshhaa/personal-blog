@@ -25,7 +25,20 @@
   :where(img):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
     margin: 0 auto;
     border: 1px solid var(--border);
-    border-radius: 0;
+    border-radius: 1rem;
+  }
+
+  :where(figure):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    margin: 1.5rem auto;
+    text-align: center;
+  }
+
+  :where(figcaption):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    margin-top: 0.625rem;
+    font-size: 0.8125rem;
+    font-style: italic;
+    color: var(--muted-foreground);
+    text-align: center;
   }
 
   :where(a):not(:where([class~='not-prose'], [class~='not-prose'] *)) {

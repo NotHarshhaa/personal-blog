@@ -22,7 +22,11 @@ export const updatePostAction = authenticatedActionClient
         ...data,
         updatedAt: new Date()
       })
-      .where(and(eq(posts.id, postId), eq(posts.authorId, user.id)))
+      .where(
+        user.role === 'admin'
+          ? eq(posts.id, postId)
+          : and(eq(posts.id, postId), eq(posts.authorId, user.id))
+      )
 
     revalidatePath(`/posts/${postId}`)
     revalidatePath('/')

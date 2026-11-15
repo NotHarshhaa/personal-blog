@@ -282,7 +282,7 @@ ul[data-type='taskList'] li > div {
 /* Images / embeds */
 .ProseMirror img,
 .ProseMirror iframe {
-  border-radius: 0.375rem;
+  border-radius: 1rem;
   box-shadow: none !important;
 }
 
