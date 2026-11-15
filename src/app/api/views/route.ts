@@ -11,6 +11,7 @@ import { withPostEngagement } from '@/utils/get-seeded-view-count'
 // survives restarts and is shared across server instances.
 
 const SITE_STATS_ROW_ID = 'site'
+const noStoreHeaders = { 'Cache-Control': 'no-store, max-age=0, must-revalidate' }
 
 async function getTotalReads(): Promise<number> {
   const result = await db.query.posts.findMany({
@@ -50,10 +51,13 @@ export async function GET() {
   try {
     const [totalReads, siteVisits] = await Promise.all([getTotalReads(), getSiteVisits()])
 
-    return NextResponse.json({ views: totalReads + siteVisits })
+    return NextResponse.json({ views: totalReads + siteVisits }, { headers: noStoreHeaders })
   } catch (error) {
     console.error('Error fetching site views:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500, headers: noStoreHeaders }
+    )
   }
 }
 
@@ -71,9 +75,15 @@ export async function POST() {
 
     const totalReads = await getTotalReads()
 
-    return NextResponse.json({ views: totalReads + (row?.visits ?? 0) })
+    return NextResponse.json(
+      { views: totalReads + (row?.visits ?? 0) },
+      { headers: noStoreHeaders }
+    )
   } catch (error) {
     console.error('Error tracking site visit:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500, headers: noStoreHeaders }
+    )
   }
 }

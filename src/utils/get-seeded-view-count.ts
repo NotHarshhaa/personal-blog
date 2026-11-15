@@ -85,22 +85,20 @@ export const getBaselineEngagement = (postId: string, createdAt: Date) => {
   let starterLikes: number
 
   // Decouple like sentiment from raw views so posts have unique engagement personalities:
-  // - High-Appreciation (20%): Deep bookmarks & high ratio (10.5% - 15.5%) + early enthusiast likes
-  // - Strong Engagement (35%): Broadly liked content (7.2% - 10.0%)
-  // - Standard (30%): Typical reader reaction (4.8% - 6.8%)
-  // - Skimmed / High-Traffic (15%): High views but lower like conversion (3.0% - 4.5%)
+  // Keep generated likes modest so automatic engagement does not overwhelm
+  // real likes or imply that most readers react to every article.
   if (likeRoll < 20) {
-    rate = 0.105 + (likeHash % 50) / 1000
-    starterLikes = 6 + (likeHash % 12)
+    rate = 0.045 + (likeHash % 25) / 1000
+    starterLikes = 2 + (likeHash % 6)
   } else if (likeRoll < 55) {
-    rate = 0.072 + (likeHash % 28) / 1000
-    starterLikes = 3 + (likeHash % 6)
-  } else if (likeRoll < 85) {
-    rate = 0.048 + (likeHash % 20) / 1000
+    rate = 0.03 + (likeHash % 16) / 1000
     starterLikes = 1 + (likeHash % 4)
+  } else if (likeRoll < 85) {
+    rate = 0.018 + (likeHash % 13) / 1000
+    starterLikes = likeHash % 3
   } else {
-    rate = 0.03 + (likeHash % 15) / 1000
-    starterLikes = 1 + (likeHash % 2)
+    rate = 0.01 + (likeHash % 8) / 1000
+    starterLikes = likeHash % 2
   }
 
   const calculatedLikes = Math.round(baselineViews * rate)

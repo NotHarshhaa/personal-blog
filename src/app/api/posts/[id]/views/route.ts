@@ -7,6 +7,8 @@ import { db } from '@/db'
 import { posts } from '@/db/schema'
 import { getBaselineEngagement, getDisplayViewCount } from '@/utils/get-seeded-view-count'
 
+const noStoreHeaders = { 'Cache-Control': 'no-store, max-age=0, must-revalidate' }
+
 const getPost = async (id: string) => {
   return db.query.posts.findFirst({
     where: eq(posts.id, id),
@@ -39,13 +41,19 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
     const post = await getPost(id)
 
     if (!post?.published || post.visibility !== 'public') {
-      return NextResponse.json({ error: 'Post not found' }, { status: 404 })
+      return NextResponse.json(
+        { error: 'Post not found' },
+        { status: 404, headers: noStoreHeaders }
+      )
     }
 
-    return NextResponse.json({ views: getHybridViews(post) })
+    return NextResponse.json({ views: getHybridViews(post) }, { headers: noStoreHeaders })
   } catch (error) {
     console.error('Error fetching views:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500, headers: noStoreHeaders }
+    )
   }
 }
 
@@ -55,7 +63,10 @@ export async function POST(_request: NextRequest, { params }: { params: Promise<
     const post = await getPost(id)
 
     if (!post?.published || post.visibility !== 'public') {
-      return NextResponse.json({ error: 'Post not found' }, { status: 404 })
+      return NextResponse.json(
+        { error: 'Post not found' },
+        { status: 404, headers: noStoreHeaders }
+      )
     }
 
     const [updated] = await db
@@ -65,15 +76,24 @@ export async function POST(_request: NextRequest, { params }: { params: Promise<
       .returning({ views: posts.views })
 
     if (!updated) {
-      return NextResponse.json({ error: 'Post not found' }, { status: 404 })
+      return NextResponse.json(
+        { error: 'Post not found' },
+        { status: 404, headers: noStoreHeaders }
+      )
     }
 
     const baselineViews = getBaselineEngagement(post.id, post.createdAt).baselineViews
-    return NextResponse.json({
-      views: getDisplayViewCount(updated.views, baselineViews, true)
-    })
+    return NextResponse.json(
+      {
+        views: getDisplayViewCount(updated.views, baselineViews, true)
+      },
+      { headers: noStoreHeaders }
+    )
   } catch (error) {
     console.error('Error tracking view:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500, headers: noStoreHeaders }
+    )
   }
 }

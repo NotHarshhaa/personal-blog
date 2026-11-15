@@ -5,11 +5,9 @@ import { useEffect, useRef, useState } from 'react'
 
 import { CornerBrackets } from '@/components/frame'
 
-const DEFAULT_VIEWS = 577_988
-
 export function ViewsBadge({ className }: { readonly className?: string }) {
-  const [displayViews, setDisplayViews] = useState<number>(DEFAULT_VIEWS)
-  const [targetViews, setTargetViews] = useState<number>(DEFAULT_VIEWS)
+  const [displayViews, setDisplayViews] = useState<number | null>(null)
+  const [targetViews, setTargetViews] = useState<number | null>(null)
   const displayViewsRef = useRef(displayViews)
   const animFrameRef = useRef<number | null>(null)
 
@@ -19,7 +17,9 @@ export function ViewsBadge({ className }: { readonly className?: string }) {
       const cached = localStorage.getItem('site_views_cache')
       if (cached) {
         const num = Number.parseInt(cached, 10)
-        if (!Number.isNaN(num) && num > 0) {
+        if (Number.isSafeInteger(num) && num >= 0) {
+          displayViewsRef.current = num
+          setDisplayViews(num)
           setTargetViews(num)
         }
       }
@@ -34,14 +34,33 @@ export function ViewsBadge({ className }: { readonly className?: string }) {
 
     async function load() {
       try {
-        const counted = sessionStorage.getItem('views-counted')
-        const res = await fetch('/api/views', { method: counted ? 'GET' : 'POST' })
+        let counted = false
+        try {
+          counted = sessionStorage.getItem('views-counted') === '1'
+        } catch {
+          // Keep loading the live count when browser storage is disabled.
+        }
+
+        const res = await fetch('/api/views', {
+          method: counted ? 'GET' : 'POST',
+          cache: 'no-store'
+        })
         if (!res.ok) throw new Error(`views API error: ${res.status}`)
         const data = (await res.json()) as { views: number }
-        if (!counted) sessionStorage.setItem('views-counted', '1')
+        if (!counted) {
+          try {
+            sessionStorage.setItem('views-counted', '1')
+          } catch {
+            // Storage can be disabled; the live count is still usable.
+          }
+        }
 
-        if (!cancelled && typeof data.views === 'number' && data.views > 0) {
+        if (!cancelled && Number.isSafeInteger(data.views) && data.views >= 0) {
           setTargetViews(data.views)
+          if (displayViewsRef.current === null) {
+            displayViewsRef.current = data.views
+            setDisplayViews(data.views)
+          }
           try {
             localStorage.setItem('site_views_cache', String(data.views))
           } catch {
@@ -61,6 +80,8 @@ export function ViewsBadge({ className }: { readonly className?: string }) {
 
   // Smooth Count-Up Animation to targetViews using requestAnimationFrame
   useEffect(() => {
+    if (targetViews === null) return
+
     const reducedMotion = globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches
 
     if (reducedMotion) {
@@ -69,7 +90,7 @@ export function ViewsBadge({ className }: { readonly className?: string }) {
       return
     }
 
-    const startVal = displayViewsRef.current
+    const startVal = displayViewsRef.current ?? targetViews
     const endVal = targetViews
     if (startVal === endVal) return
 
@@ -111,7 +132,7 @@ export function ViewsBadge({ className }: { readonly className?: string }) {
         suppressHydrationWarning
         className='text-foreground font-mono text-xs font-semibold tracking-tight tabular-nums'
       >
-        {displayViews.toLocaleString('en-US')}
+        {displayViews?.toLocaleString('en-US') ?? '—'}
       </span>
     </div>
   )
