@@ -117,15 +117,15 @@ body {
   pointer-events: none;
   content: '';
   background:
-    linear-gradient(var(--foreground), var(--foreground)) left top / 6px 1px no-repeat,
-    linear-gradient(var(--foreground), var(--foreground)) left top / 1px 6px no-repeat,
-    linear-gradient(var(--foreground), var(--foreground)) right top / 6px 1px no-repeat,
-    linear-gradient(var(--foreground), var(--foreground)) right top / 1px 6px no-repeat,
-    linear-gradient(var(--foreground), var(--foreground)) left bottom / 6px 1px no-repeat,
-    linear-gradient(var(--foreground), var(--foreground)) left bottom / 1px 6px no-repeat,
-    linear-gradient(var(--foreground), var(--foreground)) right bottom / 6px 1px no-repeat,
-    linear-gradient(var(--foreground), var(--foreground)) right bottom / 1px 6px no-repeat;
-  opacity: 0.58;
+    linear-gradient(currentColor, currentColor) left top / 7px 1px no-repeat,
+    linear-gradient(currentColor, currentColor) left top / 1px 7px no-repeat,
+    linear-gradient(currentColor, currentColor) right top / 7px 1px no-repeat,
+    linear-gradient(currentColor, currentColor) right top / 1px 7px no-repeat,
+    linear-gradient(currentColor, currentColor) left bottom / 7px 1px no-repeat,
+    linear-gradient(currentColor, currentColor) left bottom / 1px 7px no-repeat,
+    linear-gradient(currentColor, currentColor) right bottom / 7px 1px no-repeat,
+    linear-gradient(currentColor, currentColor) right bottom / 1px 7px no-repeat;
+  opacity: 0.78;
   transition: opacity 150ms ease-out;
 }
 

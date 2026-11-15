@@ -7,6 +7,11 @@ import { Button } from '@/components/ui'
 
 const STROKE = 2 * Math.PI * 18
 
+const scrollToTop = () => {
+  const prefersReducedMotion = globalThis.matchMedia('(prefers-reduced-motion: reduce)').matches
+  globalThis.scrollTo({ top: 0, behavior: prefersReducedMotion ? 'instant' : 'smooth' })
+}
+
 const ScrollToTop = () => {
   const [isVisible, setIsVisible] = useState(false)
   const [progress, setProgress] = useState(0)
@@ -34,37 +39,45 @@ const ScrollToTop = () => {
     }
 
     window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('resize', onScroll, { passive: true })
+    const resizeObserver = new ResizeObserver(onScroll)
+    resizeObserver.observe(document.documentElement)
     update()
-    return () => window.removeEventListener('scroll', onScroll)
+    return () => {
+      window.removeEventListener('scroll', onScroll)
+      window.removeEventListener('resize', onScroll)
+      resizeObserver.disconnect()
+    }
   }, [])
 
   if (!isVisible) return null
 
   return (
     <Button
-      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-      size="icon"
-      variant="outline"
-      className="fixed right-4 bottom-20 z-40 size-10 border-border bg-card shadow-md sm:right-6 sm:bottom-14"
+      onClick={scrollToTop}
+      size='icon'
+      variant='outline'
+      className='border-border bg-card fixed right-4 bottom-20 z-40 size-10 shadow-md sm:right-6 sm:bottom-14'
       aria-label={`Scroll to top (${Math.round(progress * 100)}% read)`}
       title={`${Math.round(progress * 100)}% read`}
     >
-      <ArrowUp className="size-4" />
+      <ArrowUp className='size-4' />
       <svg
         aria-hidden
-        viewBox="0 0 40 40"
-        className="pointer-events-none absolute inset-0 size-full"
+        viewBox='0 0 40 40'
+        className='pointer-events-none absolute inset-0 size-full'
       >
         <circle
-          cx="20"
-          cy="20"
-          r="18"
-          fill="none"
-          stroke="var(--foreground)"
-          strokeWidth="2"
+          cx='20'
+          cy='20'
+          r='18'
+          fill='none'
+          stroke='var(--foreground)'
+          strokeWidth='2'
+          strokeLinecap='round'
           strokeDasharray={STROKE}
           strokeDashoffset={STROKE * (1 - progress)}
-          transform="rotate(-90 20 20)"
+          transform='rotate(-90 20 20)'
         />
       </svg>
     </Button>

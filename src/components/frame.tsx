@@ -12,7 +12,7 @@ type CornerBracketsProps = {
 export function CornerBrackets({ className, visible = true }: Readonly<CornerBracketsProps>) {
   const visibility = visible ? 'opacity-100' : 'opacity-0'
   const sharedClassName = cn(
-    'border-muted-foreground/50 pointer-events-none absolute size-2 transition-opacity',
+    'border-foreground/50 pointer-events-none absolute size-2.5 transition-opacity duration-150 ease-out',
     visibility,
     className
   )
@@ -140,19 +140,19 @@ export function FrameGrid({
     <div className={cn('relative grid sm:grid-cols-2', className)}>
       <span
         aria-hidden
-        className='border-muted-foreground/50 pointer-events-none absolute -top-px -left-px z-20 size-2 border-t border-l'
+        className='border-foreground/50 pointer-events-none absolute -top-px -left-px z-20 size-2.5 border-t border-l'
       />
       <span
         aria-hidden
-        className='border-muted-foreground/50 pointer-events-none absolute -top-px -right-px z-20 size-2 border-t border-r'
+        className='border-foreground/50 pointer-events-none absolute -top-px -right-px z-20 size-2.5 border-t border-r'
       />
       <span
         aria-hidden
-        className='border-muted-foreground/50 pointer-events-none absolute -bottom-px -left-px z-20 size-2 border-b border-l'
+        className='border-foreground/50 pointer-events-none absolute -bottom-px -left-px z-20 size-2.5 border-b border-l'
       />
       <span
         aria-hidden
-        className='border-muted-foreground/50 pointer-events-none absolute -right-px -bottom-px z-20 size-2 border-r border-b'
+        className='border-foreground/50 pointer-events-none absolute -right-px -bottom-px z-20 size-2.5 border-r border-b'
       />
       <span
         aria-hidden

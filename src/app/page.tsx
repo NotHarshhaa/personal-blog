@@ -17,62 +17,7 @@ const HomePage = () => {
     <div className='relative z-10 w-full space-y-6 sm:space-y-8'>
       <HacktronHero />
 
-      <Suspense
-        fallback={
-          <Frame>
-            <StripHeader
-              left={<span className='text-foreground font-semibold'>Live site telemetry</span>}
-              right={<span>Calibrating...</span>}
-            />
-            <FrameBody className='text-muted-foreground py-8 text-center font-mono text-sm'>
-              CALIBRATING TELEMETRY...
-            </FrameBody>
-          </Frame>
-        }
-      >
-        <SiteTelemetry />
-      </Suspense>
-
-      <GithubActivity username='NotHarshhaa' />
-
-      <Suspense
-        fallback={
-          <Frame>
-            <StripHeader
-              left={
-                <span className='text-foreground font-semibold'>
-                  Dispatch log // git log --oneline
-                </span>
-              }
-              right={<span>Traversing history...</span>}
-            />
-            <FrameBody className='text-muted-foreground py-8 text-center font-mono text-sm'>
-              git log: traversing commit history...
-            </FrameBody>
-          </Frame>
-        }
-      >
-        <DispatchLog />
-      </Suspense>
-
-      <Suspense
-        fallback={
-          <Frame>
-            <StripHeader
-              left={
-                <span className='text-foreground font-semibold'>Trending // Top this week</span>
-              }
-              right={<span>Loading...</span>}
-            />
-            <FrameBody className='text-muted-foreground py-8 text-center text-sm'>
-              Loading trending posts...
-            </FrameBody>
-          </Frame>
-        }
-      >
-        <TrendingPosts />
-      </Suspense>
-
+      {/* Put the writing first so the main reason to visit is immediately discoverable. */}
       <section aria-label='Posts' id='archive' className='scroll-mt-24'>
         <Suspense
           fallback={
@@ -94,6 +39,64 @@ const HomePage = () => {
           <Posts />
         </Suspense>
       </section>
+
+      <div className='grid min-w-0 gap-6 sm:gap-8 lg:grid-cols-2'>
+        <Suspense
+          fallback={
+            <Frame>
+              <StripHeader
+                left={
+                  <span className='text-foreground font-semibold'>Trending // Top this week</span>
+                }
+                right={<span>Loading...</span>}
+              />
+              <FrameBody className='text-muted-foreground py-8 text-center text-sm'>
+                Loading trending posts...
+              </FrameBody>
+            </Frame>
+          }
+        >
+          <TrendingPosts />
+        </Suspense>
+
+        <Suspense
+          fallback={
+            <Frame>
+              <StripHeader
+                left={
+                  <span className='text-foreground font-semibold'>
+                    Dispatch log // git log --oneline
+                  </span>
+                }
+                right={<span>Traversing history...</span>}
+              />
+              <FrameBody className='text-muted-foreground py-8 text-center font-mono text-sm'>
+                git log: traversing commit history...
+              </FrameBody>
+            </Frame>
+          }
+        >
+          <DispatchLog />
+        </Suspense>
+      </div>
+
+      <Suspense
+        fallback={
+          <Frame>
+            <StripHeader
+              left={<span className='text-foreground font-semibold'>Live site telemetry</span>}
+              right={<span>Calibrating...</span>}
+            />
+            <FrameBody className='text-muted-foreground py-8 text-center font-mono text-sm'>
+              CALIBRATING TELEMETRY...
+            </FrameBody>
+          </Frame>
+        }
+      >
+        <SiteTelemetry />
+      </Suspense>
+
+      <GithubActivity username='NotHarshhaa' />
 
       <TechStack />
 
