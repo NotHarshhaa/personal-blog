@@ -45,8 +45,10 @@ const PostCard = memo((props: PostCardProps) => {
 
   return (
     <article
+      data-panel
+      data-panel-interactive
       className={cn(
-        'hover-fill group/card border-border bg-card hover:border-foreground/60 relative flex flex-col border transition-colors duration-150',
+        'hover-fill group/card border-border bg-card hover:border-foreground/60 relative flex flex-col border',
         !published && 'border-dashed'
       )}
     >
