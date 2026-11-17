@@ -36,7 +36,7 @@ import { copyUrl } from "@/utils/copy-url";
 
 type ControlsProps = {
   id: string;
-  user: User | null;
+  user: Pick<User, 'id' | 'role'> | null;
   authorId: string;
   postTitle: string;
 };
