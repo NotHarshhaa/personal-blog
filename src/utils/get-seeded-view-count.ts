@@ -56,6 +56,16 @@ export const getSeededViewCount = (postId: string, createdAt: Date) => {
     dailyVelocity = 8 + (hash % 16)
   }
 
+  // Give articles within the same reach tier distinct performance curves.
+  // Tier-only ranges made posts published around the same time frequently
+  // land on identical counts, especially when their ages are similar.
+  const variationHash = hashString(`performance:${postId}`)
+  const performanceFactor = 0.78 + (variationHash % 4401) / 10_000
+  launchViews = Math.round(launchViews * performanceFactor)
+  day1Views = Math.round(day1Views * performanceFactor)
+  matureBase = Math.round(matureBase * performanceFactor)
+  dailyVelocity = Math.max(1, Math.round(dailyVelocity * performanceFactor))
+
   // Phase 1: Day 1 (0 to 24h) - organic ease-out curve from immediate launch to day-1 baseline
   if (ageHours <= 24) {
     const progress = Math.max(0, ageHours / 24)
@@ -88,16 +98,16 @@ export const getBaselineEngagement = (postId: string, createdAt: Date) => {
   // Keep generated likes modest so automatic engagement does not overwhelm
   // real likes or imply that most readers react to every article.
   if (likeRoll < 20) {
-    rate = 0.045 + (likeHash % 25) / 1000
+    rate = 0.035 + (likeHash % 46) / 1000
     starterLikes = 2 + (likeHash % 6)
   } else if (likeRoll < 55) {
-    rate = 0.03 + (likeHash % 16) / 1000
+    rate = 0.022 + (likeHash % 34) / 1000
     starterLikes = 1 + (likeHash % 4)
   } else if (likeRoll < 85) {
-    rate = 0.018 + (likeHash % 13) / 1000
+    rate = 0.012 + (likeHash % 27) / 1000
     starterLikes = likeHash % 3
   } else {
-    rate = 0.01 + (likeHash % 8) / 1000
+    rate = 0.006 + (likeHash % 18) / 1000
     starterLikes = likeHash % 2
   }
 
