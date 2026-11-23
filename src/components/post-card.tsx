@@ -48,7 +48,9 @@ const PostCard = memo((props: PostCardProps) => {
       data-panel
       data-panel-interactive
       className={cn(
-        'hover-fill group/card border-border bg-card hover:border-foreground/60 relative flex flex-col border',
+        'hover-fill group/card border-border bg-card hover:border-foreground/60 relative flex flex-col border transition-[border-color,box-shadow,transform] duration-200 ease-out',
+        'hover:shadow-[4px_4px_0_0_var(--foreground)] hover:-translate-y-0.5',
+        'focus-within:border-foreground focus-within:shadow-[4px_4px_0_0_var(--foreground)]',
         !published && 'border-dashed'
       )}
     >
@@ -157,6 +159,7 @@ const PostCard = memo((props: PostCardProps) => {
                     }}
                     className={cn(
                       'hover-fill relative z-20 inline-flex cursor-pointer items-center gap-1 border px-2 py-0.5 font-mono text-[10px] tracking-wider uppercase transition-all duration-150',
+                      'focus-visible:ring-foreground/50 focus-visible:ring-2 focus-visible:outline-none',
                       isSelected
                         ? 'border-foreground bg-foreground text-background font-semibold'
                         : 'border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground'

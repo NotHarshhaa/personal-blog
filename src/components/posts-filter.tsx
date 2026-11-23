@@ -333,7 +333,7 @@ export const PostsFilter = ({ posts, user }: PostsFilterProps) => {
             type='button'
             onClick={() => handleSelectTag(null)}
             className={cn(
-              'group inline-flex cursor-pointer items-center gap-1.5 border px-3 py-1 font-mono text-xs tracking-wider uppercase transition-all duration-150',
+              'group inline-flex cursor-pointer items-center gap-1.5 border px-3 py-1 font-mono text-xs tracking-wider uppercase transition-all duration-150 focus-visible:ring-foreground/50 focus-visible:ring-2 focus-visible:outline-none',
               selectedTag
                 ? 'border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground'
                 : 'border-foreground bg-foreground text-background font-semibold shadow-xs'
@@ -356,7 +356,7 @@ export const PostsFilter = ({ posts, user }: PostsFilterProps) => {
                 type='button'
                 onClick={() => (isSelected ? handleSelectTag(null) : handleSelectTag(topic))}
                 className={cn(
-                  'group inline-flex cursor-pointer items-center gap-1.5 border px-2.5 py-1 font-mono text-xs tracking-wider uppercase transition-all duration-150',
+                  'group inline-flex cursor-pointer items-center gap-1.5 border px-2.5 py-1 font-mono text-xs tracking-wider uppercase transition-all duration-150 focus-visible:ring-foreground/50 focus-visible:ring-2 focus-visible:outline-none',
                   isSelected
                     ? 'border-foreground bg-foreground text-background font-semibold shadow-xs'
                     : 'border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground hover:bg-muted/40'
@@ -470,7 +470,7 @@ export const PostsFilter = ({ posts, user }: PostsFilterProps) => {
                   type='button'
                   onClick={() => setSortBy(option.value)}
                   className={cn(
-                    'inline-flex cursor-pointer items-center gap-1.5 border px-2 py-1 font-mono text-[10px] tracking-wider uppercase transition-all duration-150',
+                    'inline-flex cursor-pointer items-center gap-1.5 border px-2 py-1 font-mono text-[10px] tracking-wider uppercase transition-all duration-150 focus-visible:ring-foreground/50 focus-visible:ring-2 focus-visible:outline-none',
                     isActive
                       ? 'border-foreground bg-foreground text-background font-semibold shadow-xs'
                       : 'border-border/70 bg-background text-muted-foreground hover:border-foreground hover:text-foreground'
