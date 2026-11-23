@@ -61,6 +61,7 @@ export const BookmarksView = ({
   const {
     bookmarks: localBookmarks,
     toggleBookmark,
+    clearBookmarks,
     isLoaded
   } = useBookmarks(userId, serverBookmarks)
   const [search, setSearch] = useState('')
@@ -151,10 +152,8 @@ export const BookmarksView = ({
     toast.success('Reading vault exported as Markdown!')
   }
 
-  const handleClearAll = () => {
-    for (const post of allPosts) {
-      toggleBookmark(post)
-    }
+  const handleClearAll = async () => {
+    await clearBookmarks()
     setConfirmClearAll(false)
     toast.success('All bookmarks cleared from vault')
   }

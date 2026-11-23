@@ -44,6 +44,15 @@ import { SITE_TOPICS } from '@/lib/constants'
 import { cn } from '@/utils'
 import { capitalize } from '@/utils/capitalize'
 
+const hasMeaningfulContent = (html: string | null | undefined) => {
+  if (!html) return false
+  const text = html
+    .replaceAll(/<[^>]*>?/g, ' ')
+    .replaceAll('&nbsp;', ' ')
+    .trim()
+  return text.length > 0
+}
+
 const LivePreview = ({ content }: { content: string }) => (
   <div className='LivePreview border-border bg-background mx-auto max-w-none border p-4 sm:p-6 md:p-8'>
     <Editor
@@ -80,7 +89,9 @@ const Form = (props: FormProps) => {
         setIsOpen(false)
         return
       }
-      if (input.published) {
+      // Only navigate away on the draft -> published transition; updating an
+      // already-live post (or Ctrl+S) must keep the author in the editor.
+      if (input.published && !post.published) {
         toast.success('Post published')
         router.push(`/posts/${post.id}`)
         return
@@ -133,6 +144,10 @@ const Form = (props: FormProps) => {
     const trimmedTitle = title.trim()
     if (published && !trimmedTitle) {
       toast.error('Please enter a post title before publishing')
+      return
+    }
+    if (published && !hasMeaningfulContent(content)) {
+      toast.error('Write some content before publishing this post')
       return
     }
     if (trimmedTitle.length > 200) {

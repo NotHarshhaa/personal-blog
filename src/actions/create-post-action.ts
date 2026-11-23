@@ -15,6 +15,10 @@ export const createPostAction = authenticatedActionClient
     handleValidationErrorsShape: async (ve) => flattenValidationErrors(ve).fieldErrors
   })
   .action(async ({ parsedInput: { title }, ctx: { user } }) => {
+    if (user.role !== 'admin') {
+      throw new Error('Not authorized')
+    }
+
     const [post] = await db
       .insert(posts)
       .values({

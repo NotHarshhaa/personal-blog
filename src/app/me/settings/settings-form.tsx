@@ -53,7 +53,7 @@ type SettingsFormValues = z.infer<typeof updateUserSchema>
 
 const SettingsForm = (props: SettingsFormProps) => {
   const { user } = props
-  const { name, image, bio } = user
+  const { name, image, bio, github, twitter, linkedin, theme } = user
   const router = useRouter()
   const { setTheme } = useTheme()
   const action = useAction(updateUserAction, {
@@ -77,21 +77,22 @@ const SettingsForm = (props: SettingsFormProps) => {
       name: name,
       image: image ?? '',
       bio: bio ?? '',
-      github: '',
-      twitter: '',
-      linkedin: '',
-      theme: 'system'
+      github: github ?? '',
+      twitter: twitter ?? '',
+      linkedin: linkedin ?? '',
+      theme:
+        theme === 'light' || theme === 'dark' || theme === 'system' ? theme : 'system'
     }
   })
 
   const preview = useWatch({ control: form.control })
   const isDirty = form.formState.isDirty
 
-  // Empty strings in the form fall through to the saved profile values
-  const displayImage =
-    preview.image != null && preview.image.length > 0 ? preview.image : (image ?? '')
-  const displayName = preview.name != null && preview.name.length > 0 ? preview.name : name
-  const displayBio = preview.bio != null && preview.bio.length > 0 ? preview.bio : (bio ?? '')
+  // Empty strings in the form are real values — preview them as-is so
+  // clearing a field is reflected immediately instead of falling back.
+  const displayImage = preview.image ?? image ?? ''
+  const displayName = preview.name ?? name
+  const displayBio = preview.bio ?? bio ?? ''
 
   const onSubmit = async (values: SettingsFormValues) => {
     await action.executeAsync(values)

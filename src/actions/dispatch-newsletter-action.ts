@@ -40,6 +40,10 @@ export const dispatchNewsletterAction = authenticatedActionClient
       throw new Error('Cannot dispatch draft posts. Please publish the post first.')
     }
 
+    if (post.visibility !== 'public') {
+      throw new Error('Cannot dispatch private posts to subscribers.')
+    }
+
     // 2. Fetch all active subscribers
     const activeSubscribers = await db.query.subscribers.findMany({
       where: eq(subscribers.subscribed, true),

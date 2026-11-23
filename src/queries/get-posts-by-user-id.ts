@@ -22,7 +22,8 @@ export const getPostsByUserId = async (userId: string) => {
     with: {
       likes: {
         columns: {
-          id: true
+          id: true,
+          userId: true
         }
       },
       user: {

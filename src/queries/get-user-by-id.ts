@@ -35,7 +35,8 @@ export const getUserById = async (id: string) => {
         with: {
           likes: {
             columns: {
-              id: true
+              id: true,
+              userId: true
             }
           }
         }

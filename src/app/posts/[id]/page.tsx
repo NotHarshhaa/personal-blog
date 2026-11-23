@@ -10,8 +10,8 @@ import {
   AudioDispatchProvider,
   AudioDispatchTopBar
 } from '@/components/audio-dispatch-player'
-import Controls from '@/components/controls'
 import BookmarkButton from '@/components/bookmark-button'
+import Controls from '@/components/controls'
 import Editor from '@/components/editor'
 import { CornerBrackets, Frame, FrameBody, FrameHeader, StripHeader } from '@/components/frame'
 import GiscusComments from '@/components/giscus-comments'

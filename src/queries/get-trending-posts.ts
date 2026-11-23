@@ -5,9 +5,6 @@ import { posts } from '@/db/schema'
 import { withPostEngagement } from '@/utils/get-seeded-view-count'
 
 export const getTrendingPosts = async (limit = 5) => {
-  const sevenDaysAgo = new Date()
-  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
-
   const result = await db.query.posts.findMany({
     where: and(
       eq(posts.published, true),
@@ -34,7 +31,8 @@ export const getTrendingPosts = async (limit = 5) => {
       },
       likes: {
         columns: {
-          id: true
+          id: true,
+          userId: true
         }
       }
     },

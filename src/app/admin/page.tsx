@@ -1,4 +1,4 @@
-import { desc, eq } from 'drizzle-orm'
+import { and, desc, eq } from 'drizzle-orm'
 import { ShieldCheckIcon, SquareTerminal } from 'lucide-react'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
@@ -28,7 +28,7 @@ export default async function AdminPage() {
 
   // 2. Fetch published posts for the dispatch pipeline
   const publishedPostsData = await db.query.posts.findMany({
-    where: eq(posts.published, true),
+    where: and(eq(posts.published, true), eq(posts.visibility, 'public')),
     orderBy: desc(posts.createdAt),
     columns: {
       id: true,

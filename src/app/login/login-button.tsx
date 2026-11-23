@@ -11,16 +11,13 @@ import { Button } from '@/components/ui'
 const LoginButton = () => {
   const [loading, setLoading] = useState(false)
   const searchParams = useSearchParams()
-  const pathname = searchParams.get('redirect') ?? '/'
+  const callbackUrl = searchParams.get('redirect') ?? '/'
 
   return (
     <Button
       onClick={() => {
         setLoading(true)
-        void signIn('google', {
-          redirect: false,
-          callbackUrl: pathname
-        })
+        void signIn('google', { callbackUrl })
       }}
       variant="outline"
       size="lg"

@@ -25,7 +25,8 @@ export const getAllSeries = async () => {
         with: {
           likes: {
             columns: {
-              id: true
+              id: true,
+              userId: true
             }
           }
         },

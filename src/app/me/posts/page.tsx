@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation'
 
 import { getCurrentUser } from '@/lib/auth'
 import { getPostsByUserId } from '@/queries/get-posts-by-user-id'
+import { getPostsLikedByUserId } from '@/queries/get-posts-liked-by-user-id'
 
 import PostsClient from './page.client'
 
@@ -18,7 +19,9 @@ const PostsPage = async () => {
     redirect('/login?redirect=/me/posts')
   }
 
-  const { posts } = await getPostsByUserId(user.id)
+  // Admins manage their own posts; regular users see the posts they liked.
+  const { posts } =
+    user.role === 'admin' ? await getPostsByUserId(user.id) : await getPostsLikedByUserId(user.id)
 
   const formattedUser = {
     ...user,

@@ -264,9 +264,13 @@ const SortChips = ({
 export const PostsClient = ({ posts, user }: ContentProps) => {
   const searchParams = useSearchParams()
   const router = useRouter()
-  const tabParam = (searchParams.get('tab') ?? 'published') as TabOption
+  const tabParam = searchParams.get('tab')
+  const initialTab: TabOption =
+    tabParam === 'published' || tabParam === 'drafts' || tabParam === 'all'
+      ? tabParam
+      : 'published'
 
-  const [activeTab, setActiveTab] = useState<TabOption>(tabParam)
+  const [activeTab, setActiveTab] = useState<TabOption>(initialTab)
   const [search, setSearch] = useState('')
   const [sortBy, setSortBy] = useState<SortOption>('newest')
   const [isDeleteAllOpen, setIsDeleteAllOpen] = useState(false)
@@ -294,9 +298,9 @@ export const PostsClient = ({ posts, user }: ContentProps) => {
   const totalViews = useMemo(() => posts.reduce((acc, p) => acc + p.views, 0), [posts])
   const totalLikes = useMemo(() => posts.reduce((acc, p) => acc + (p.likeCount || 0), 0), [posts])
 
-  // Regular user: liked posts
+  // Regular user: posts they liked
   const likedPosts = useMemo(
-    () => posts.filter((p) => p.likes.some((like) => like.id === user.id) || p.likeCount > 0),
+    () => posts.filter((p) => p.likes.some((like) => like.userId === user.id)),
     [posts, user.id]
   )
 

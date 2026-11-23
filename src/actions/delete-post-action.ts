@@ -12,13 +12,18 @@ import { deletePostSchema } from './schema'
 export const deletePostAction = authenticatedActionClient
   .schema(deletePostSchema)
   .action(async ({ parsedInput: { postId }, ctx: { user } }) => {
-    await db
+    const [deleted] = await db
       .delete(posts)
       .where(
         user.role === 'admin'
           ? eq(posts.id, postId)
           : and(eq(posts.id, postId), eq(posts.authorId, user.id))
       )
+      .returning({ id: posts.id })
+
+    if (!deleted) {
+      throw new Error('Post not found or not authorized')
+    }
 
     revalidatePath('/me/posts')
     revalidatePath(`/posts/${postId}`)
