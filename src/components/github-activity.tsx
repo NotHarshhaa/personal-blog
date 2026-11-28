@@ -6,7 +6,7 @@ import { Frame, StripHeader } from '@/components/frame'
 import { useGithubHeatmap } from '@/hooks/use-github-heatmap'
 import { cn } from '@/utils'
 
-const HEAT_OPACITY = [0.08, 0.28, 0.52, 0.78, 1]
+const HEAT_OPACITY = [0.1, 0.3, 0.52, 0.76, 1]
 const MONTH_NAMES = [
   'Jan',
   'Feb',
@@ -93,7 +93,7 @@ export const GithubActivity = ({ username = 'NotHarshhaa', className }: GithubAc
                     ? `${heatmap.total.toLocaleString()} contributions in the last year`
                     : '650+ contributions in the last year'}
                 </span>
-                <span className='text-muted-foreground/50 text-[10px]'>
+                <span className='text-muted-foreground text-[10px]'>
                   {heatmap.live ? '[LIVE SYNC]' : '[TELEMETRY CACHE]'}
                 </span>
               </span>

@@ -144,7 +144,7 @@ const MetricsRow = ({
     <div className='border-border flex flex-col justify-between border-t p-3.5 sm:border-t-0'>
       <span className='text-muted-foreground flex items-center justify-between font-mono text-[10px] tracking-widest uppercase'>
         Reactions
-        <Heart className='size-3.5 text-rose-500' aria-hidden />
+        <Heart className='text-destructive size-3.5' aria-hidden />
       </span>
       <span className='mt-2 flex items-baseline gap-1.5'>
         <span className='text-foreground font-mono text-2xl font-bold tracking-tight tabular-nums sm:text-3xl'>
@@ -264,9 +264,7 @@ export const PostsClient = ({ posts, user }: ContentProps) => {
   const router = useRouter()
   const tabParam = searchParams.get('tab')
   const initialTab: TabOption =
-    tabParam === 'published' || tabParam === 'drafts' || tabParam === 'all'
-      ? tabParam
-      : 'published'
+    tabParam === 'published' || tabParam === 'drafts' || tabParam === 'all' ? tabParam : 'published'
 
   const [activeTab, setActiveTab] = useState<TabOption>(initialTab)
   const [search, setSearch] = useState('')

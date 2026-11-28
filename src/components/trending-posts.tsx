@@ -68,7 +68,7 @@ const TrendingPosts = async () => {
                   <span aria-hidden>·</span>
                   <span className='inline-flex items-center gap-1'>
                     {isTopThree ? (
-                      <FlameIcon className='size-3 text-amber-500' aria-hidden />
+                      <FlameIcon className='text-warning size-3' aria-hidden />
                     ) : (
                       <TrendingUpIcon className='size-3' aria-hidden />
                     )}

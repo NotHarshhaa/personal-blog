@@ -282,8 +282,15 @@ ul[data-type='taskList'] li > div {
 /* Images / embeds */
 .ProseMirror img,
 .ProseMirror iframe {
-  border-radius: 1rem;
+  border-radius: 0;
+  outline: 1px solid oklch(0 0 0 / 0.1);
+  outline-offset: -1px;
   box-shadow: none !important;
+}
+
+.dark .ProseMirror img,
+.dark .ProseMirror iframe {
+  outline-color: oklch(1 0 0 / 0.1);
 }
 
 /* Mathematics (KaTeX) */

@@ -1,4 +1,4 @@
-import { Frame, FrameBody, FrameHeader } from '@/components/frame'
+import { Frame, FrameBody, StripHeader } from '@/components/frame'
 
 type PageHeaderProps = {
   title: string
@@ -10,13 +10,13 @@ const PageHeader = (props: PageHeaderProps) => {
 
   return (
     <Frame className={className} {...rest}>
-      <FrameHeader label="Page" />
-      <FrameBody className="space-y-2">
-        <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-          {title}
-        </h1>
+      <StripHeader
+        left={<span className='text-foreground font-semibold'>Section // Overview</span>}
+      />
+      <FrameBody className='space-y-2'>
+        <h1 className='text-2xl font-semibold tracking-tight sm:text-3xl'>{title}</h1>
         {description && (
-          <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+          <p className='text-muted-foreground max-w-2xl text-sm leading-relaxed sm:text-base'>
             {description}
           </p>
         )}

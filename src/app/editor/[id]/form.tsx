@@ -126,9 +126,7 @@ const Form = (props: FormProps) => {
         error.validationErrors?.description?.[0] ??
         error.validationErrors?.content?.[0] ??
         error.validationErrors?.tags?.[0] ??
-        (error.validationErrors
-          ? Object.values(error.validationErrors).flat()[0]
-          : undefined)
+        (error.validationErrors ? Object.values(error.validationErrors).flat()[0] : undefined)
 
       toast.error(error.serverError ?? validationErrorMessage ?? 'An error occurred')
     }
@@ -237,12 +235,12 @@ const Form = (props: FormProps) => {
               )}
               {isDirty && (
                 <span
-                  className='inline-flex items-center gap-1 text-amber-600 dark:text-amber-400'
+                  className='text-warning inline-flex items-center gap-1 font-semibold'
                   aria-label='You have unsaved changes'
                 >
                   <span className='relative flex size-1.5'>
-                    <span className='absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-500 opacity-75' />
-                    <span className='relative inline-flex size-1.5 rounded-full bg-amber-500' />
+                    <span className='bg-warning absolute inline-flex h-full w-full animate-ping rounded-full opacity-75' />
+                    <span className='bg-warning relative inline-flex size-1.5 rounded-full' />
                   </span>
                   Unsaved changes
                 </span>

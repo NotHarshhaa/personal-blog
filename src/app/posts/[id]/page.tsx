@@ -13,7 +13,7 @@ import {
 import BookmarkButton from '@/components/bookmark-button'
 import Controls from '@/components/controls'
 import Editor from '@/components/editor'
-import { CornerBrackets, Frame, FrameBody, FrameHeader, StripHeader } from '@/components/frame'
+import { CornerBrackets, Frame, FrameBody, StripHeader } from '@/components/frame'
 import GiscusComments from '@/components/giscus-comments'
 import HeadingAnchors from '@/components/heading-anchors'
 import NewsletterCard from '@/components/newsletter-card'
@@ -30,7 +30,6 @@ import { getCurrentUser } from '@/lib/auth'
 import { SITE_TITLE, SITE_URL } from '@/lib/constants'
 import { getPostById } from '@/queries/get-post-by-id'
 import { getPostMetadataById } from '@/queries/get-post-metadata-by-id'
-import { cn } from '@/utils'
 import { formatPostDate } from '@/utils/format-post-date'
 
 import LikeButton from './like-button'
@@ -183,13 +182,7 @@ const PostPage = async (props: PostPageProps) => {
       <ReadingResume postId={id} />
       <HeadingAnchors />
 
-      <article
-        className={cn(
-          'relative z-10 w-full space-y-6 sm:space-y-8',
-          // Clear the fixed audio dispatch bar that docks over the header on deep dives
-          minutes >= 7 && 'pt-11'
-        )}
-      >
+      <article className='relative z-10 w-full space-y-6 sm:space-y-8'>
         {/* Top Breadcrumb Bar */}
         <div className='text-muted-foreground flex items-center justify-between font-mono text-xs'>
           <Link
@@ -301,17 +294,16 @@ const PostPage = async (props: PostPageProps) => {
 
         {/* 2. Main Content & TOC Frame */}
         <Frame>
-          <FrameHeader label='Article Content'>
-            <div className='text-muted-foreground flex items-center gap-2 font-mono text-[10px] uppercase'>
-              <span>{wordCount.toLocaleString()} words</span>
-            </div>
-          </FrameHeader>
+          <StripHeader
+            left={<span className='text-foreground font-semibold'>Article content</span>}
+            right={<span>{wordCount.toLocaleString()} words</span>}
+          />
 
           <FrameBody>
             <RunbookProvider content={content ?? ''}>
               <RunbookVariablesBar />
               <div className='flex flex-col gap-8 lg:flex-row lg:items-start xl:gap-12'>
-                <div className='prose dark:prose-invert w-full max-w-full min-w-0 flex-1'>
+                <div className='prose w-full max-w-none min-w-0 flex-1'>
                   <Editor options={{ content, editable: false }} />
                 </div>
                 <TableOfContents content={content ?? ''} />

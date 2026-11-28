@@ -85,8 +85,7 @@ const SettingsForm = (props: SettingsFormProps) => {
       github: github ?? '',
       twitter: twitter ?? '',
       linkedin: linkedin ?? '',
-      theme:
-        theme === 'light' || theme === 'dark' || theme === 'system' ? theme : 'system'
+      theme: theme === 'light' || theme === 'dark' || theme === 'system' ? theme : 'system'
     }
   })
 
@@ -118,10 +117,10 @@ const SettingsForm = (props: SettingsFormProps) => {
           {isDirty ? (
             <>
               <span className='relative flex size-1.5'>
-                <span className='absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-500 opacity-75' />
-                <span className='relative inline-flex size-1.5 rounded-full bg-amber-500' />
+                <span className='bg-warning absolute inline-flex h-full w-full animate-ping rounded-full opacity-75' />
+                <span className='bg-warning relative inline-flex size-1.5 rounded-full' />
               </span>
-              <span className='text-amber-600 dark:text-amber-400'>Unsaved changes</span>
+              <span className='text-warning font-semibold'>Unsaved changes</span>
             </>
           ) : (
             <span>All changes saved</span>

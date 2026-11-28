@@ -102,37 +102,37 @@ export const DiagramNodeView = ({ node, updateAttributes, editor }: ReactNodeVie
         const mermaidModule = await import('mermaid')
         const mermaid = mermaidModule.default
 
-        // Theme-tuned base palette for OKLCH monochromatic aesthetic
+        // Theme-tuned base palette for OKLCH archival & carbon blueprint aesthetic
         const lightColors = {
           background: 'transparent',
-          primaryColor: 'oklch(0.985 0.006 92)',
-          primaryTextColor: 'oklch(0.12 0 0)',
-          primaryBorderColor: 'oklch(0.12 0 0)',
-          lineColor: 'oklch(0.12 0 0)',
-          secondaryColor: 'oklch(0.92 0.008 92)',
-          tertiaryColor: 'oklch(0.965 0.012 92)',
-          mainBkg: 'oklch(0.985 0.006 92)',
-          nodeBorder: 'oklch(0.12 0 0)',
-          clusterBkg: 'oklch(0.94 0.008 92)',
-          clusterBorder: 'oklch(0.12 0 0)',
-          edgeLabelBackground: 'oklch(0.965 0.012 92)',
+          primaryColor: 'oklch(0.992 0.004 88)',
+          primaryTextColor: 'oklch(0.155 0.012 250)',
+          primaryBorderColor: 'oklch(0.25 0.015 250)',
+          lineColor: 'oklch(0.25 0.015 250)',
+          secondaryColor: 'oklch(0.935 0.009 88)',
+          tertiaryColor: 'oklch(0.972 0.008 88)',
+          mainBkg: 'oklch(0.992 0.004 88)',
+          nodeBorder: 'oklch(0.25 0.015 250)',
+          clusterBkg: 'oklch(0.938 0.008 88)',
+          clusterBorder: 'oklch(0.45 0.015 250)',
+          edgeLabelBackground: 'oklch(0.972 0.008 88)',
           fontFamily: 'ui-monospace, monospace',
           fontSize: '12px'
         }
 
         const darkColors = {
           background: 'transparent',
-          primaryColor: 'oklch(0.10 0 0)',
-          primaryTextColor: 'oklch(0.98 0 0)',
-          primaryBorderColor: 'oklch(1 0 0 / 28%)',
-          lineColor: 'oklch(0.98 0 0 / 75%)',
-          secondaryColor: 'oklch(0.14 0 0)',
-          tertiaryColor: 'oklch(0.08 0 0)',
-          mainBkg: 'oklch(0.10 0 0)',
-          nodeBorder: 'oklch(1 0 0 / 28%)',
-          clusterBkg: 'oklch(0.08 0 0)',
-          clusterBorder: 'oklch(1 0 0 / 22%)',
-          edgeLabelBackground: 'oklch(0.10 0 0)',
+          primaryColor: 'oklch(0.182 0.009 255)',
+          primaryTextColor: 'oklch(0.945 0.005 88)',
+          primaryBorderColor: 'oklch(0.43 0.014 255)',
+          lineColor: 'oklch(0.75 0.01 250)',
+          secondaryColor: 'oklch(0.225 0.01 255)',
+          tertiaryColor: 'oklch(0.145 0.008 255)',
+          mainBkg: 'oklch(0.182 0.009 255)',
+          nodeBorder: 'oklch(0.43 0.014 255)',
+          clusterBkg: 'oklch(0.155 0.008 255)',
+          clusterBorder: 'oklch(0.36 0.012 255)',
+          edgeLabelBackground: 'oklch(0.182 0.009 255)',
           fontFamily: 'ui-monospace, monospace',
           fontSize: '12px'
         }

@@ -34,7 +34,7 @@ const DialogOverlay = (props: DialogOverlayProps) => {
     <DialogPrimitive.Overlay
       data-slot='dialog-overlay'
       className={cn(
-        'fixed inset-0 z-50 bg-black/50',
+        'fixed inset-0 z-50 bg-black/60 backdrop-blur-[2px]',
         'data-[state=open]:animate-in data-[state=open]:fade-in-0',
         'data-[state=closed]:animate-out data-[state=closed]:fade-out-0',
         className
@@ -57,7 +57,7 @@ const DialogContent = (props: DialogContentProps) => {
       <DialogPrimitive.Content
         data-slot='dialog-content'
         className={cn(
-          'bg-background fixed left-1/2 top-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-lg border p-6 shadow-lg duration-200',
+          'bg-card text-card-foreground border-border fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 overscroll-contain rounded-none border p-6 shadow-xl duration-200',
           'sm:max-w-lg',
           'data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',
           'data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95',
@@ -69,9 +69,9 @@ const DialogContent = (props: DialogContentProps) => {
         {showCloseButton && (
           <DialogPrimitive.Close
             className={cn(
-              'ring-offset-background rounded-xs absolute right-4 top-4 opacity-70 transition-opacity',
+              'ring-offset-background absolute top-4 right-4 rounded-none opacity-70 transition-opacity',
               'hover:opacity-100',
-              'focus:ring-ring focus:outline-hidden focus:ring-2 focus:ring-offset-2',
+              'focus:ring-ring focus:ring-2 focus:ring-offset-2 focus:outline-hidden',
               'disabled:pointer-events-none',
               'data-[state=open]:bg-accent data-[state=open]:text-muted-foreground',
               '[&_svg]:pointer-events-none [&_svg]:shrink-0',
@@ -95,7 +95,7 @@ const DialogHeader = (props: DialogHeaderProps) => {
   return (
     <div
       data-slot='dialog-header'
-      className={cn('flex flex-col gap-2 text-center sm:text-left pr-6', className)}
+      className={cn('flex flex-col gap-2 pr-6 text-center sm:text-left', className)}
       {...rest}
     />
   )
@@ -109,7 +109,10 @@ const DialogTitle = (props: DialogTitleProps) => {
   return (
     <DialogPrimitive.Title
       data-slot='dialog-title'
-      className={cn('text-lg font-semibold leading-none border-none p-0 before:hidden w-auto', className)}
+      className={cn(
+        'w-auto border-none p-0 text-lg leading-none font-semibold before:hidden',
+        className
+      )}
       {...rest}
     />
   )

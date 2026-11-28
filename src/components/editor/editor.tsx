@@ -49,7 +49,7 @@ export const Editor = (props: EditorProps) => {
     editorProps: {
       attributes: {
         class: cn(
-          'prose dark:prose-invert max-w-none flex-1 transition-all focus:outline-none',
+          'prose max-w-none flex-1 transition-all focus:outline-none',
           isEditable ? 'min-h-[320px] p-3 sm:min-h-[380px] sm:p-5' : 'min-h-0 p-0'
         ),
         placeholder

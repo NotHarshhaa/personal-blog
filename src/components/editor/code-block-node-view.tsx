@@ -205,17 +205,18 @@ export const CodeBlockNodeView = (props: ReactNodeViewProps) => {
     )
   }
 
-  // ── Reading mode: card style ported from the reference portfolio — rounded
-  // mat surface, mono title row, hover-reveal copy button with fade overlay. ──
+  // ── Reading mode: unified sharp blueprint code card — crisp hairline border,
+  // distinct recessed code surface, always-accessible copy button. ──
   return (
     <NodeViewWrapper
       as='figure'
-      className='not-prose code-block-figure group/code border-border bg-card relative my-6 w-full rounded-xl border p-1'
+      className='not-prose code-block-figure group/code border-border bg-card relative my-6 w-full rounded-none border'
     >
+      <CornerBrackets className='size-2 opacity-60' />
       {/* Title row */}
-      <figcaption className='text-muted-foreground flex items-center gap-2 py-2 pr-12 pl-3 font-mono text-[11px] tracking-wider uppercase select-none'>
+      <figcaption className='border-border bg-muted/35 text-muted-foreground flex items-center gap-2 border-b py-2 pr-12 pl-3 font-mono text-[11px] tracking-wider uppercase select-none'>
         {languageIcon}
-        <span>{selectedLanguageLabel}</span>
+        <span className='text-foreground font-semibold'>{selectedLanguageLabel}</span>
         {filename && (
           <>
             <span className='text-border'>/</span>
@@ -232,11 +233,11 @@ export const CodeBlockNodeView = (props: ReactNodeViewProps) => {
       </figcaption>
 
       {/* Code surface */}
-      <div className='bg-background/40 relative flex w-full max-w-full overflow-x-auto overscroll-x-contain rounded-lg py-4'>
+      <div className='bg-muted/45 relative flex w-full max-w-full overflow-x-auto overscroll-x-contain py-4'>
         {showLineNumbers && (
           <div
             aria-hidden
-            className='border-border/60 bg-background/40 text-muted-foreground/50 sticky left-0 z-[1] flex shrink-0 flex-col border-r px-3 text-right font-mono text-[13px] leading-relaxed select-none'
+            className='border-border bg-muted/60 text-muted-foreground/80 sticky left-0 z-[1] flex shrink-0 flex-col border-r px-3 text-right font-mono text-[13px] leading-relaxed select-none'
           >
             {Array.from({ length: lineCount }, (_, i) => (
               <span key={i}>{i + 1}</span>
@@ -259,17 +260,17 @@ export const CodeBlockNodeView = (props: ReactNodeViewProps) => {
         {/* Fade overlay behind the copy button so it stays readable over code */}
         <div
           aria-hidden
-          className='pointer-events-none absolute top-0 right-0 z-[1] h-9 w-14 rounded-tr-lg opacity-0 transition-opacity group-hover/code:opacity-100'
+          className='pointer-events-none absolute top-0 right-0 z-[1] h-9 w-14 opacity-75 transition-opacity group-hover/code:opacity-100'
           style={{
-            backgroundImage: 'linear-gradient(to right, transparent, var(--background))'
+            backgroundImage: 'linear-gradient(to right, transparent, var(--muted))'
           }}
         />
         <button
           type='button'
           onClick={handleCopy}
           className={cn(
-            'border-border bg-background text-muted-foreground hover:text-foreground absolute top-1.5 right-1.5 z-[2] inline-flex size-7 cursor-pointer items-center justify-center rounded-md border transition-opacity group-hover/code:opacity-100 focus-visible:opacity-100',
-            copied ? 'text-foreground opacity-100' : 'opacity-0'
+            'border-border bg-card text-muted-foreground hover:border-foreground hover:text-foreground absolute top-2 right-2 z-[2] inline-flex size-7 cursor-pointer items-center justify-center rounded-none border transition-opacity focus-visible:opacity-100 sm:opacity-70 sm:group-hover/code:opacity-100',
+            copied && 'border-foreground text-foreground opacity-100'
           )}
           title='Copy code to clipboard'
           aria-label='Copy code to clipboard'

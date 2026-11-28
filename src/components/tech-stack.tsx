@@ -237,20 +237,20 @@ export const TechStack = ({ className }: { className?: string }) => {
             return (
               <div
                 key={tech.name}
-                className='hover-fill group border-border/80 bg-background/80 hover:border-foreground hover:bg-muted/30 flex items-center justify-between border px-3 py-2 transition-all duration-150'
+                className='hover-fill group border-border bg-background hover:border-foreground hover:bg-muted/40 flex items-center justify-between border px-3 py-2 transition-[color,background-color,border-color] duration-150'
                 title={`${tech.name} — ${tech.proficiency} proficiency`}
               >
                 <div className='min-w-0 pr-2'>
                   <p className='font-heading text-foreground truncate text-xs font-medium'>
                     {tech.name}
                   </p>
-                  <p className='text-muted-foreground/60 font-mono text-[9px] tracking-wider uppercase'>
+                  <p className='text-muted-foreground font-mono text-[9px] tracking-wider uppercase'>
                     {tech.category}
                   </p>
                 </div>
 
                 <div className='flex shrink-0 flex-col items-end gap-1'>
-                  <span className='border-border/60 bg-muted/40 text-muted-foreground border px-1.5 py-0.5 font-mono text-[9px] uppercase'>
+                  <span className='border-border bg-muted/50 text-muted-foreground border px-1.5 py-0.5 font-mono text-[9px] uppercase'>
                     {tech.tag}
                   </span>
                   <div aria-hidden className='flex items-center gap-0.5'>
@@ -258,7 +258,7 @@ export const TechStack = ({ className }: { className?: string }) => {
                       <span
                         key={dot}
                         className={cn(
-                          'border-muted-foreground/40 size-1 border',
+                          'border-muted-foreground/50 size-1 border',
                           dot <= level && 'border-foreground bg-foreground'
                         )}
                       />

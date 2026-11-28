@@ -43,7 +43,7 @@ const UserRoleBadge = ({ role, className, compact = false }: UserRoleBadgeProps)
     <Badge
       aria-label={config.label}
       className={cn(
-        'gap-1 rounded-sm border px-2 py-1 font-semibold tracking-[0.08em] uppercase',
+        'gap-1 rounded-none border px-2 py-1 font-semibold tracking-[0.08em] uppercase',
         'transition-colors',
         config.className,
         compact && 'px-1.5 py-0.5 text-[10px]',

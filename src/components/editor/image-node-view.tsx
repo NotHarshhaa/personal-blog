@@ -63,7 +63,7 @@ export const ImageNodeView = (props: ReactNodeViewProps) => {
   const renderCaption = () => {
     if (caption) {
       return (
-        <figcaption className='mt-2.5 max-w-3xl px-2 text-center font-sans text-xs italic leading-relaxed text-muted-foreground sm:text-sm'>
+        <figcaption className='text-muted-foreground mt-2.5 max-w-3xl px-2 text-center font-sans text-xs leading-relaxed italic sm:text-sm'>
           {caption}
         </figcaption>
       )
@@ -86,7 +86,7 @@ export const ImageNodeView = (props: ReactNodeViewProps) => {
                 e.currentTarget.blur()
               }
             }}
-            className='border-dashed border-border/60 bg-transparent px-2 py-0.5 text-center font-sans text-xs italic text-muted-foreground placeholder:text-muted-foreground/40 focus:border-solid focus:outline-none'
+            className='border-border/60 text-muted-foreground placeholder:text-muted-foreground/40 border-dashed bg-transparent px-2 py-0.5 text-center font-sans text-xs italic focus:border-solid focus:outline-none'
           />
         </div>
       )
@@ -97,27 +97,27 @@ export const ImageNodeView = (props: ReactNodeViewProps) => {
   return (
     <NodeViewWrapper className='image-node-view-wrapper not-prose my-6 w-full'>
       <figure className='group relative mx-auto flex flex-col items-center justify-center text-center'>
-        {/* Main Image with rounded corners and click-to-expand */}
+        {/* Main Image with blueprint frame and click-to-expand */}
         <button
           type='button'
           aria-label='View image full size'
           onClick={() => setIsLightboxOpen(true)}
           className={cn(
-            'group/img relative inline-block max-w-full cursor-zoom-in overflow-hidden rounded-2xl border border-border/80 bg-black/90 p-0 shadow-sm transition-all duration-300',
-            'hover:border-foreground/50 hover:shadow-md focus:outline-none'
+            'group/img border-border bg-muted/40 relative inline-block max-w-full cursor-zoom-in overflow-hidden rounded-none border p-0 shadow-sm transition-[border-color,box-shadow] duration-200',
+            'hover:border-border-strong hover:shadow-md focus-visible:outline-none'
           )}
         >
           {/* eslint-disable-next-line @next/next/no-img-element -- rendered inside dynamic ProseMirror node view */}
           <img
             src={src}
             alt={alt || caption || 'Blog image'}
-            className='block max-h-[550px] w-auto max-w-full rounded-2xl object-contain transition-transform duration-300 group-hover/img:scale-[1.01]'
+            className='block max-h-[550px] w-auto max-w-full rounded-none object-contain outline-1 -outline-offset-1 outline-black/10 transition-transform duration-300 group-hover/img:scale-[1.01] dark:outline-white/10'
             loading='lazy'
           />
 
           {/* Hover overlay hint */}
-          <div className='pointer-events-none absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 transition-opacity duration-200 group-hover/img:opacity-100'>
-            <span className='inline-flex items-center gap-1.5 rounded-full bg-black/75 px-3 py-1 font-mono text-[11px] font-medium text-white shadow-lg backdrop-blur-sm'>
+          <div className='pointer-events-none absolute inset-0 flex items-center justify-center bg-black/25 opacity-0 transition-opacity duration-200 group-hover/img:opacity-100'>
+            <span className='inline-flex items-center gap-1.5 rounded-none border border-white/25 bg-black/80 px-3 py-1 font-mono text-[11px] font-medium text-white shadow-lg backdrop-blur-sm'>
               <Maximize2 className='size-3.5' />
               <span>Click to expand</span>
             </span>
@@ -129,13 +129,14 @@ export const ImageNodeView = (props: ReactNodeViewProps) => {
       </figure>
 
       {/* Lightbox Fullscreen View (Image 2 style) */}
-      {isLightboxOpen && mounted &&
+      {isLightboxOpen &&
+        mounted &&
         createPortal(
           <div
             role='dialog'
             aria-modal='true'
             aria-label={caption || 'Fullscreen image preview'}
-            className='fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black/95 backdrop-blur-md animate-in fade-in-0 duration-200 select-none'
+            className='animate-in fade-in-0 fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-black/95 backdrop-blur-md duration-200 select-none'
           >
             {/* Backdrop click to close */}
             <button
@@ -183,19 +184,19 @@ export const ImageNodeView = (props: ReactNodeViewProps) => {
             </div>
 
             {/* Centered Image display */}
-            <div className='relative z-10 flex max-h-[85vh] max-w-[95vw] items-center justify-center p-2 pointer-events-none'>
+            <div className='pointer-events-none relative z-10 flex max-h-[85vh] max-w-[95vw] items-center justify-center p-2'>
               {/* eslint-disable-next-line @next/next/no-img-element -- rendered inside dynamic ProseMirror node view */}
               <img
                 src={src}
                 alt={alt || caption || 'Expanded preview'}
-                className='max-h-[82vh] max-w-[94vw] object-contain rounded-lg shadow-2xl pointer-events-auto'
+                className='pointer-events-auto max-h-[82vh] max-w-[94vw] rounded-none object-contain shadow-2xl'
               />
             </div>
 
             {/* Bottom Caption Bar */}
             {caption && (
-              <footer className='pointer-events-none absolute bottom-5 left-6 right-6 z-20 text-left'>
-                <p className='max-w-4xl font-mono text-xs text-neutral-300 drop-shadow-md sm:text-sm italic'>
+              <footer className='pointer-events-none absolute right-6 bottom-5 left-6 z-20 text-left'>
+                <p className='max-w-4xl font-mono text-xs text-neutral-300 italic drop-shadow-md sm:text-sm'>
                   {caption}
                 </p>
               </footer>

@@ -346,6 +346,13 @@ export function AudioDispatchProvider(props: Readonly<AudioDispatchProviderProps
     const textSnippet = (content ?? '')
       .replaceAll(/<pre[\s\S]*?<\/pre>/gi, ' [code snippet omitted for audio briefing] ')
       .replaceAll(/<[^>]*>?/g, ' ')
+      .replaceAll('&nbsp;', ' ')
+      .replaceAll('&amp;', '&')
+      .replaceAll('&lt;', '<')
+      .replaceAll('&gt;', '>')
+      .replaceAll('&quot;', '"')
+      .replaceAll('&#39;', "'")
+      .replaceAll('&#x27;', "'")
       .replaceAll(/\s+/g, ' ')
       .trim()
       .slice(0, 4500) // Narrate headline + key architectural points
@@ -353,6 +360,13 @@ export function AudioDispatchProvider(props: Readonly<AudioDispatchProviderProps
     const descSnippet = description ? `${description}. ` : ''
     return `${title}. ${descSnippet}Beginning architectural overview. ${textSnippet}`
   }, [title, description, content])
+
+  // Keep Web Speech estimated duration synced to actual narration character length (~14 chars/s)
+  useEffect(() => {
+    if (audioUrl) return
+    const estimated = Math.max(15, Math.round(narrationText.length / 14))
+    setAudioDuration(estimated)
+  }, [audioUrl, narrationText])
 
   useEffect(() => {
     playbackRateRef.current = playbackRate
@@ -902,24 +916,43 @@ export function AudioDispatchTopBar() {
   } = useAudioDispatch()
 
   const [isCollapsed, setIsCollapsed] = useState(false)
+  const [hasScrolledPastHero, setHasScrolledPastHero] = useState(false)
+
+  useEffect(() => {
+    let ticking = false
+    const updateScroll = () => {
+      setHasScrolledPastHero(globalThis.scrollY > 440)
+      ticking = false
+    }
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true
+        requestAnimationFrame(updateScroll)
+      }
+    }
+    globalThis.addEventListener('scroll', onScroll, { passive: true })
+    updateScroll()
+    return () => globalThis.removeEventListener('scroll', onScroll)
+  }, [])
+
   const progressRatio = duration > 0 ? currentTime / duration : 0
   let playbackStatus = 'READY'
   if (isPlaying) playbackStatus = 'ON AIR'
   else if (currentTime > 0) playbackStatus = 'PAUSED'
 
-  // Only render on deep dive articles with a working synthesis engine
-  if (!isDeepDive || !audioAvailable) return null
+  // Only dock at top once scrolled past the in-article AudioDispatchHero (avoid duplicating at top)
+  if (!isDeepDive || !audioAvailable || !hasScrolledPastHero) return null
 
   if (isCollapsed) {
     return (
       <aside
         aria-label='Audio dispatch briefing player (collapsed)'
-        className='fixed top-[3px] right-3 z-40 sm:right-6'
+        className='fixed top-[57px] right-4 z-30 sm:right-6 lg:right-8'
       >
         <button
           type='button'
           onClick={() => setIsCollapsed(false)}
-          className='border-border bg-background/95 text-foreground hover:border-foreground flex cursor-pointer items-center gap-1.5 border border-t-0 px-2.5 py-1 font-mono text-[10px] tracking-wider uppercase shadow-sm backdrop-blur-md transition-colors'
+          className='border-border bg-card/95 text-foreground hover:border-foreground flex cursor-pointer items-center gap-1.5 border border-t-0 px-2.5 py-1 font-mono text-[10px] tracking-wider uppercase shadow-sm backdrop-blur-md transition-colors'
           title='Expand audio player'
           aria-label='Expand audio player'
         >
@@ -934,9 +967,9 @@ export function AudioDispatchTopBar() {
   return (
     <aside
       aria-label='Audio dispatch briefing player'
-      className='border-border bg-background/95 fixed inset-x-0 top-[3px] z-40 border-b font-mono backdrop-blur-md transition-transform duration-200 select-none'
+      className='border-border bg-card/95 fixed inset-x-0 top-[57px] z-30 border-b font-mono shadow-sm backdrop-blur-md transition-transform duration-200 select-none'
     >
-      <div className='mx-auto flex h-9 max-w-7xl items-center justify-between gap-3 px-3 text-xs sm:px-6'>
+      <div className='mx-auto flex h-10 max-w-[90rem] items-center justify-between gap-3 px-4 text-xs sm:px-6 lg:px-8'>
         {/* Left: Play/Pause & Telemetry Tag */}
         <div className='flex items-center gap-2'>
           <button
@@ -974,7 +1007,7 @@ export function AudioDispatchTopBar() {
           aria-valuetext={`${formatTime(currentTime)} of ${formatTime(duration)}`}
           onClick={(e) => {
             const rect = e.currentTarget.getBoundingClientRect()
-            const clickPos = (e.clientX - rect.left) / rect.width
+            const clickPos = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width))
             seek(clickPos)
           }}
           onKeyDown={(e) => {
@@ -987,7 +1020,7 @@ export function AudioDispatchTopBar() {
         >
           {waveformHeights.map((amp, idx) => {
             const barProgress = idx / waveformHeights.length
-            const isPassed = barProgress <= progressRatio
+            const isPassed = progressRatio > 0 && barProgress <= progressRatio
             const heightPx = Math.max(4, Math.round(amp * 18))
 
             return (
@@ -1106,7 +1139,7 @@ export function AudioDispatchHero() {
           <span className='text-foreground text-xs font-bold tracking-wider uppercase'>
             Audio Dispatch // Commuter Briefing
           </span>
-          <span className='border-border/80 bg-muted/40 py-0.2 text-muted-foreground border px-1.5 text-[9px] uppercase'>
+          <span className='border-border/80 bg-muted/40 text-muted-foreground border px-1.5 py-0.5 text-[9px] uppercase'>
             DEEP DIVE ({minutes} MIN READ)
           </span>
         </div>
@@ -1129,7 +1162,7 @@ export function AudioDispatchHero() {
           aria-valuetext={`${formatTime(currentTime)} of ${formatTime(duration)}`}
           onClick={(e) => {
             const rect = e.currentTarget.getBoundingClientRect()
-            const clickPos = (e.clientX - rect.left) / rect.width
+            const clickPos = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width))
             seek(clickPos)
           }}
           onKeyDown={(e) => {
@@ -1142,7 +1175,7 @@ export function AudioDispatchHero() {
         >
           {waveformHeights.map((amp, idx) => {
             const barProgress = idx / waveformHeights.length
-            const isPassed = barProgress <= progressRatio
+            const isPassed = progressRatio > 0 && barProgress <= progressRatio
             const heightPx = Math.max(6, Math.round(amp * 38))
 
             return (

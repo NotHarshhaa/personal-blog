@@ -82,32 +82,41 @@ body {
 [data-panel] {
   background-image: linear-gradient(
     180deg,
-    color-mix(in oklch, var(--foreground) 1.5%, transparent),
-    transparent 9rem
+    color-mix(in oklch, var(--foreground) 1.2%, transparent),
+    transparent 8rem
   );
   box-shadow:
-    0 1px 2px rgb(0 0 0 / 0.035),
-    0 8px 22px rgb(0 0 0 / 0.035);
+    0 1px 2px oklch(0 0 0 / 0.04),
+    0 6px 18px oklch(0 0 0 / 0.035);
 }
 
 [data-panel-interactive] {
-  transition-property: border-color, box-shadow;
+  transition-property: border-color, box-shadow, transform;
   transition-duration: 150ms;
-  transition-timing-function: ease-out;
+  transition-timing-function: cubic-bezier(0.2, 0, 0, 1);
 }
 
 @media (hover: hover) {
   [data-panel-interactive]:hover {
+    border-color: var(--border-strong);
     box-shadow:
-      0 2px 4px rgb(0 0 0 / 0.06),
-      0 12px 28px rgb(0 0 0 / 0.07);
+      0 2px 6px oklch(0 0 0 / 0.06),
+      0 12px 28px oklch(0 0 0 / 0.07);
   }
 
   .dark [data-panel-interactive]:hover {
+    border-color: var(--border-strong);
     box-shadow:
-      inset 0 1px 0 color-mix(in oklch, var(--foreground) 9%, transparent),
-      0 12px 28px rgb(0 0 0 / 0.3);
+      inset 0 1px 0 oklch(1 0 0 / 0.08),
+      0 12px 28px oklch(0 0 0 / 0.36);
   }
+}
+
+.dark [data-panel] {
+  background-image: linear-gradient(180deg, oklch(1 0 0 / 0.025), transparent 8rem);
+  box-shadow:
+    inset 0 1px 0 oklch(1 0 0 / 0.05),
+    0 8px 24px oklch(0 0 0 / 0.28);
 }
 
 [data-slot='button'][data-corners]::before {
@@ -137,12 +146,6 @@ body {
 
 [data-slot='button'][data-corners]:focus-visible::before {
   opacity: 1;
-}
-
-.dark [data-panel] {
-  box-shadow:
-    inset 0 1px 0 color-mix(in oklch, var(--foreground) 7%, transparent),
-    0 8px 22px rgb(0 0 0 / 0.22);
 }
 
 /* Optimize images */
@@ -246,6 +249,7 @@ img {
 
 html {
   scroll-padding-top: 5.5rem;
+  background-color: var(--background);
 }
 
 /* —— Blueprint hover (matches HoverMark): diagonal hatch fill + corner brackets,
@@ -270,8 +274,8 @@ html {
     -45deg,
     transparent,
     transparent 2px,
-    color-mix(in oklch, var(--foreground) 9%, transparent) 2px,
-    color-mix(in oklch, var(--foreground) 9%, transparent) 3px
+    color-mix(in oklch, var(--foreground) 8%, transparent) 2px,
+    color-mix(in oklch, var(--foreground) 8%, transparent) 3px
   );
 }
 
@@ -291,8 +295,8 @@ html {
       -45deg,
       transparent,
       transparent 2px,
-      color-mix(in oklch, var(--foreground) 9%, transparent) 2px,
-      color-mix(in oklch, var(--foreground) 9%, transparent) 3px
+      color-mix(in oklch, var(--foreground) 8%, transparent) 2px,
+      color-mix(in oklch, var(--foreground) 8%, transparent) 3px
     );
   background-size:
     0.75rem 2px,
@@ -316,9 +320,14 @@ html {
     left top;
 }
 
-.hover-fill:hover::before,
+@media (hover: hover) {
+  .hover-fill:hover::before,
+  .hover-hatch:hover::before {
+    opacity: 1;
+  }
+}
+
 .hover-fill:focus-visible::before,
-.hover-hatch:hover::before,
 .hover-hatch:focus-visible::before {
   opacity: 1;
 }
@@ -343,7 +352,12 @@ html {
   transition: opacity 0.15s;
 }
 
-.hover-hatch[data-hover-label]:hover::after,
+@media (hover: hover) {
+  .hover-hatch[data-hover-label]:hover::after {
+    opacity: 1;
+  }
+}
+
 .hover-hatch[data-hover-label]:focus-visible::after {
   opacity: 1;
 }
@@ -503,18 +517,6 @@ html {
   }
 }
 
-/* Smooth scrolling improvements */
-html {
-  scroll-padding-top: 72px;
-  background-color: var(--background);
-}
-
-/* Better focus styles */
-:focus-visible {
-  outline: 2px solid var(--ring);
-  outline-offset: 2px;
-}
-
 /* Improve button hover states */
 button:not(:disabled):hover {
   cursor: pointer;
@@ -592,7 +594,9 @@ a:not([class]):hover {
   border: 1px solid var(--foreground) !important;
   background: var(--foreground) !important;
   color: var(--background) !important;
-  transition: all 0.15s ease !important;
+  transition-property: color, background-color, border-color !important;
+  transition-duration: 150ms !important;
+  transition-timing-function: ease-out !important;
   cursor: pointer !important;
 }
 
@@ -646,21 +650,21 @@ a:not([class]):hover {
 }
 
 .dark {
-  --code-fg: #ffffff;
-  --code-comment: #8b8b8b;
-  --code-keyword: #a0a0a0;
-  --code-string: #99ffe4;
-  --code-constant: #ffc799;
-  --code-attr: #a0a0a0;
-  --code-entity: #ffc799;
-  --code-builtin: #ffc799;
-  --code-tag: #ffc799;
-  --code-section: #ffc799;
-  --code-bullet: #a0a0a0;
-  --code-inserted: #99ffe4;
-  --code-inserted-bg: rgba(153, 255, 228, 0.08);
-  --code-deleted: #ff8080;
-  --code-deleted-bg: rgba(255, 128, 128, 0.08);
+  --code-fg: #e6edf3;
+  --code-comment: #8b949e;
+  --code-keyword: #ff7b72;
+  --code-string: #7ee787;
+  --code-constant: #79c0ff;
+  --code-attr: #79c0ff;
+  --code-entity: #d2a8ff;
+  --code-builtin: #ffa657;
+  --code-tag: #7ee787;
+  --code-section: #79c0ff;
+  --code-bullet: #f2cc60;
+  --code-inserted: #7ee787;
+  --code-inserted-bg: oklch(0.73 0.145 155 / 12%);
+  --code-deleted: #ff7b72;
+  --code-deleted-bg: oklch(0.68 0.185 22 / 12%);
 }
 
 .hljs {

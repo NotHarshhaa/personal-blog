@@ -137,8 +137,8 @@ const RoadmapsPage = async () => {
       <Frame as='header'>
         <FrameHeader label='CURRICULUM // ENGINEERING SYLLABUS'>
           <div className='text-muted-foreground flex items-center gap-2 font-mono text-[10px]'>
-            <span className='border-border/80 bg-muted/30 inline-flex items-center gap-1 border px-1.5 py-0.5'>
-              <span className='bg-foreground size-1.5 rounded-full' />
+            <span className='border-border bg-muted/40 inline-flex items-center gap-1.5 border px-2 py-0.5'>
+              <span className='bg-success size-1.5 rounded-full' />
               <span>{tracks.length} PRODUCTION TRACKS ACTIVE</span>
             </span>
           </div>

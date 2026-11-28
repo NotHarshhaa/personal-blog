@@ -51,34 +51,34 @@ export const HudFooter = () => {
 
   return (
     <footer
-      aria-label="System telemetry"
-      className="pointer-events-none fixed inset-x-0 bottom-0 z-40 hidden border-t border-border/60 bg-background/80 px-4 py-2 font-mono text-[10px] tracking-wider text-muted-foreground uppercase backdrop-blur-xs select-none sm:block lg:px-8"
+      aria-label='System telemetry'
+      className='border-border/60 bg-background/80 text-muted-foreground pointer-events-none fixed inset-x-0 bottom-0 z-40 hidden border-t px-4 py-2 font-mono text-[10px] tracking-wider uppercase backdrop-blur-xs select-none sm:block lg:px-8'
     >
-      <div className="mx-auto flex w-full max-w-[90rem] items-center justify-between">
+      <div className='mx-auto flex w-full max-w-[90rem] items-center justify-between'>
         {/* Left Telemetry */}
-        <div className="flex items-center gap-3">
-          <span className="flex items-center gap-1.5">
-            <span className="size-2 border border-foreground/60" />
+        <div className='flex items-center gap-3'>
+          <span className='flex items-center gap-1.5'>
+            <span className='border-foreground/60 size-2 border' />
             <span>CLIENT: {browserInfo}</span>
           </span>
-          <span className="text-border">/</span>
+          <span className='text-border'>/</span>
           <span>
             VIEWPORT: {viewport.width}x{viewport.height}
           </span>
-          <span className="hidden text-border md:inline">/</span>
-          <span className="hidden md:inline">DEPTH: 24BIT</span>
+          <span className='text-border hidden md:inline'>/</span>
+          <span className='hidden md:inline'>DEPTH: 24BIT</span>
         </div>
 
         {/* Right Telemetry */}
-        <div className="flex items-center gap-3">
-          <span className="hidden sm:inline">UTC: {time.utc}</span>
-          <span className="hidden sm:inline text-border">/</span>
+        <div className='flex items-center gap-3'>
+          <span className='hidden sm:inline'>UTC: {time.utc}</span>
+          <span className='text-border hidden sm:inline'>/</span>
           <span>LOCAL: {time.local}</span>
-          <span className="hidden md:inline text-border">/</span>
-          <span className="hidden md:inline">UNIX: {time.unix}</span>
-          <span className="text-border">/</span>
-          <span className="flex items-center gap-1.5 font-bold text-foreground">
-            <span className="size-1.5 rounded-full bg-foreground animate-pulse" />
+          <span className='text-border hidden md:inline'>/</span>
+          <span className='hidden md:inline'>UNIX: {time.unix}</span>
+          <span className='text-border'>/</span>
+          <span className='text-foreground flex items-center gap-1.5 font-bold'>
+            <span className='bg-success size-1.5 animate-pulse rounded-full' />
             STATUS: ACTIVE
           </span>
         </div>

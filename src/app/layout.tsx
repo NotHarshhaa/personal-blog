@@ -128,8 +128,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#f3f2e8' },
-    { media: '(prefers-color-scheme: dark)', color: '#09090b' }
+    { media: '(prefers-color-scheme: light)', color: '#f6f5ef' },
+    { media: '(prefers-color-scheme: dark)', color: '#14171f' }
   ]
 }
 
@@ -178,12 +178,10 @@ const RootLayout = (props: RootLayoutProps) => {
         </a>
         <TopTicker />
         <Providers>
-          <div className='px-4 pt-3 sm:px-6 sm:pt-5 lg:px-8'>
-            <Header />
-          </div>
+          <Header />
           <main
             id='main-content'
-            className='mx-auto min-h-[calc(100vh-14rem)] w-full max-w-[90rem] px-4 pt-6 pb-20 sm:px-6 sm:pt-10 sm:pb-24 lg:px-8'
+            className='mx-auto min-h-[calc(100vh-14rem)] w-full max-w-[90rem] px-4 pt-6 pb-24 sm:px-6 sm:pt-8 sm:pb-28 lg:px-8'
           >
             {children}
           </main>

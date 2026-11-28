@@ -370,10 +370,10 @@ const TerminalConsole = ({ posts, className }: Readonly<TerminalConsoleProps>) =
               key={line.id}
               className={cn(
                 'break-words whitespace-pre-wrap',
-                line.kind === 'system' && 'text-muted-foreground',
-                line.kind === 'input' && 'text-muted-foreground/80',
-                line.kind === 'error' && 'text-foreground',
-                line.kind === 'output' && 'text-foreground/90'
+                line.kind === 'system' && 'text-info',
+                line.kind === 'input' && 'text-muted-foreground',
+                line.kind === 'error' && 'text-destructive',
+                line.kind === 'output' && 'text-foreground'
               )}
             >
               {line.kind === 'error' && <span aria-hidden>✗ </span>}
@@ -408,7 +408,7 @@ const TerminalConsole = ({ posts, className }: Readonly<TerminalConsoleProps>) =
         </div>
       </label>
 
-      <div className='border-border text-muted-foreground/70 flex items-center justify-between gap-2 border-t px-4 py-2 font-mono text-[9px] tracking-widest uppercase sm:px-5'>
+      <div className='border-border text-muted-foreground flex items-center justify-between gap-2 border-t px-4 py-2 font-mono text-[9px] tracking-widest uppercase sm:px-5'>
         <span>type 'help' — ↑↓ history — tab completes</span>
         <span className='hidden sm:inline'>session: guest // clearance: read-only</span>
       </div>

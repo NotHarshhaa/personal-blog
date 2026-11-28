@@ -172,7 +172,7 @@ const Menu = ({ user }: MenuProps) => {
 
         <div className='border-border bg-muted/30 text-muted-foreground flex items-center justify-between border-t px-3.5 py-2 font-mono text-[9px] tracking-widest uppercase'>
           <span className='inline-flex items-center gap-1.5'>
-            <span className='bg-foreground size-1.5 animate-pulse rounded-full' aria-hidden />
+            <span className='bg-success size-1.5 animate-pulse rounded-full' aria-hidden />
             <span>Session active</span>
           </span>
           <span>v2.4</span>

@@ -131,7 +131,7 @@ const RelatedPosts = async ({ currentPostId, currentPostTags }: RelatedPostsProp
                       title={`${post.likeCount.toLocaleString()} likes`}
                     >
                       <HeartIcon
-                        className='text-muted-foreground/80 size-2.5 transition-transform group-hover/related:scale-110 group-hover/related:text-rose-500'
+                        className='text-muted-foreground group-hover/related:text-destructive size-2.5 transition-transform group-hover/related:scale-110'
                         aria-hidden
                       />
                       <span className='text-foreground font-semibold tabular-nums'>

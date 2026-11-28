@@ -17,90 +17,97 @@ const HomePage = () => {
     <div className='relative z-10 w-full space-y-6 sm:space-y-8'>
       <HacktronHero />
 
-      {/* Put the writing first so the main reason to visit is immediately discoverable. */}
-      <section aria-label='Posts' id='archive' className='scroll-mt-24'>
-        <Suspense
-          fallback={
-            <Frame>
-              <StripHeader
-                left={
-                  <span className='text-foreground font-semibold'>Latest technical write-ups</span>
-                }
-                right={<span>Loading...</span>}
-              />
-              <div className='divide-border divide-y'>
-                {range(6).map((i) => (
-                  <PostsPlaceholder key={i} />
-                ))}
-              </div>
-            </Frame>
-          }
-        >
-          <Posts />
-        </Suspense>
-      </section>
+      {/* Asymmetric Editorial Workspace: 8-col Primary Archive + 4-col Sticky Intelligence Rail */}
+      <div className='grid min-w-0 grid-cols-1 gap-6 xl:grid-cols-12 xl:items-start xl:gap-8'>
+        <section aria-label='Posts' id='archive' className='min-w-0 scroll-mt-20 xl:col-span-8'>
+          <Suspense
+            fallback={
+              <Frame>
+                <StripHeader
+                  left={
+                    <span className='text-foreground font-semibold'>
+                      Latest technical write-ups
+                    </span>
+                  }
+                  right={<span>Loading...</span>}
+                />
+                <div className='divide-border divide-y'>
+                  {range(6).map((i) => (
+                    <PostsPlaceholder key={i} />
+                  ))}
+                </div>
+              </Frame>
+            }
+          >
+            <Posts layout='rail' />
+          </Suspense>
+        </section>
 
-      <div className='grid min-w-0 gap-6 sm:gap-8 lg:grid-cols-2'>
-        <Suspense
-          fallback={
-            <Frame>
-              <StripHeader
-                left={
-                  <span className='text-foreground font-semibold'>Trending // Top this week</span>
-                }
-                right={<span>Loading...</span>}
-              />
-              <FrameBody className='text-muted-foreground py-8 text-center text-sm'>
-                Loading trending posts...
-              </FrameBody>
-            </Frame>
-          }
+        <aside
+          aria-label='Site telemetry and trending dispatches'
+          className='min-w-0 space-y-6 xl:sticky xl:top-20 xl:col-span-4'
         >
-          <TrendingPosts />
-        </Suspense>
+          <Suspense
+            fallback={
+              <Frame>
+                <StripHeader
+                  left={<span className='text-foreground font-semibold'>Live site telemetry</span>}
+                  right={<span>Calibrating...</span>}
+                />
+                <FrameBody className='text-muted-foreground py-8 text-center font-mono text-sm'>
+                  CALIBRATING TELEMETRY...
+                </FrameBody>
+              </Frame>
+            }
+          >
+            <SiteTelemetry compact />
+          </Suspense>
 
-        <Suspense
-          fallback={
-            <Frame>
-              <StripHeader
-                left={
-                  <span className='text-foreground font-semibold'>
-                    Dispatch log // git log --oneline
-                  </span>
-                }
-                right={<span>Traversing history...</span>}
-              />
-              <FrameBody className='text-muted-foreground py-8 text-center font-mono text-sm'>
-                git log: traversing commit history...
-              </FrameBody>
-            </Frame>
-          }
-        >
-          <DispatchLog />
-        </Suspense>
+          <Suspense
+            fallback={
+              <Frame>
+                <StripHeader
+                  left={
+                    <span className='text-foreground font-semibold'>Trending // Top this week</span>
+                  }
+                  right={<span>Loading...</span>}
+                />
+                <FrameBody className='text-muted-foreground py-8 text-center text-sm'>
+                  Loading trending posts...
+                </FrameBody>
+              </Frame>
+            }
+          >
+            <TrendingPosts />
+          </Suspense>
+
+          <Suspense
+            fallback={
+              <Frame>
+                <StripHeader
+                  left={
+                    <span className='text-foreground font-semibold'>
+                      Dispatch log // git log --oneline
+                    </span>
+                  }
+                  right={<span>Traversing history...</span>}
+                />
+                <FrameBody className='text-muted-foreground py-8 text-center font-mono text-sm'>
+                  git log: traversing commit history...
+                </FrameBody>
+              </Frame>
+            }
+          >
+            <DispatchLog />
+          </Suspense>
+        </aside>
       </div>
-
-      <Suspense
-        fallback={
-          <Frame>
-            <StripHeader
-              left={<span className='text-foreground font-semibold'>Live site telemetry</span>}
-              right={<span>Calibrating...</span>}
-            />
-            <FrameBody className='text-muted-foreground py-8 text-center font-mono text-sm'>
-              CALIBRATING TELEMETRY...
-            </FrameBody>
-          </Frame>
-        }
-      >
-        <SiteTelemetry />
-      </Suspense>
 
       <GithubActivity username='NotHarshhaa' />
 
       <TechStack />
 
-      <section aria-label='Interactive guest terminal' id='terminal' className='scroll-mt-24'>
+      <section aria-label='Interactive guest terminal' id='terminal' className='scroll-mt-20'>
         <Suspense
           fallback={
             <Frame>

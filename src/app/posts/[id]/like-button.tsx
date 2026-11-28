@@ -68,15 +68,15 @@ const LikeButton = (props: LikeButtonProps) => {
   }
 
   return (
-    <div className='relative group'>
+    <div className='group relative'>
       <Button
         corners
-        variant="outline"
+        variant='outline'
         className={cn(
-          'flex items-center gap-2 px-3.5 py-1.5 text-xs font-mono uppercase tracking-wider transition-all',
+          'flex items-center gap-2 px-3.5 py-1.5 font-mono text-xs tracking-wider uppercase transition-all',
           !user && 'cursor-not-allowed opacity-60',
           isUserLiked
-            ? 'border-rose-500/50 bg-rose-500/10 text-rose-600 dark:text-rose-400 hover:bg-rose-500/20 hover:border-rose-500/70'
+            ? 'border-destructive/50 bg-destructive/12 text-destructive hover:bg-destructive/20 hover:border-destructive/75'
             : 'border-border bg-background text-foreground hover:border-foreground/60 hover:bg-muted/40',
           isAnimating && 'scale-[1.02]'
         )}
@@ -89,36 +89,33 @@ const LikeButton = (props: LikeButtonProps) => {
       >
         <span className='relative flex items-center'>
           {action.isExecuting ? (
-            <Loader2Icon className='size-4 animate-spin text-muted-foreground' />
+            <Loader2Icon className='text-muted-foreground size-4 animate-spin' />
           ) : (
             <Heart
               className={cn(
                 'size-5 transition-all duration-200',
-                isUserLiked
-                  ? 'fill-current'
-                  : 'text-muted-foreground',
+                isUserLiked ? 'fill-current' : 'text-muted-foreground',
                 isAnimating && 'animate-heart-pop'
               )}
             />
           )}
         </span>
         <span
-          className={cn(
-            'transition-all duration-200',
-            isAnimating && 'font-bold scale-110'
-          )}
+          className={cn('transition-all duration-200', isAnimating && 'scale-110 font-bold')}
           aria-live='polite'
         >
           {displayedLikeCount.toLocaleString()}
         </span>
       </Button>
       {/* Tooltip */}
-      <span className='pointer-events-none absolute left-1/2 top-full z-20 mt-1 w-max -translate-x-1/2 scale-95 border border-border bg-card px-2 py-1 text-xs text-foreground opacity-0 shadow transition-all group-hover:opacity-100 group-focus-within:opacity-100'>
+      <span className='border-border bg-card text-foreground pointer-events-none absolute top-full left-1/2 z-20 mt-1 w-max -translate-x-1/2 scale-95 border px-2 py-1 text-xs opacity-0 shadow transition-all group-focus-within:opacity-100 group-hover:opacity-100'>
         {tooltipLabel}
       </span>
       <style>{`
-        .animate-heart-pop {
-          animation: heart-pop 0.4s cubic-bezier(.36,1.56,.64,1) both;
+        @media (prefers-reduced-motion: no-preference) {
+          .animate-heart-pop {
+            animation: heart-pop 0.4s cubic-bezier(.36,1.56,.64,1) both;
+          }
         }
         @keyframes heart-pop {
           0% { transform: scale(1); }

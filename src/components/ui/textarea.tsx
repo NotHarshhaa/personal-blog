@@ -13,12 +13,11 @@ const Textarea = (props: TextareaProps) => {
     <TextareaAutosize
       data-slot='textarea'
       className={cn(
-        'border-input field-sizing-content shadow-xs flex min-h-16 w-full rounded-md border bg-transparent px-3 py-2 text-base outline-none transition-[color,box-shadow]',
-        'dark:aria-invalid:ring-destructive/40 dark:bg-input/30',
+        'border-input bg-background text-foreground flex field-sizing-content min-h-16 w-full rounded-none border px-3 py-2 text-base shadow-2xs transition-[color,border-color,box-shadow] outline-none',
         'md:text-sm',
         'placeholder:text-muted-foreground',
-        'focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]',
-        'aria-invalid:ring-destructive/20 aria-invalid:border-destructive',
+        'focus-visible:border-foreground focus-visible:ring-ring/35 focus-visible:ring-2',
+        'aria-invalid:ring-destructive/25 aria-invalid:border-destructive',
         'disabled:cursor-not-allowed disabled:opacity-50',
         className
       )}

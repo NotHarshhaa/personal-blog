@@ -8,7 +8,7 @@ const Skeleton = (props: SkeletonProps) => {
   return (
     <div
       data-slot='skeleton'
-      className={cn('bg-accent animate-pulse rounded-md', className)}
+      className={cn('bg-muted animate-pulse rounded-none', className)}
       {...rest}
     />
   )

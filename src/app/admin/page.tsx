@@ -60,7 +60,7 @@ export default async function AdminPage() {
   }))
 
   return (
-    <main className='space-y-6 p-4 sm:p-8'>
+    <div className='space-y-6'>
       {/* Header */}
       <Frame as='header'>
         <StripHeader
@@ -155,6 +155,6 @@ export default async function AdminPage() {
           </Link>
         </FrameBody>
       </Frame>
-    </main>
+    </div>
   )
 }

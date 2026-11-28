@@ -344,7 +344,7 @@ export const BookmarksView = ({
       {!userId && (
         <div className='border-border/80 bg-muted/20 flex flex-col items-start justify-between gap-3 border p-4 font-mono text-xs sm:flex-row sm:items-center'>
           <div className='flex items-center gap-2'>
-            <span className='bg-foreground size-2 rounded-full' />
+            <span className='bg-info size-2 rounded-full' />
             <span className='text-muted-foreground'>
               [OFFLINE_LOCAL_STORAGE] Bookmarks are stored in this browser. Sign in to synchronize
               your vault across devices.
@@ -433,7 +433,7 @@ export const BookmarksView = ({
                   onChange={(e) => setSearch(e.target.value)}
                   placeholder='Filter saved articles by title, keywords...'
                   aria-label='Filter saved articles'
-                  className='border-border bg-background text-foreground placeholder:text-muted-foreground/60 focus:border-foreground h-9 w-full border pr-3 pl-9 font-mono text-xs transition-colors outline-none'
+                  className='border-border bg-background text-foreground placeholder:text-muted-foreground focus:border-foreground h-9 w-full border pr-3 pl-9 font-mono text-base transition-colors outline-none sm:text-xs'
                 />
               </div>
             </div>

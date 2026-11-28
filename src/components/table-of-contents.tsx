@@ -172,7 +172,7 @@ export const TableOfContents = ({ content, className }: TableOfContentsProps) =>
     <div className='relative'>
       <nav
         className={cn(
-          'space-y-1 overflow-y-auto pr-1',
+          'space-y-1 overflow-y-auto overscroll-contain pr-1',
           isMobile ? 'max-h-[65vh]' : 'max-h-[calc(100vh-14rem)]'
         )}
         aria-label='Table of contents'
@@ -189,11 +189,11 @@ export const TableOfContents = ({ content, className }: TableOfContentsProps) =>
                 ref={isActive ? activeItemRef : undefined}
                 onClick={(e) => handleClick(e, heading.id)}
                 className={cn(
-                  'group relative flex items-start py-1 text-xs leading-snug transition-all duration-150',
+                  'group relative flex items-start py-1 text-xs leading-snug transition-colors duration-150',
                   isSubheading ? 'pl-2 text-[11px]' : 'pl-0',
                   isActive
                     ? 'text-foreground font-semibold'
-                    : 'text-muted-foreground/80 hover:text-foreground hover:translate-x-0.5'
+                    : 'text-muted-foreground hover:text-foreground'
                 )}
               >
                 {/* Active Indicator Bar on Left Border */}
@@ -210,7 +210,7 @@ export const TableOfContents = ({ content, className }: TableOfContentsProps) =>
                       aria-hidden
                       className={cn(
                         'mt-0.5 shrink-0 font-mono text-[9px]',
-                        isActive ? 'text-foreground' : 'text-muted-foreground/40'
+                        isActive ? 'text-foreground' : 'text-muted-foreground/75'
                       )}
                     >
                       ↳
@@ -220,7 +220,7 @@ export const TableOfContents = ({ content, className }: TableOfContentsProps) =>
                       aria-hidden
                       className={cn(
                         'mt-0.5 shrink-0 font-mono text-[10px] tracking-tight',
-                        isActive ? 'text-foreground font-bold' : 'text-muted-foreground/50'
+                        isActive ? 'text-foreground font-bold' : 'text-muted-foreground/80'
                       )}
                     >
                       {String(index + 1).padStart(2, '0')}.
@@ -245,7 +245,7 @@ export const TableOfContents = ({ content, className }: TableOfContentsProps) =>
           <ArrowUp className='size-3' />
           <span>Top of page</span>
         </span>
-        <span className='text-muted-foreground/60 text-[9px]'>[{headings.length} items]</span>
+        <span className='text-muted-foreground text-[9px]'>[{headings.length} items]</span>
       </button>
     </div>
   )
@@ -290,7 +290,7 @@ export const TableOfContents = ({ content, className }: TableOfContentsProps) =>
               <List className='size-4' />
             </Button>
           </DialogTrigger>
-          <DialogContent className='border-border bg-card max-h-[85vh] max-w-[92vw] rounded-none border p-0 shadow-2xl sm:max-w-md'>
+          <DialogContent className='border-border bg-card max-h-[85vh] max-w-[92vw] overscroll-contain rounded-none border p-0 shadow-2xl sm:max-w-md'>
             <CornerBrackets />
             <div className='border-border bg-muted/40 border-b px-4 py-3 pr-12'>
               <DialogHeader className='p-0'>

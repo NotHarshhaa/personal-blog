@@ -19,9 +19,9 @@ const buttonVariants = cva({
       default:
         'border-foreground bg-foreground text-background hover:border-foreground/90 hover:bg-foreground/90 active:bg-foreground/80 border',
       destructive:
-        'border-destructive/50 bg-destructive/10 text-destructive hover:bg-destructive active:bg-destructive/90 border hover:text-background',
+        'border-destructive/60 bg-destructive/10 text-destructive hover:border-destructive hover:bg-destructive hover:text-destructive-foreground active:bg-destructive/90 border',
       outline:
-        'border-border bg-card text-foreground hover:border-foreground hover:bg-muted/40 active:bg-muted/60 border',
+        'border-border bg-card text-foreground hover:border-border-strong hover:bg-muted/60 active:bg-muted border',
       secondary:
         'border-border bg-muted/60 text-foreground hover:border-foreground/40 hover:bg-muted active:bg-muted/80 border',
       ghost:

@@ -76,7 +76,7 @@ export function FrameHeader({ children, label, className, ...props }: Readonly<F
       {...props}
     >
       {label && (
-        <span className='bracket-title font-heading text-foreground px-1.5 py-0.5 text-xl font-medium tracking-tight sm:text-2xl md:text-3xl'>
+        <span className='bracket-title font-heading text-foreground px-2 py-0.5 text-base font-medium tracking-tight sm:text-lg md:text-xl'>
           {label.endsWith('.') ? label : `${label}.`}
         </span>
       )}
@@ -97,14 +97,12 @@ type StripHeaderProps = {
  */
 export function StripHeader({ left, right, className }: Readonly<StripHeaderProps>) {
   return (
-    <div
-      className={cn('border-border/80 bg-muted/30 relative overflow-hidden border-b', className)}
-    >
+    <div className={cn('border-border bg-muted/35 relative overflow-hidden border-b', className)}>
       <div
         aria-hidden
-        className='absolute inset-0 [background-image:linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] [mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_80%)] [background-size:14px_14px] opacity-50'
+        className='absolute inset-0 [background-image:linear-gradient(to_right,var(--border)_1px,transparent_1px),linear-gradient(to_bottom,var(--border)_1px,transparent_1px)] [mask-image:radial-gradient(ellipse_at_center,black_20%,transparent_80%)] [background-size:14px_14px] opacity-35'
       />
-      <div className='text-muted-foreground relative flex items-center justify-between gap-2 px-4 py-2 font-mono text-[9px] tracking-widest uppercase sm:px-5'>
+      <div className='text-muted-foreground relative flex items-center justify-between gap-2 px-4 py-2 font-mono text-[10px] tracking-widest uppercase sm:px-5'>
         <div className='flex min-w-0 items-center gap-2'>{left}</div>
         <div className='flex shrink-0 items-center gap-2'>{right}</div>
       </div>

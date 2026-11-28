@@ -3,15 +3,15 @@ import PostsFilter from '@/components/posts-filter'
 import { getCurrentUser } from '@/lib/auth'
 import { getPosts } from '@/queries/get-posts'
 
-const Posts = async () => {
+const Posts = async ({ layout = 'full' }: { layout?: 'rail' | 'full' }) => {
   const user = await getCurrentUser()
   const { posts } = await getPosts()
 
   if (posts.length === 0) {
     return (
       <EmptyState
-        title="No posts yet"
-        description="Be the first to share insights on DevOps, cloud, platform engineering, AI/ML, MLOps, LLMOps, and GenAI. Start writing and sharing your knowledge!"
+        title='No posts yet'
+        description='Be the first to share insights on DevOps, cloud, platform engineering, AI/ML, MLOps, LLMOps, and GenAI. Start writing and sharing your knowledge!'
         showAction={false}
       />
     )
@@ -25,6 +25,7 @@ const Posts = async () => {
 
   return (
     <PostsFilter
+      layout={layout}
       posts={postsWithDates}
       user={
         user

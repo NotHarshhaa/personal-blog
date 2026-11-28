@@ -317,9 +317,9 @@ const ClientHeader = ({ user }: Props) => {
   const notificationsPanel = (
     <div className='border-border bg-card relative border shadow-xl'>
       <CornerBrackets />
-      <div className='border-border bg-muted/30 flex items-center justify-between border-b px-3.5 py-2 font-mono'>
+      <div className='border-border bg-muted/40 flex items-center justify-between border-b px-3.5 py-2 font-mono'>
         <div className='flex items-center gap-2'>
-          <span className='bg-foreground size-1.5 animate-pulse rounded-full' />
+          <span className='bg-success size-1.5 animate-pulse rounded-full' />
           <h2 className='text-foreground text-[11px] font-bold tracking-wider uppercase'>
             {'// DISPATCHES'}
           </h2>
@@ -334,9 +334,11 @@ const ClientHeader = ({ user }: Props) => {
           </span>
         )}
       </div>
-      <div className='divide-border max-h-72 divide-y overflow-y-auto'>{notificationsList}</div>
+      <div className='divide-border max-h-72 divide-y overflow-y-auto overscroll-contain'>
+        {notificationsList}
+      </div>
       {notifications.length > 0 && (
-        <div className='border-border bg-muted/20 flex items-center justify-between border-t p-2 font-mono text-[10px]'>
+        <div className='border-border bg-muted/30 flex items-center justify-between border-t p-2 font-mono text-[10px]'>
           <button
             type='button'
             onClick={handleClearAll}
@@ -344,7 +346,7 @@ const ClientHeader = ({ user }: Props) => {
           >
             <span>[MARK ALL AS READ]</span>
           </button>
-          <span className='text-muted-foreground/60'>{notifications.length} TOTAL</span>
+          <span className='text-muted-foreground'>{notifications.length} TOTAL</span>
         </div>
       )}
     </div>
@@ -397,12 +399,12 @@ const ClientHeader = ({ user }: Props) => {
           onChange={(e) => setSearch(e.target.value)}
           placeholder='Search posts...'
           aria-label='Search posts'
-          className='placeholder:text-muted-foreground w-full bg-transparent text-sm outline-none'
+          className='placeholder:text-muted-foreground w-full bg-transparent text-base outline-none sm:text-sm'
           onFocus={() => search && setShowDropdown(true)}
         />
       </div>
       {showDropdown && (
-        <div className='border-border bg-card absolute inset-x-0 z-50 mt-1 max-h-72 overflow-auto border'>
+        <div className='border-border bg-card absolute inset-x-0 z-50 mt-1 max-h-72 overflow-auto overscroll-contain border shadow-lg'>
           {searchResults}
         </div>
       )}
@@ -412,84 +414,81 @@ const ClientHeader = ({ user }: Props) => {
   return (
     <header
       className={cn(
-        'border-border bg-card relative isolate z-50 mx-auto w-full max-w-[90rem] border',
-        isScrolled && 'shadow-sm'
+        'border-border bg-card/90 sticky top-0 z-40 w-full border-b backdrop-blur-md transition-[border-color,box-shadow] duration-150',
+        isScrolled && 'border-border-strong shadow-sm'
       )}
     >
-      <CornerBrackets />
-      <div className='mx-auto flex min-h-14 max-w-[90rem] items-center justify-between gap-2 px-3 py-2 sm:gap-3 sm:px-6 lg:px-8'>
-        <div className='flex min-w-0 flex-1 items-center gap-2.5'>
-          <Link
-            href='/'
-            className='bracket-title group flex min-w-0 items-center gap-1.5 p-0 sm:gap-2.5 sm:px-2 sm:pr-2'
-          >
+      <div className='mx-auto flex h-14 max-w-[90rem] items-center justify-between gap-3 px-4 sm:px-6 lg:px-8'>
+        {/* Left: Brand identity + system status */}
+        <div className='flex min-w-0 items-center gap-3'>
+          <Link href='/' className='group flex min-w-0 items-center gap-2.5'>
             <Image
               src='/logo.svg'
               alt='Logo'
               width={28}
               height={28}
-              className='border-border size-7 shrink-0 border transition-transform group-hover:scale-105'
+              className='border-border bg-background size-7 shrink-0 border p-0.5 transition-transform duration-150 group-hover:scale-105'
             />
-            <div className='min-w-0 leading-tight'>
-              <p className='text-foreground truncate text-[12px] font-bold tracking-tight sm:text-sm'>
+            <div className='flex min-w-0 items-baseline gap-2'>
+              <span className='font-heading text-foreground truncate text-sm font-bold tracking-tight sm:text-base'>
                 {SITE_NAME}
-              </p>
-              <p className='text-muted-foreground font-mono text-[9px] tracking-[0.14em] uppercase sm:text-[10px] sm:tracking-[0.16em]'>
+              </span>
+              <span className='text-border hidden sm:inline' aria-hidden>
+                /
+              </span>
+              <span className='text-muted-foreground hidden shrink-0 font-mono text-[10px] tracking-[0.14em] uppercase sm:inline'>
                 by Harshhaa
-              </p>
+              </span>
             </div>
           </Link>
 
-          <div className='border-border/70 bg-muted/40 text-muted-foreground hidden items-center gap-1.5 border px-2 py-0.5 font-mono text-[9px] tracking-wider uppercase xl:flex'>
+          <div className='border-border bg-muted/50 hidden items-center gap-1.5 border px-2 py-0.5 font-mono text-[9px] tracking-wider uppercase 2xl:flex'>
             <span className='relative flex size-1.5'>
-              <span className='bg-foreground/50 absolute inline-flex h-full w-full animate-ping rounded-full opacity-75' />
-              <span className='bg-foreground relative inline-flex size-1.5 rounded-full' />
+              <span className='bg-success/60 absolute inline-flex h-full w-full animate-ping rounded-full opacity-75' />
+              <span className='bg-success relative inline-flex size-1.5 rounded-full' />
             </span>
-            <span>SYS:OK</span>
+            <span className='text-foreground font-medium'>SYS:OK</span>
           </div>
         </div>
 
+        {/* Center: Architectural bottom-bar navigation rail */}
+        <nav className='hidden h-14 items-center gap-1 lg:flex' aria-label='Main Navigation'>
+          {NAV_ITEMS.map((item) => {
+            const isActive = item.match(pathname)
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  'relative flex h-14 items-center px-3 font-mono text-[11px] tracking-wider uppercase transition-colors duration-150',
+                  isActive
+                    ? 'text-foreground after:bg-foreground font-semibold after:absolute after:inset-x-2 after:bottom-0 after:h-0.5'
+                    : 'text-muted-foreground hover:bg-muted/40 hover:text-foreground'
+                )}
+              >
+                {item.label}
+              </Link>
+            )
+          })}
+        </nav>
+
+        {/* Right: Command search + utilities + session */}
         <div className='flex shrink-0 items-center gap-1.5 sm:gap-2'>
-          <div className='hidden items-center gap-1 sm:gap-1.5 md:flex'>
-            <button
-              type='button'
-              onClick={() => setIsCommandOpen(true)}
-              className='border-border/80 bg-background/60 text-muted-foreground hover:border-foreground hover:bg-muted/50 hover:text-foreground hidden h-8 cursor-pointer items-center gap-2 border px-2.5 text-xs transition-all lg:flex'
-              aria-label='Search articles and run commands (Cmd+K)'
-              title='Quick Search (⌘K)'
-            >
-              <Search className='size-3.5' />
-              <span className='hidden font-mono text-xs xl:inline'>Search...</span>
-              <kbd className='border-border bg-muted text-muted-foreground rounded-none border px-1.5 py-0.5 font-mono text-[10px] font-semibold'>
-                ⌘K
-              </kbd>
-            </button>
+          <button
+            type='button'
+            onClick={() => setIsCommandOpen(true)}
+            className='border-border bg-background/80 text-muted-foreground hover:border-border-strong hover:text-foreground hidden h-8 cursor-pointer items-center gap-2 border px-2.5 text-xs transition-colors lg:flex'
+            aria-label='Search articles and run commands (Cmd+K)'
+            title='Quick Search (⌘K)'
+          >
+            <Search className='size-3.5' />
+            <span className='hidden font-mono text-xs xl:inline'>Search...</span>
+            <kbd className='border-border bg-muted text-foreground rounded-none border px-1.5 py-0.5 font-mono text-[10px] font-semibold'>
+              ⌘K
+            </kbd>
+          </button>
 
-            <nav
-              className='hidden items-center gap-0.5 md:gap-1 lg:flex'
-              aria-label='Main Navigation'
-            >
-              {NAV_ITEMS.map((item) => {
-                const isActive = item.match(pathname)
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={cn(
-                      'px-2 py-1.5 font-mono text-[11px] tracking-wider uppercase transition-colors duration-150 xl:px-2.5',
-                      isActive
-                        ? 'bg-foreground text-background font-semibold shadow-2xs'
-                        : 'text-muted-foreground hover:bg-muted/60 hover:text-foreground'
-                    )}
-                  >
-                    {item.label}
-                  </Link>
-                )
-              })}
-            </nav>
-
-            <div aria-hidden className='bg-border mx-1 hidden h-5 w-px xl:block' />
-
+          <div className='hidden items-center gap-1.5 md:flex'>
             <div className='relative'>
               <button
                 ref={notificationButtonRef}
@@ -498,14 +497,14 @@ const ClientHeader = ({ user }: Props) => {
                 className={cn(
                   'text-muted-foreground hover:border-border hover:bg-muted hover:text-foreground relative flex size-8 cursor-pointer items-center justify-center border transition-colors',
                   showNotifications
-                    ? 'border-border bg-muted text-foreground'
-                    : 'border-transparent'
+                    ? 'border-border-strong bg-muted text-foreground'
+                    : 'border-border/70 bg-background/60'
                 )}
                 aria-label='Show notifications'
               >
                 <Bell className='size-4' />
                 {unread > 0 && (
-                  <span className='bg-foreground absolute top-1.5 right-1.5 size-1.5 rounded-full' />
+                  <span className='bg-destructive absolute top-1.5 right-1.5 size-1.5 rounded-full' />
                 )}
               </button>
 
@@ -532,7 +531,7 @@ const ClientHeader = ({ user }: Props) => {
           <button
             type='button'
             onClick={() => setIsCommandOpen(true)}
-            className='border-border text-muted-foreground hover:bg-muted hover:text-foreground hidden size-8 cursor-pointer items-center justify-center border transition-colors sm:flex lg:hidden'
+            className='border-border bg-background/60 text-muted-foreground hover:bg-muted hover:text-foreground flex size-8 cursor-pointer items-center justify-center border transition-colors lg:hidden'
             aria-label='Open search command palette'
           >
             <Search className='size-4' />
@@ -554,7 +553,7 @@ const ClientHeader = ({ user }: Props) => {
           <button
             type='button'
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className='border-border text-muted-foreground hover:bg-muted hover:text-foreground flex size-8 items-center justify-center border transition-colors lg:hidden'
+            className='border-border bg-background/60 text-muted-foreground hover:bg-muted hover:text-foreground flex size-8 items-center justify-center border transition-colors lg:hidden'
             aria-label='Toggle menu'
             aria-expanded={isMobileMenuOpen}
           >
@@ -572,101 +571,76 @@ const ClientHeader = ({ user }: Props) => {
       )}
 
       {isMobileMenuOpen && (
-        <div className='border-border border-t lg:hidden'>
-          <div className='relative mx-auto max-w-[90rem] px-4 py-4 sm:px-6'>
-            <div className='border-border bg-card relative border'>
-              <span
-                aria-hidden
-                className='border-foreground/45 pointer-events-none absolute -top-px -left-px z-10 size-2.5 border-t-2 border-l-2'
-              />
-              <span
-                aria-hidden
-                className='border-foreground/45 pointer-events-none absolute -top-px -right-px z-10 size-2.5 border-t-2 border-r-2'
-              />
-              <span
-                aria-hidden
-                className='border-foreground/45 pointer-events-none absolute -bottom-px -left-px z-10 size-2.5 border-b-2 border-l-2'
-              />
-              <span
-                aria-hidden
-                className='border-foreground/45 pointer-events-none absolute -right-px -bottom-px z-10 size-2.5 border-r-2 border-b-2'
-              />
+        <div className='border-border bg-card max-h-[calc(100dvh-3.5rem)] overflow-y-auto overscroll-contain border-t lg:hidden'>
+          <div className='mx-auto max-w-[90rem] space-y-5 px-4 py-5 sm:px-6'>
+            <div>
+              <p className='text-muted-foreground mb-2 font-mono text-[10px] font-semibold tracking-[0.18em] uppercase'>
+                Search
+              </p>
+              {searchField}
+            </div>
 
-              <div className='space-y-4 p-4'>
-                <div>
-                  <p className='text-muted-foreground mb-2 text-[10px] font-semibold tracking-[0.18em] uppercase'>
-                    Search
-                  </p>
-                  {searchField}
-                </div>
-
-                <div className='bg-border h-px w-full' />
-
-                <div className='space-y-1.5'>
-                  <p className='text-muted-foreground text-[10px] font-semibold tracking-[0.18em] uppercase'>
-                    Navigation
-                  </p>
-                  <div className='grid grid-cols-2 gap-2 font-mono text-xs'>
-                    {NAV_ITEMS.map((item) => {
-                      const isActive = item.match(pathname)
-                      return (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          onClick={() => setIsMobileMenuOpen(false)}
-                          className={cn(
-                            'hover-fill flex items-center justify-between border p-2.5 tracking-wider uppercase transition-colors',
-                            isActive
-                              ? 'border-foreground bg-foreground text-background font-semibold'
-                              : 'border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground'
-                          )}
-                        >
-                          <span>{item.label}</span>
-                          {isActive && <span className='bg-background size-1.5 rounded-full' />}
-                        </Link>
-                      )
-                    })}
-                  </div>
-                </div>
-
-                <div className='bg-border h-px w-full' />
-
-                <div>
-                  <div className='mb-2 flex items-center justify-between'>
-                    <p className='text-muted-foreground text-[10px] font-semibold tracking-[0.18em] uppercase'>
-                      Notifications
-                    </p>
-                    {unread > 0 && (
-                      <span className='border-border border px-2 py-0.5 text-[10px] font-medium'>
-                        {unread} new
-                      </span>
-                    )}
-                  </div>
-                  <div className='border-border bg-background border'>
-                    <div className='max-h-48 overflow-y-auto'>{notificationsList}</div>
-                    {notifications.length > 0 && (
-                      <div className='border-border border-t p-2'>
-                        <button
-                          type='button'
-                          onClick={handleClearAll}
-                          className='border-border text-muted-foreground hover:bg-muted hover:text-foreground w-full cursor-pointer border px-3 py-2 text-xs'
-                        >
-                          Clear all
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <div className='bg-border h-px w-full' />
-
-                <div>
-                  <p className='text-muted-foreground mb-2 text-[10px] font-semibold tracking-[0.18em] uppercase'>
-                    Theme
-                  </p>
-                  <ThemeToggle className='flex w-full [&>button]:flex-1' />
-                </div>
+            <div className='space-y-2'>
+              <p className='text-muted-foreground font-mono text-[10px] font-semibold tracking-[0.18em] uppercase'>
+                Navigation
+              </p>
+              <div className='grid grid-cols-2 gap-2 font-mono text-xs'>
+                {NAV_ITEMS.map((item) => {
+                  const isActive = item.match(pathname)
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={cn(
+                        'hover-fill flex items-center justify-between border p-2.5 tracking-wider uppercase transition-colors',
+                        isActive
+                          ? 'border-foreground bg-foreground text-background font-semibold'
+                          : 'border-border bg-background text-muted-foreground hover:bg-muted hover:text-foreground'
+                      )}
+                    >
+                      <span>{item.label}</span>
+                      {isActive && <span className='bg-background size-1.5 rounded-full' />}
+                    </Link>
+                  )
+                })}
               </div>
+            </div>
+
+            <div className='space-y-2'>
+              <div className='flex items-center justify-between'>
+                <p className='text-muted-foreground font-mono text-[10px] font-semibold tracking-[0.18em] uppercase'>
+                  Notifications
+                </p>
+                {unread > 0 && (
+                  <span className='border-border bg-muted border px-2 py-0.5 font-mono text-[10px] font-medium'>
+                    {unread} new
+                  </span>
+                )}
+              </div>
+              <div className='border-border bg-background border'>
+                <div className='max-h-48 overflow-y-auto overscroll-contain'>
+                  {notificationsList}
+                </div>
+                {notifications.length > 0 && (
+                  <div className='border-border border-t p-2'>
+                    <button
+                      type='button'
+                      onClick={handleClearAll}
+                      className='border-border text-muted-foreground hover:bg-muted hover:text-foreground w-full cursor-pointer border px-3 py-2 font-mono text-xs'
+                    >
+                      Clear all
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className='space-y-2'>
+              <p className='text-muted-foreground font-mono text-[10px] font-semibold tracking-[0.18em] uppercase'>
+                Theme
+              </p>
+              <ThemeToggle className='flex w-full [&>button]:flex-1' />
             </div>
           </div>
         </div>

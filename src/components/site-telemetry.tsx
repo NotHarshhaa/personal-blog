@@ -7,7 +7,7 @@ import { cn } from '@/utils'
 import { formatPostDate } from '@/utils/format-post-date'
 
 /** Live site telemetry: totals computed from published posts, animated on view. */
-const SiteTelemetry = async () => {
+const SiteTelemetry = async ({ compact = false }: { compact?: boolean }) => {
   const { posts } = await getPosts()
 
   const totalViews = posts.reduce((sum, post) => sum + post.views, 0)
@@ -41,14 +41,15 @@ const SiteTelemetry = async () => {
     }
   ]
 
-  // Border choreography: horizontal rules between stacked rows on mobile/2-col,
-  // vertical rules between columns on the 4-col desktop row
-  const cellBorders = [
-    'border-b border-border sm:border-r lg:border-b-0',
-    'border-b border-border lg:border-b-0 lg:border-r',
-    'border-b border-border sm:border-r sm:border-b-0',
-    'border-b border-border sm:border-b-0'
-  ]
+  // Border choreography: 2x2 grid when compact (sidebar rail), 4-col row when full width
+  const cellBorders = compact
+    ? ['border-b border-r border-border', 'border-b border-border', 'border-r border-border', '']
+    : [
+        'border-b border-border sm:border-r lg:border-b-0',
+        'border-b border-border lg:border-b-0 lg:border-r',
+        'border-b border-border sm:border-r sm:border-b-0',
+        'border-b border-border sm:border-b-0'
+      ]
 
   return (
     <Frame aria-label='Site telemetry'>
@@ -56,8 +57,8 @@ const SiteTelemetry = async () => {
         left={
           <>
             <span className='relative flex size-1.5'>
-              <span className='bg-foreground/50 absolute inline-flex h-full w-full animate-ping rounded-full opacity-75' />
-              <span className='bg-foreground relative inline-flex size-1.5 rounded-full' />
+              <span className='bg-success/60 absolute inline-flex h-full w-full animate-ping rounded-full opacity-75' />
+              <span className='bg-success relative inline-flex size-1.5 rounded-full' />
             </span>
             <span className='text-foreground font-semibold'>Live site telemetry</span>
           </>
@@ -65,17 +66,30 @@ const SiteTelemetry = async () => {
         right={<span>Aggregated // all dispatches</span>}
       />
 
-      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'>
+      <div
+        className={cn(
+          'grid',
+          compact ? 'grid-cols-2' : 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4'
+        )}
+      >
         {stats.map((stat, index) => (
-          <div key={stat.label} className={cn('p-4 sm:p-5', cellBorders[index])}>
+          <div
+            key={stat.label}
+            className={cn(compact ? 'p-3.5 sm:p-4' : 'p-4 sm:p-5', cellBorders[index])}
+          >
             <div className='text-muted-foreground flex items-center gap-1.5 font-mono text-[10px] tracking-widest uppercase'>
               <stat.icon className='size-3' aria-hidden />
               <span>{stat.label}</span>
             </div>
-            <p className='text-foreground mt-2 truncate font-mono text-2xl font-bold tracking-tight tabular-nums sm:text-3xl'>
+            <p
+              className={cn(
+                'text-foreground mt-2 truncate font-mono font-bold tracking-tight tabular-nums',
+                compact ? 'text-xl sm:text-2xl' : 'text-2xl sm:text-3xl'
+              )}
+            >
               {stat.value}
             </p>
-            <p className='text-muted-foreground/60 mt-1 font-mono text-[10px] uppercase'>
+            <p className='text-muted-foreground mt-1 font-mono text-[10px] uppercase'>
               {stat.note}
             </p>
           </div>

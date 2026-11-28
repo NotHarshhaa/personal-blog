@@ -92,8 +92,8 @@ const Footer = () => {
             left={
               <span className='inline-flex items-center gap-1.5'>
                 <span className='relative flex size-1.5'>
-                  <span className='bg-foreground/50 absolute inline-flex h-full w-full animate-ping rounded-full opacity-75' />
-                  <span className='bg-foreground relative inline-flex size-1.5 rounded-full' />
+                  <span className='bg-success/60 absolute inline-flex h-full w-full animate-ping rounded-full opacity-75' />
+                  <span className='bg-success relative inline-flex size-1.5 rounded-full' />
                 </span>
                 <span className='text-foreground font-semibold'>All systems operational</span>
               </span>
@@ -155,7 +155,7 @@ const Footer = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder='engineer@company.com'
-                    className='border-border bg-background text-foreground placeholder:text-muted-foreground/60 focus:border-foreground h-9 min-w-0 flex-1 border px-3 font-mono text-xs transition-colors outline-none'
+                    className='border-border bg-background text-foreground placeholder:text-muted-foreground focus:border-foreground h-9 min-w-0 flex-1 border px-3 font-mono text-base transition-colors outline-none sm:text-xs'
                     required
                   />
                   <button
@@ -169,8 +169,8 @@ const Footer = () => {
                 </form>
               )}
 
-              <p className='text-muted-foreground/70 font-mono text-[10px]'>
-                🔒 Strictly technical writeups. Zero marketing fluff.
+              <p className='text-muted-foreground font-mono text-[10px]'>
+                Strictly technical writeups. Zero marketing fluff.
               </p>
             </div>
 
