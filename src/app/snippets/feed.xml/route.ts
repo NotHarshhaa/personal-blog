@@ -30,7 +30,7 @@ export async function GET() {
       <pubDate>${new Date(snippet.createdAt).toUTCString()}</pubDate>
       <description>${escapeXml(snippet.description ?? '')}</description>
       <author>${escapeXml(snippet.user.name)}</author>
-      <raw url="${rawUrl}" />
+      <raw url="${escapeXml(rawUrl)}" />
 ${categoriesXml}
     </item>`
     })

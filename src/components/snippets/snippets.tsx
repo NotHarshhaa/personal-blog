@@ -1,3 +1,5 @@
+import Link from 'next/link'
+
 import EmptyState from '@/components/empty-state'
 import { Frame } from '@/components/frame'
 import SnippetCard from '@/components/snippets/snippet-card'
@@ -39,7 +41,7 @@ const Snippets = async ({ tag }: SnippetsProps) => {
           className='flex flex-wrap items-center gap-1.5 font-mono text-[11px]'
         >
           <span className='text-muted-foreground mr-1 tracking-wider uppercase'>Filter:</span>
-          <a
+          <Link
             href='/snippets'
             className={`border px-2 py-0.5 tracking-wide uppercase transition-colors ${
               activeTag
@@ -48,9 +50,9 @@ const Snippets = async ({ tag }: SnippetsProps) => {
             }`}
           >
             ALL
-          </a>
+          </Link>
           {allTags.map((t) => (
-            <a
+            <Link
               key={t}
               href={`/snippets?tag=${encodeURIComponent(t)}`}
               className={`border px-2 py-0.5 tracking-wide uppercase transition-colors ${
@@ -60,7 +62,7 @@ const Snippets = async ({ tag }: SnippetsProps) => {
               }`}
             >
               #{t}
-            </a>
+            </Link>
           ))}
         </nav>
       )}
@@ -71,12 +73,12 @@ const Snippets = async ({ tag }: SnippetsProps) => {
             <p className='text-muted-foreground font-mono text-sm'>
               No snippets tagged <span className='text-foreground'>#{activeTag}</span>
             </p>
-            <a
+            <Link
               href='/snippets'
               className='border-border text-muted-foreground hover:border-foreground hover:text-foreground mt-3 inline-block border px-3 py-1.5 font-mono text-[11px] tracking-wider uppercase transition-colors'
             >
               Clear filter
-            </a>
+            </Link>
           </div>
         </Frame>
       ) : (

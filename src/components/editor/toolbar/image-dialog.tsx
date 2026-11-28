@@ -22,6 +22,18 @@ type ImageDialogProps = {
   editor: Editor
 }
 
+const isValidImageSrc = (value: string): boolean => {
+  const trimmed = value.trim()
+  if (!trimmed) return false
+  if (trimmed.startsWith('/') && !trimmed.startsWith('//')) return true
+  try {
+    const parsed = new URL(trimmed)
+    return parsed.protocol === 'https:' || parsed.protocol === 'http:'
+  } catch {
+    return false
+  }
+}
+
 export const ImageDialog = ({ editor }: ImageDialogProps) => {
   const [isOpen, setIsOpen] = useState(false)
   const [src, setSrc] = useState('')
@@ -39,9 +51,11 @@ export const ImageDialog = ({ editor }: ImageDialogProps) => {
     setIsOpen(open)
   }
 
+  const trimmedSrc = src.trim()
+  const isSrcValid = isValidImageSrc(trimmedSrc)
+
   const handleInsert = () => {
-    const trimmedSrc = src.trim()
-    if (!trimmedSrc) return
+    if (!isSrcValid) return
 
     editor
       .chain()
@@ -82,16 +96,22 @@ export const ImageDialog = ({ editor }: ImageDialogProps) => {
             </Label>
             <Input
               id='image-src'
-              type='url'
-              placeholder='https://example.com/image.jpg'
+              type='text'
+              placeholder='https://example.com/image.jpg or /images/...'
               value={src}
               onChange={(e) => {
                 setSrc(e.target.value)
                 setPreviewError(false)
               }}
+              aria-invalid={Boolean(trimmedSrc) && !isSrcValid}
               required
               className='h-9 font-mono text-xs'
             />
+            {Boolean(trimmedSrc) && !isSrcValid && (
+              <p className='text-destructive font-mono text-[11px]'>
+                Must be an https://, http://, or /relative image path
+              </p>
+            )}
           </div>
 
           <div className='grid grid-cols-2 gap-3'>
@@ -141,7 +161,7 @@ export const ImageDialog = ({ editor }: ImageDialogProps) => {
           </div>
 
           {/* Live Preview */}
-          {src.trim() ? (
+          {isSrcValid ? (
             <div className='border-border bg-muted/30 border p-3 rounded-lg'>
               <div className='flex items-center justify-between'>
                 <span className='text-muted-foreground font-mono text-[10px] tracking-widest uppercase'>
@@ -186,7 +206,7 @@ export const ImageDialog = ({ editor }: ImageDialogProps) => {
             >
               Cancel
             </Button>
-            <Button type='submit' size='sm' disabled={!src.trim()} className='cursor-pointer'>
+            <Button type='submit' size='sm' disabled={!isSrcValid} className='cursor-pointer'>
               Insert
             </Button>
           </DialogFooter>

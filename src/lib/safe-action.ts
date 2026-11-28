@@ -2,7 +2,7 @@ import { createSafeActionClient } from 'next-safe-action'
 
 import { getCurrentUser } from './auth'
 
-class ActionError extends Error {}
+export class ActionError extends Error {}
 
 export const actionClient = createSafeActionClient({
   handleServerError: (error) => {

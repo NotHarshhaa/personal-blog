@@ -5,13 +5,13 @@ import { revalidatePath } from 'next/cache'
 
 import { db } from '@/db'
 import { bookmarks, posts } from '@/db/schema'
-import { authenticatedActionClient } from '@/lib/safe-action'
+import { ActionError, authenticatedActionClient } from '@/lib/safe-action'
 
 import { toggleBookmarkSchema } from './schema'
 
 export const toggleBookmarkAction = authenticatedActionClient
   .schema(toggleBookmarkSchema)
-  .action(async ({ parsedInput: { postId }, ctx: { user } }) => {
+  .action(async ({ parsedInput: { postId, bookmarked }, ctx: { user } }) => {
     let isBookmarked = false
 
     await db.transaction(async (tx) => {
@@ -22,7 +22,7 @@ export const toggleBookmarkAction = authenticatedActionClient
         .for('update')
 
       if (!post) {
-        throw new Error('Post not found')
+        throw new ActionError('Post not found')
       }
 
       const existing = await tx.query.bookmarks.findFirst({
@@ -32,18 +32,24 @@ export const toggleBookmarkAction = authenticatedActionClient
         where: and(eq(bookmarks.postId, postId), eq(bookmarks.userId, user.id))
       })
 
-      if (existing) {
-        await tx.delete(bookmarks).where(eq(bookmarks.id, existing.id))
-        isBookmarked = false
-      } else {
-        await tx
-          .insert(bookmarks)
-          .values({
-            postId,
-            userId: user.id
-          })
-          .onConflictDoNothing({ target: [bookmarks.postId, bookmarks.userId] })
+      const shouldBookmark = bookmarked ?? !existing
+
+      if (shouldBookmark) {
+        if (!existing) {
+          await tx
+            .insert(bookmarks)
+            .values({
+              postId,
+              userId: user.id
+            })
+            .onConflictDoNothing({ target: [bookmarks.postId, bookmarks.userId] })
+        }
         isBookmarked = true
+      } else {
+        if (existing) {
+          await tx.delete(bookmarks).where(eq(bookmarks.id, existing.id))
+        }
+        isBookmarked = false
       }
     })
 
@@ -52,3 +58,10 @@ export const toggleBookmarkAction = authenticatedActionClient
 
     return { isBookmarked }
   })
+
+export const clearBookmarksAction = authenticatedActionClient.action(async ({ ctx: { user } }) => {
+  await db.delete(bookmarks).where(eq(bookmarks.userId, user.id))
+
+  revalidatePath('/bookmarks')
+  return { cleared: true }
+})

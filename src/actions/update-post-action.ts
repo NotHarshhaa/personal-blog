@@ -6,7 +6,7 @@ import { flattenValidationErrors } from 'next-safe-action'
 
 import { db } from '@/db'
 import { posts } from '@/db/schema'
-import { authenticatedActionClient } from '@/lib/safe-action'
+import { ActionError, authenticatedActionClient } from '@/lib/safe-action'
 
 import { updatePostSchema } from './schema'
 
@@ -41,7 +41,7 @@ export const updatePostAction = authenticatedActionClient
         .replaceAll('&nbsp;', ' ')
         .trim()
       if (!text) {
-        throw new Error('Cannot publish a post with empty content')
+        throw new ActionError('Cannot publish a post with empty content')
       }
     }
 
@@ -59,10 +59,13 @@ export const updatePostAction = authenticatedActionClient
       .returning({ id: posts.id })
 
     if (!updated) {
-      throw new Error('Post not found or not authorized')
+      throw new ActionError('Post not found or not authorized')
     }
 
     revalidatePath(`/posts/${postId}`)
+    revalidatePath('/posts')
+    revalidatePath('/me/posts')
     revalidatePath('/')
     revalidatePath('/feed.xml')
+    revalidatePath('/sitemap.xml')
   })

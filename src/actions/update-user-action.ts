@@ -18,6 +18,8 @@ type ActionCtx = {
   }
 }
 
+const emptyToNull = (value?: string | null) => (value && value.length > 0 ? value : null)
+
 export const updateUserAction = authenticatedActionClient
   .schema(updateUserSchema, {
     // eslint-disable-next-line @typescript-eslint/require-await -- required for the shape
@@ -28,15 +30,18 @@ export const updateUserAction = authenticatedActionClient
       .update(users)
       .set({
         name: data.name,
-        image: data.image,
-        bio: data.bio,
-        github: data.github ?? null,
-        twitter: data.twitter ?? null,
-        linkedin: data.linkedin ?? null,
-        theme: data.theme ?? null,
+        image: emptyToNull(data.image),
+        bio: emptyToNull(data.bio),
+        github: emptyToNull(data.github),
+        twitter: emptyToNull(data.twitter),
+        linkedin: emptyToNull(data.linkedin),
+        theme: emptyToNull(data.theme),
         updatedAt: new Date()
       })
       .where(and(eq(users.id, user.id)))
 
     revalidatePath(`/users/${user.id}`)
+    revalidatePath('/me/settings')
+    revalidatePath('/')
+    revalidatePath('/posts')
   })

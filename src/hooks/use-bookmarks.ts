@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
 
-import { toggleBookmarkAction } from '@/actions/toggle-bookmark-action'
+import { clearBookmarksAction, toggleBookmarkAction } from '@/actions/toggle-bookmark-action'
 
 export type LocalBookmark = {
   id: string
@@ -13,12 +13,15 @@ export type LocalBookmark = {
   tags?: string[]
 }
 
-const STORAGE_KEY = 'blog_bookmarks_v1'
+const STORAGE_KEY_PREFIX = 'blog_bookmarks_v1'
 const EMPTY_BOOKMARKS: LocalBookmark[] = []
 
-const persistBookmarks = (next: LocalBookmark[]) => {
+const getStorageKey = (userId?: string | null) =>
+  userId ? `${STORAGE_KEY_PREFIX}_${userId}` : STORAGE_KEY_PREFIX
+
+const persistBookmarks = (storageKey: string, next: LocalBookmark[]) => {
   try {
-    globalThis.localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
+    globalThis.localStorage.setItem(storageKey, JSON.stringify(next))
     globalThis.dispatchEvent(new Event('bookmarks-updated'))
   } catch {
     // storage quota error ignore
@@ -29,12 +32,13 @@ export const useBookmarks = (
   userId?: string | null,
   initialBookmarks: LocalBookmark[] = EMPTY_BOOKMARKS
 ) => {
+  const storageKey = getStorageKey(userId)
   const [localBookmarks, setLocalBookmarks] = useState<LocalBookmark[]>([])
   const [isLoaded, setIsLoaded] = useState(false)
   // Ref mirror of localBookmarks so rapid successive toggles always read
   // the freshest list instead of a stale render-time snapshot.
   const bookmarksRef = useRef<LocalBookmark[]>([])
-  const hasLoadedRef = useRef(false)
+  const hasLoadedForKeyRef = useRef<string | null>(null)
 
   const setBookmarks = useCallback((next: LocalBookmark[]) => {
     bookmarksRef.current = next
@@ -43,32 +47,33 @@ export const useBookmarks = (
 
   // Load from localStorage
   const reloadFromStorage = useCallback(() => {
+    const firstLoadForKey = hasLoadedForKeyRef.current !== storageKey
     try {
-      const raw = globalThis.localStorage.getItem(STORAGE_KEY)
+      const raw = globalThis.localStorage.getItem(storageKey)
       if (raw) {
         const parsed = JSON.parse(raw) as LocalBookmark[]
-        const bookmarks = hasLoadedRef.current
-          ? parsed
-          : Array.from(
+        const bookmarks = firstLoadForKey
+          ? Array.from(
               new Map([...parsed, ...initialBookmarks].map((item) => [item.id, item])).values()
             )
+          : parsed
         setBookmarks(bookmarks)
-        if (!hasLoadedRef.current && initialBookmarks.length > 0) {
-          globalThis.localStorage.setItem(STORAGE_KEY, JSON.stringify(bookmarks))
+        if (firstLoadForKey && initialBookmarks.length > 0) {
+          globalThis.localStorage.setItem(storageKey, JSON.stringify(bookmarks))
         }
       } else {
         setBookmarks(initialBookmarks)
         if (initialBookmarks.length > 0) {
-          globalThis.localStorage.setItem(STORAGE_KEY, JSON.stringify(initialBookmarks))
+          globalThis.localStorage.setItem(storageKey, JSON.stringify(initialBookmarks))
         }
       }
     } catch {
       setBookmarks(initialBookmarks)
     } finally {
-      hasLoadedRef.current = true
+      hasLoadedForKeyRef.current = storageKey
       setIsLoaded(true)
     }
-  }, [initialBookmarks, setBookmarks])
+  }, [initialBookmarks, setBookmarks, storageKey])
 
   useEffect(() => {
     reloadFromStorage()
@@ -88,7 +93,10 @@ export const useBookmarks = (
 
   const bookmarkedIds = useMemo(() => localBookmarks.map((item) => item.id), [localBookmarks])
 
-  const isBookmarked = (postId: string) => bookmarksRef.current.some((item) => item.id === postId)
+  const isBookmarked = useCallback(
+    (postId: string) => localBookmarks.some((item) => item.id === postId),
+    [localBookmarks]
+  )
 
   const toggleBookmark = useCallback(
     async (post: {
@@ -101,6 +109,7 @@ export const useBookmarks = (
       const postId = post.id
       const current = bookmarksRef.current
       const currentlyBookmarked = current.some((item) => item.id === postId)
+      const nextState = !currentlyBookmarked
 
       // Optimistic local state update
       const updatedList = currentlyBookmarked
@@ -119,30 +128,40 @@ export const useBookmarks = (
           ]
 
       setBookmarks(updatedList)
-      persistBookmarks(updatedList)
+      persistBookmarks(storageKey, updatedList)
       toast.success(currentlyBookmarked ? 'Removed from bookmarks' : 'Saved to bookmarks')
 
-      // If authenticated, sync with database
+      // If authenticated, sync explicit target state with database
       if (userId) {
         try {
-          await toggleBookmarkAction({ postId })
+          const res = await toggleBookmarkAction({ postId, bookmarked: nextState })
+          if (res?.serverError) {
+            setBookmarks(current)
+            persistBookmarks(storageKey, current)
+            toast.error(res.serverError)
+          }
         } catch {
-          // Keep local state functioning
+          // Keep local state functioning on offline/transient error
         }
       }
     },
-    [setBookmarks, userId]
+    [setBookmarks, storageKey, userId]
   )
 
   const clearBookmarks = useCallback(async () => {
-    const cleared = bookmarksRef.current
+    const previous = bookmarksRef.current
     setBookmarks([])
-    persistBookmarks([])
+    persistBookmarks(storageKey, [])
 
     if (userId) {
-      await Promise.allSettled(cleared.map((item) => toggleBookmarkAction({ postId: item.id })))
+      const res = await clearBookmarksAction()
+      if (res?.serverError) {
+        setBookmarks(previous)
+        persistBookmarks(storageKey, previous)
+        toast.error(res.serverError)
+      }
     }
-  }, [setBookmarks, userId])
+  }, [setBookmarks, storageKey, userId])
 
   return {
     isLoaded,

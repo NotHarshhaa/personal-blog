@@ -7,9 +7,23 @@ import { createPortal } from 'react-dom'
 
 import { cn } from '@/utils'
 
+const isSafeImageUrl = (value: string): boolean => {
+  const trimmed = value.trim()
+  if (!trimmed) return false
+  if (trimmed.startsWith('/') && !trimmed.startsWith('//')) return true
+  if (trimmed.startsWith('data:image/')) return true
+  try {
+    const parsed = new URL(trimmed)
+    return parsed.protocol === 'https:' || parsed.protocol === 'http:'
+  } catch {
+    return false
+  }
+}
+
 export const ImageNodeView = (props: ReactNodeViewProps) => {
   const { node, updateAttributes, editor } = props
-  const src = (node.attrs.src as string) || ''
+  const rawSrc = (node.attrs.src as string) || ''
+  const src = isSafeImageUrl(rawSrc) ? rawSrc.trim() : ''
   const alt = (node.attrs.alt as string) || ''
   const title = (node.attrs.title as string) || ''
   const caption = title || alt

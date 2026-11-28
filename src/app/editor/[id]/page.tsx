@@ -42,7 +42,7 @@ const EditorPage = async (props: EditorPageProps) => {
     redirect('/')
   }
 
-  return <Form post={post} />
+  return <Form post={post} isAdmin={user.role === 'admin'} />
 }
 
 export default EditorPage

@@ -1,4 +1,4 @@
-import { and, eq } from 'drizzle-orm'
+import { and, asc, eq } from 'drizzle-orm'
 
 import { db } from '@/db'
 import { posts } from '@/db/schema'
@@ -13,6 +13,7 @@ export const getPostById = async (id: string) => {
       description: true,
       content: true,
       createdAt: true,
+      updatedAt: true,
       views: true,
       baselineViews: true,
       baselineLikes: true,
@@ -51,11 +52,13 @@ export const getPostById = async (id: string) => {
         },
         with: {
           posts: {
+            where: and(eq(posts.published, true), eq(posts.visibility, 'public')),
             columns: {
               id: true,
               title: true,
               seriesOrder: true
-            }
+            },
+            orderBy: asc(posts.seriesOrder)
           }
         }
       }

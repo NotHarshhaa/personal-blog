@@ -5,13 +5,13 @@ import { revalidatePath } from "next/cache";
 
 import { db } from "@/db";
 import { posts } from "@/db/schema";
-import { authenticatedActionClient } from "@/lib/safe-action";
+import { ActionError, authenticatedActionClient } from "@/lib/safe-action";
 import { getBaselineEngagement } from "@/utils/get-seeded-view-count";
 
 export const refreshEngagementAction = authenticatedActionClient.action(
   async ({ ctx: { user } }) => {
     if (user.role !== "admin") {
-      throw new Error("Not authorized");
+      throw new ActionError("Not authorized");
     }
 
     const allPosts = await db.query.posts.findMany({

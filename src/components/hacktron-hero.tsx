@@ -56,10 +56,10 @@ export const HacktronHero = () => {
 
           <div className='flex flex-wrap items-center gap-3 pt-1'>
             <Button asChild variant='default' corners>
-              <Link href='/feed.xml'>
+              <a href='/feed.xml' target='_blank' rel='noopener noreferrer'>
                 <RssIcon className='size-3.5' />
                 <span>Subscribe via RSS ↘</span>
-              </Link>
+              </a>
             </Button>
 
             <Button asChild variant='outline' corners>

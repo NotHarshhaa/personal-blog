@@ -140,10 +140,22 @@ const ClientHeader = ({ user }: Props) => {
   }, [isSearchOpen, isMobileMenuOpen])
 
   useEffect(() => {
+    setIsMobileMenuOpen(false)
+    setShowNotifications(false)
+  }, [pathname])
+
+  useEffect(() => {
     if (!isMobileMenuOpen) return
     document.body.style.overflow = 'hidden'
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setIsMobileMenuOpen(false)
+      }
+    }
+    window.addEventListener('resize', handleResize)
     return () => {
       document.body.style.overflow = ''
+      window.removeEventListener('resize', handleResize)
     }
   }, [isMobileMenuOpen])
 

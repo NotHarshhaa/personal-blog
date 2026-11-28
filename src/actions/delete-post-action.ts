@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache'
 
 import { db } from '@/db'
 import { posts } from '@/db/schema'
-import { authenticatedActionClient } from '@/lib/safe-action'
+import { ActionError, authenticatedActionClient } from '@/lib/safe-action'
 
 import { deletePostSchema } from './schema'
 
@@ -22,11 +22,13 @@ export const deletePostAction = authenticatedActionClient
       .returning({ id: posts.id })
 
     if (!deleted) {
-      throw new Error('Post not found or not authorized')
+      throw new ActionError('Post not found or not authorized')
     }
 
     revalidatePath('/me/posts')
     revalidatePath(`/posts/${postId}`)
+    revalidatePath('/posts')
     revalidatePath('/')
     revalidatePath('/feed.xml')
+    revalidatePath('/sitemap.xml')
   })

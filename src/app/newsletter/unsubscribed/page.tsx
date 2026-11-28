@@ -12,6 +12,8 @@ import { Button, toast } from '@/components/ui'
 function UnsubscribedContent() {
   const searchParams = useSearchParams()
   const email = searchParams.get('email') ?? ''
+  const errorParam = searchParams.get('error')
+  const isInvalidToken = errorParam === 'invalid_token'
   const [resubscribed, setResubscribed] = useState(false)
   const [loading, setLoading] = useState(false)
 
@@ -24,7 +26,7 @@ function UnsubscribedContent() {
         setResubscribed(true)
         toast.success(res.data.message)
       } else {
-        toast.error('Failed to reactivate subscription')
+        toast.error(res?.serverError ?? 'Failed to reactivate subscription')
       }
     } catch {
       toast.error('An unexpected error occurred')
@@ -34,6 +36,9 @@ function UnsubscribedContent() {
   }
 
   const getConfirmationMessage = () => {
+    if (isInvalidToken) {
+      return 'This unsubscribe link is invalid or expired. Please use the unsubscribe link from your latest newsletter email.'
+    }
     if (resubscribed) {
       return `You are once again subscribed with ${email}.`
     }
@@ -43,13 +48,20 @@ function UnsubscribedContent() {
     return 'Your email address has been safely removed from our dispatch list.'
   }
 
+  let headingText = 'Unsubscribe Confirmed'
+  if (isInvalidToken) {
+    headingText = 'Invalid Unsubscribe Link'
+  } else if (resubscribed) {
+    headingText = 'Subscription Reactivated'
+  }
+
   return (
     <div className="mx-auto max-w-xl space-y-6 py-12">
       <Frame>
         <CornerBrackets />
         <FrameHeader label="DISPATCH PROTOCOL // STATUS">
           <span className="font-mono text-[10px] text-muted-foreground uppercase">
-            STATUS: 200 OK
+            STATUS: {isInvalidToken ? '403 INVALID' : '200 OK'}
           </span>
         </FrameHeader>
         <FrameBody className="space-y-4 text-center">
@@ -63,7 +75,7 @@ function UnsubscribedContent() {
 
           <div className="space-y-1">
             <h1 className="font-heading text-xl font-bold tracking-tight text-foreground sm:text-2xl">
-              {resubscribed ? 'Subscription Reactivated' : 'Unsubscribe Confirmed'}
+              {headingText}
             </h1>
             <p className="font-mono text-xs text-muted-foreground">
               {getConfirmationMessage()}
@@ -77,7 +89,7 @@ function UnsubscribedContent() {
               </Button>
             ) : (
               <div className="flex flex-wrap items-center justify-center gap-3">
-                {email && (
+                {email && !isInvalidToken && (
                   <Button
                     variant="outline"
                     corners

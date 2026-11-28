@@ -10,13 +10,13 @@ import {
   Trash2Icon,
 } from "lucide-react";
 import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import { useAction } from "next-safe-action/hooks";
 import { useEffect,useRef, useState } from "react";
 
 import { deletePostAction } from "@/actions/delete-post-action";
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -24,7 +24,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   Button,
-  buttonVariants,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -45,6 +44,8 @@ const Controls = (props: ControlsProps) => {
   const { id, user, authorId, postTitle } = props;
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
   const touchStartRef = useRef<{ x: number; y: number; time: number } | null>(
     null,
   );
@@ -52,10 +53,16 @@ const Controls = (props: ControlsProps) => {
 
   const action = useAction(deletePostAction, {
     onSuccess: () => {
+      setIsOpen(false);
       toast.success("Post deleted");
+      if (pathname === `/posts/${id}` || pathname === `/editor/${id}`) {
+        router.push("/me/posts");
+      } else {
+        router.refresh();
+      }
     },
     onError: ({ error }) => {
-      toast.error(error.serverError);
+      toast.error(error.serverError ?? "Failed to delete post");
     },
   });
 
@@ -211,19 +218,18 @@ const Controls = (props: ControlsProps) => {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
+            <AlertDialogCancel disabled={action.isExecuting}>Cancel</AlertDialogCancel>
+            <Button
+              type="button"
+              variant="destructive"
               onClick={handleDelete}
               disabled={action.isExecuting}
-              className={buttonVariants({
-                variant: "destructive",
-              })}
             >
               {action.isExecuting ? (
                 <Loader2Icon className="mr-2 size-4 animate-spin" />
               ) : null}
               Delete
-            </AlertDialogAction>
+            </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

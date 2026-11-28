@@ -21,6 +21,7 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui'
+import { SITE_URL } from '@/lib/constants'
 import { compilePostToMonospaceEmail } from '@/lib/email-dispatch'
 
 export type PublishedPostOption = {
@@ -78,7 +79,7 @@ export function NewsletterDispatcher({
         setLastDispatchedId(selectedPostId)
         toast.success(res.data.message)
       } else {
-        toast.error(res?.data?.message ?? 'Failed to dispatch newsletter')
+        toast.error(res?.serverError ?? res?.data?.message ?? 'Failed to dispatch newsletter')
       }
     } catch (error) {
       toast.error(
@@ -126,8 +127,8 @@ export function NewsletterDispatcher({
           createdAt: new Date(selectedPost.createdAt)
         },
         {
-          siteUrl: 'https://prodevopsguy.com',
-          unsubscribeUrl: 'https://prodevopsguy.com/api/newsletter/unsubscribe?email=test@example.com'
+          siteUrl: SITE_URL,
+          unsubscribeUrl: `${SITE_URL}/api/newsletter/unsubscribe?email=test@example.com`
         }
       )
     : null

@@ -66,16 +66,24 @@ const LivePreview = ({ content }: { content: string }) => (
 
 type FormProps = {
   post: Post
+  isAdmin?: boolean
 }
 
 const Form = (props: FormProps) => {
-  const { post } = props
+  const { post, isAdmin = true } = props
   const [title, setTitle] = useState(post.title)
   const [description, setDescription] = useState(post.description)
   const [content, setContent] = useState(post.content)
   const [tags, setTags] = useState<string[]>(post.tags)
   const [tagInput, setTagInput] = useState('')
   const [visibility, setVisibility] = useState<Visibility>(post.visibility as Visibility)
+  const [isPublished, setIsPublished] = useState(post.published)
+  const [savedSnapshot, setSavedSnapshot] = useState(() => ({
+    title: post.title,
+    description: post.description ?? '',
+    content: post.content,
+    tags: post.tags
+  }))
   const [isOpen, setIsOpen] = useState(false)
   const [showPreview, setShowPreview] = useState(false)
   const [submittingAction, setSubmittingAction] = useState<
@@ -87,16 +95,30 @@ const Form = (props: FormProps) => {
       if (input.visibility) {
         toast.success(`Visibility set to ${input.visibility}`)
         setIsOpen(false)
+        router.refresh()
         return
       }
-      // Only navigate away on the draft -> published transition; updating an
-      // already-live post (or Ctrl+S) must keep the author in the editor.
-      if (input.published && !post.published) {
+      const nextDescription = input.description === undefined ? description : input.description
+      const nextContent = input.content === undefined ? content : input.content
+      setSavedSnapshot({
+        title: input.title ?? title,
+        description: nextDescription ?? '',
+        content: nextContent,
+        tags: input.tags ?? tags
+      })
+      // Only navigate away on the draft -> published transition for admins;
+      // updating an already-live post (or Ctrl+S) must keep the author in the editor.
+      if (isAdmin && input.published && !isPublished) {
+        setIsPublished(true)
         toast.success('Post published')
         router.push(`/posts/${post.id}`)
         return
       }
+      if (isAdmin && input.published !== undefined) {
+        setIsPublished(input.published)
+      }
       toast.success('Post saved')
+      router.refresh()
     },
     onError: ({ error }) => {
       const validationErrorMessage =
@@ -114,11 +136,11 @@ const Form = (props: FormProps) => {
 
   const isDirty = useMemo(
     () =>
-      title !== post.title ||
-      (description ?? '') !== (post.description ?? '') ||
-      content !== post.content ||
-      JSON.stringify(tags) !== JSON.stringify(post.tags),
-    [title, description, content, tags, post]
+      title !== savedSnapshot.title ||
+      (description ?? '') !== savedSnapshot.description ||
+      content !== savedSnapshot.content ||
+      JSON.stringify(tags) !== JSON.stringify(savedSnapshot.tags),
+    [title, description, content, tags, savedSnapshot]
   )
 
   const handleAddTag = (tagToAdd: string) => {
@@ -163,7 +185,7 @@ const Form = (props: FormProps) => {
         content,
         description,
         tags,
-        published
+        ...(isAdmin ? { published } : {})
       })
     } finally {
       setSubmittingAction(null)
@@ -188,14 +210,14 @@ const Form = (props: FormProps) => {
       if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
         e.preventDefault()
         if (!action.isExecuting) {
-          void handleUpdatePost(post.published)
+          void handleUpdatePost(isPublished)
         }
       }
     }
     globalThis.addEventListener('keydown', handleKeyDown)
     return () => globalThis.removeEventListener('keydown', handleKeyDown)
     // eslint-disable-next-line react-hooks/exhaustive-deps -- re-bind only when executing state changes
-  }, [action.isExecuting, post.published, title, description, content, tags])
+  }, [action.isExecuting, isPublished, isAdmin, title, description, content, tags])
 
   return (
     <div className='relative z-10 w-full'>
@@ -204,7 +226,7 @@ const Form = (props: FormProps) => {
           left={
             <>
               <span className='truncate'>DOC // {post.id.slice(0, 8)}</span>
-              {post.published ? (
+              {isPublished ? (
                 <span className='bg-foreground text-background px-1.5 py-px text-[8px] font-semibold'>
                   Live
                 </span>
@@ -228,7 +250,7 @@ const Form = (props: FormProps) => {
             </>
           }
           right={
-            post.published ? (
+            isPublished ? (
               <Link
                 href={`/posts/${post.id}`}
                 className='hover:text-foreground inline-flex items-center gap-1 transition-colors'
@@ -249,7 +271,7 @@ const Form = (props: FormProps) => {
               <p className='text-muted-foreground pt-1.5 font-mono text-[10px] font-semibold tracking-widest uppercase'>
                 {'// 01: Meta'}
               </p>
-              {post.published && (
+              {isAdmin && isPublished && (
                 <Dialog open={isOpen} onOpenChange={setIsOpen}>
                   <DialogTrigger asChild>
                     <button
@@ -516,14 +538,14 @@ const Form = (props: FormProps) => {
             <div
               className={cn(
                 'flex items-center gap-2',
-                !post.published && 'justify-between sm:justify-end'
+                isAdmin && !isPublished && 'justify-between sm:justify-end'
               )}
             >
-              {!post.published && (
+              {(!isPublished || !isAdmin) && (
                 <Button
-                  onClick={() => handleUpdatePost()}
+                  onClick={() => handleUpdatePost(false)}
                   disabled={action.isExecuting}
-                  variant='outline'
+                  variant={isAdmin ? 'outline' : 'default'}
                   className='cursor-pointer'
                 >
                   {action.isExecuting && submittingAction === 'draft' && (
@@ -532,16 +554,18 @@ const Form = (props: FormProps) => {
                   Save as draft
                 </Button>
               )}
-              <Button
-                onClick={() => handleUpdatePost(true)}
-                disabled={action.isExecuting}
-                className='cursor-pointer'
-              >
-                {action.isExecuting && submittingAction === 'publish' && (
-                  <Loader2Icon className='mr-2 size-4 animate-spin' />
-                )}
-                {post.published ? 'Update post' : 'Publish post'}
-              </Button>
+              {isAdmin && (
+                <Button
+                  onClick={() => handleUpdatePost(true)}
+                  disabled={action.isExecuting}
+                  className='cursor-pointer'
+                >
+                  {action.isExecuting && submittingAction === 'publish' && (
+                    <Loader2Icon className='mr-2 size-4 animate-spin' />
+                  )}
+                  {isPublished ? 'Update post' : 'Publish post'}
+                </Button>
+              )}
             </div>
           </div>
         </FrameBody>

@@ -116,13 +116,19 @@ const SnippetManager = ({ initialSnippets }: SnippetManagerProps) => {
 
     startTransition(async () => {
       try {
-        if (editingId) {
-          await updateSnippetAction({ snippetId: editingId, ...payload })
-          toast.success('Snippet updated')
-        } else {
-          await createSnippetAction(payload)
-          toast.success('Snippet filed in the vault')
+        const res = editingId
+          ? await updateSnippetAction({ snippetId: editingId, ...payload })
+          : await createSnippetAction(payload)
+
+        if (res?.serverError || res?.validationErrors) {
+          const validationError = res.validationErrors
+            ? Object.values(res.validationErrors).flat()[0]
+            : undefined
+          toast.error(res.serverError ?? (typeof validationError === 'string' ? validationError : 'Validation error'))
+          return
         }
+
+        toast.success(editingId ? 'Snippet updated' : 'Snippet filed in the vault')
         resetForm()
         router.refresh()
       } catch {
@@ -137,7 +143,11 @@ const SnippetManager = ({ initialSnippets }: SnippetManagerProps) => {
 
     startTransition(async () => {
       try {
-        await deleteSnippetAction({ snippetId: snippet.id })
+        const res = await deleteSnippetAction({ snippetId: snippet.id })
+        if (res?.serverError) {
+          toast.error(res.serverError)
+          return
+        }
         toast.success('Snippet deleted')
         if (editingId === snippet.id) resetForm()
         router.refresh()

@@ -2,6 +2,7 @@
 
 import { AlertTriangle, Loader2Icon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { signOut } from 'next-auth/react'
 import { useAction } from 'next-safe-action/hooks'
 import { useState } from 'react'
 
@@ -9,7 +10,6 @@ import { deleteAccountAction } from '@/actions/delete-account-action'
 import { Frame, FrameBody, StripHeader } from '@/components/frame'
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -18,28 +18,28 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
   Button,
-  buttonVariants,
   Input,
   Label,
   toast
 } from '@/components/ui'
-import { cn } from '@/lib/utils'
 
 const Danger = () => {
   const [value, setValue] = useState('')
   const [isOpen, setIsOpen] = useState(false)
   const [checked, setChecked] = useState(false)
+  const router = useRouter()
   const action = useAction(deleteAccountAction, {
-    onSuccess: () => {
+    onSuccess: async () => {
+      setIsOpen(false)
       toast.success('Your account has been deleted')
+      await signOut({ redirect: false })
       router.push('/')
       router.refresh()
     },
     onError: ({ error }) => {
-      toast.error(error.serverError)
+      toast.error(error.serverError ?? 'Failed to delete account')
     }
   })
-  const router = useRouter()
 
   const handleDeleteAccount = async (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -169,11 +169,10 @@ const Danger = () => {
                 >
                   Cancel
                 </AlertDialogCancel>
-                <AlertDialogAction
-                  className={cn(
-                    buttonVariants({ variant: 'destructive', size: 'lg' }),
-                    'px-6 font-semibold'
-                  )}
+                <Button
+                  variant='destructive'
+                  size='lg'
+                  className='px-6 font-semibold'
                   type='submit'
                   disabled={value !== 'delete my account' || !checked || action.isExecuting}
                 >
@@ -183,7 +182,7 @@ const Danger = () => {
                     <AlertTriangle className='mr-2 size-4' />
                   )}
                   Yes, delete everything
-                </AlertDialogAction>
+                </Button>
               </AlertDialogFooter>
             </form>
           </AlertDialogContent>

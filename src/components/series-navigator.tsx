@@ -123,7 +123,7 @@ export const SeriesNavigator = ({
                             : 'text-muted-foreground'
                         )}
                       >
-                        0{idx + 1}.
+                        {String(idx + 1).padStart(2, '0')}.
                       </span>
                       <span className="truncate">{post.title}</span>
                     </div>

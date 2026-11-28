@@ -60,20 +60,16 @@ export async function GET(_request: NextRequest, { params }: { params: Promise<{
 export async function POST(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params
-    const post = await getPost(id)
-
-    if (!post?.published || post.visibility !== 'public') {
-      return NextResponse.json(
-        { error: 'Post not found' },
-        { status: 404, headers: noStoreHeaders }
-      )
-    }
 
     const [updated] = await db
       .update(posts)
       .set({ views: sql`${posts.views} + 1` })
       .where(and(eq(posts.id, id), eq(posts.published, true), eq(posts.visibility, 'public')))
-      .returning({ views: posts.views })
+      .returning({
+        id: posts.id,
+        views: posts.views,
+        createdAt: posts.createdAt
+      })
 
     if (!updated) {
       return NextResponse.json(
@@ -82,7 +78,7 @@ export async function POST(_request: NextRequest, { params }: { params: Promise<
       )
     }
 
-    const baselineViews = getBaselineEngagement(post.id, post.createdAt).baselineViews
+    const baselineViews = getBaselineEngagement(updated.id, updated.createdAt).baselineViews
     return NextResponse.json(
       {
         views: getDisplayViewCount(updated.views, baselineViews, true)

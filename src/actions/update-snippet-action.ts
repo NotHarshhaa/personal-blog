@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache'
 
 import { db } from '@/db'
 import { snippets } from '@/db/schema'
-import { authenticatedActionClient } from '@/lib/safe-action'
+import { ActionError, authenticatedActionClient } from '@/lib/safe-action'
 
 import { updateSnippetSchema } from './schema'
 
@@ -13,7 +13,7 @@ export const updateSnippetAction = authenticatedActionClient
   .schema(updateSnippetSchema)
   .action(async ({ parsedInput, ctx: { user } }) => {
     if (user.role !== 'admin') {
-      throw new Error('Not authorized')
+      throw new ActionError('Not authorized')
     }
 
     const { snippetId, ...values } = parsedInput
@@ -34,11 +34,17 @@ export const updateSnippetAction = authenticatedActionClient
         id: snippets.id
       })
 
+    if (!snippet) {
+      throw new ActionError('Snippet not found')
+    }
+
     revalidatePath('/snippets')
     revalidatePath(`/snippets/${snippetId}`)
+    revalidatePath('/snippets/feed.xml')
     revalidatePath('/admin/snippets')
+    revalidatePath('/sitemap.xml')
 
     return {
-      snippetId: snippet?.id
+      snippetId: snippet.id
     }
   })

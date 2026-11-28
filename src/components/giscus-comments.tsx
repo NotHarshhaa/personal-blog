@@ -13,6 +13,8 @@ type GiscusCommentsProps = {
 
 export const GiscusComments = ({ postId, postTitle }: GiscusCommentsProps) => {
   const { resolvedTheme } = useTheme()
+  const resolvedThemeRef = useRef(resolvedTheme)
+  resolvedThemeRef.current = resolvedTheme
   const containerRef = useRef<HTMLDivElement>(null)
   const [mounted, setMounted] = useState(false)
 
@@ -27,11 +29,11 @@ export const GiscusComments = ({ postId, postTitle }: GiscusCommentsProps) => {
     setMounted(true)
   }, [])
 
-  // Mount Giscus script
+  // Mount Giscus script (theme updates are handled via postMessage below)
   useEffect(() => {
     if (!mounted || !isConfigured || !containerRef.current) return
 
-    const giscusTheme = resolvedTheme === 'dark' ? 'noborder_dark' : 'light'
+    const giscusTheme = resolvedThemeRef.current === 'dark' ? 'noborder_dark' : 'light'
 
     // Remove any existing script or iframe inside container
     containerRef.current.innerHTML = ''
@@ -55,7 +57,7 @@ export const GiscusComments = ({ postId, postTitle }: GiscusCommentsProps) => {
     script.async = true
 
     containerRef.current.append(script)
-  }, [mounted, isConfigured, repo, repoId, category, categoryId, postId, resolvedTheme])
+  }, [mounted, isConfigured, repo, repoId, category, categoryId, postId])
 
   // PostMessage theme updates to Giscus iframe when theme toggles
   useEffect(() => {

@@ -1,16 +1,21 @@
+import { readFile } from 'node:fs/promises'
+import path from 'node:path'
+
 import { ImageResponse } from 'next/og'
 
-const fontBoldResponse = await fetch(
-  'https://cdn.jsdelivr.net/fontsource/fonts/instrument-sans@latest/latin-700-normal.ttf'
-)
-const fontBold = await fontBoldResponse.arrayBuffer()
+let fontsPromise: Promise<{ fontBold: Buffer; fontSemiBold: Buffer }> | null = null
 
-const fontSemiBoldResponse = await fetch(
-  'https://cdn.jsdelivr.net/fontsource/fonts/instrument-sans@latest/latin-600-normal.ttf'
-)
-const fontSemiBold = await fontSemiBoldResponse.arrayBuffer()
+const loadFonts = () => {
+  fontsPromise ??= Promise.all([
+    readFile(path.join(process.cwd(), 'src/assets/fonts/InstrumentSans-Bold.ttf')),
+    readFile(path.join(process.cwd(), 'src/assets/fonts/InstrumentSans-SemiBold.ttf'))
+  ]).then(([fontBold, fontSemiBold]) => ({ fontBold, fontSemiBold }))
 
-export const GET = (req: Request) => {
+  return fontsPromise
+}
+
+export const GET = async (req: Request) => {
+  const { fontBold, fontSemiBold } = await loadFonts()
   const { searchParams } = new URL(req.url)
   const title = searchParams.get('title') ?? 'DevOps, Cloud & AI Space'
   const description = searchParams.get('description') ?? ''

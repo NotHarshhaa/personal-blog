@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache'
 
 import { db } from '@/db'
 import { likes, posts } from '@/db/schema'
-import { authenticatedActionClient } from '@/lib/safe-action'
+import { ActionError, authenticatedActionClient } from '@/lib/safe-action'
 
 import { togglePostLikeSchema } from './schema'
 
@@ -20,7 +20,7 @@ export const togglePostLikeAction = authenticatedActionClient
         .for('update')
 
       if (!post) {
-        throw new Error('Post not found')
+        throw new ActionError('Post not found')
       }
 
       const existingLike = await tx.query.likes.findFirst({

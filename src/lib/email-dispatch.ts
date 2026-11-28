@@ -18,6 +18,15 @@ export type EmailCompileOptions = {
   issueNumber?: number | string
 }
 
+function escapeHtml(value: string): string {
+  return value
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;')
+}
+
 /**
  * Clean and format HTML content into email-safe monospace markup
  */
@@ -26,6 +35,12 @@ function sanitizeContentForEmail(rawHtml: string): string {
 
   return (
     rawHtml
+      // Strip dangerous tags and inline event handlers
+      .replaceAll(/<(script|style|iframe|object|embed|form|input|textarea|button)[^>]*>[\s\S]*?<\/\1>/gi, '')
+      .replaceAll(/<(script|style|iframe|object|embed|link|meta|base)[^>]*\/?>/gi, '')
+      .replaceAll(/\bon[a-z]{1,24}=(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '')
+      .replaceAll(/href\s*=\s*(?:"\s*javascript:[^"]*"|'\s*javascript:[^']*')/gi, 'href="#"')
+      .replaceAll(/src\s*=\s*(?:"\s*javascript:[^"]*"|'\s*javascript:[^']*')/gi, '')
       // Style headings
       .replaceAll(/<h1[^>]*>(.*?)<\/h1>/gi, '<h1 style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 20px; font-weight: 700; color: #111111; margin: 24px 0 12px 0; border-bottom: 1px solid #e5e5e5; padding-bottom: 6px; text-transform: uppercase; letter-spacing: 0.05em;">// $1</h1>')
       .replaceAll(/<h2[^>]*>(.*?)<\/h2>/gi, '<h2 style="font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 16px; font-weight: 700; color: #111111; margin: 20px 0 10px 0; border-bottom: 1px solid #eeeeee; padding-bottom: 4px; text-transform: uppercase; letter-spacing: 0.04em;">// $1</h2>')
@@ -60,6 +75,14 @@ export function compilePostToMonospaceEmail(
   const tagsFormatted = (post.tags ?? []).map((t) => `#${t}`).join(' ')
   const formattedContent = sanitizeContentForEmail(post.content ?? '')
 
+  const safeTitle = escapeHtml(post.title)
+  const safeDescription = post.description ? escapeHtml(post.description) : ''
+  const safeAuthorName = escapeHtml(post.author.name)
+  const safeTagsFormatted = escapeHtml(tagsFormatted)
+  const safeIssueNumber = escapeHtml(String(issueNumber))
+  const safePostUrl = escapeHtml(postUrl)
+  const safeUnsubscribeUrl = escapeHtml(unsubscribeUrl)
+
   const subject = `[DISPATCH #${issueNumber}] ${post.title}`
 
   const plainText = `
@@ -91,7 +114,7 @@ ${unsubscribeUrl}
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${subject}</title>
+  <title>${escapeHtml(subject)}</title>
 </head>
 <body style="margin: 0; padding: 24px 12px; background-color: #f4f2ec; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; color: #111111;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width: 640px; margin: 0 auto; background-color: #ffffff; border: 1px solid #111111; border-collapse: collapse;">
@@ -101,7 +124,7 @@ ${unsubscribeUrl}
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
           <tr>
             <td align="left" style="color: #111111;">
-              [+] DEVOPS &amp; AI DISPATCH // ISSUE #${issueNumber}
+              [+] DEVOPS &amp; AI DISPATCH // ISSUE #${safeIssueNumber}
             </td>
             <td align="right" style="color: #666666; font-size: 10px;">
               ${dateFormatted}
@@ -115,26 +138,26 @@ ${unsubscribeUrl}
     <tr>
       <td style="padding: 24px 20px 16px 20px; border-bottom: 1px solid #e0ded6;">
         <h1 style="font-size: 22px; line-height: 1.3; font-weight: 700; margin: 0 0 12px 0; color: #000000; letter-spacing: -0.02em;">
-          ${post.title}
+          ${safeTitle}
         </h1>
 
         ${
-          post.description
+          safeDescription
             ? `<div style="border-left: 3px solid #111111; padding-left: 12px; margin: 12px 0; font-size: 13px; line-height: 1.6; color: #555555;">
-                ${post.description}
+                ${safeDescription}
                </div>`
             : ''
         }
 
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top: 14px; font-size: 11px; color: #555555; border-top: 1px dashed #d5d3cb; padding-top: 10px;">
           <tr>
-            <td style="padding: 2px 0;"><strong>AUTHOR:</strong> ${post.author.name}</td>
+            <td style="padding: 2px 0;"><strong>AUTHOR:</strong> ${safeAuthorName}</td>
             <td align="right" style="padding: 2px 0;"><strong>FORMAT:</strong> MONOSPACE HTML</td>
           </tr>
           ${
-            tagsFormatted
+            safeTagsFormatted
               ? `<tr>
-                  <td colspan="2" style="padding: 2px 0; color: #666666;"><strong>TOPICS:</strong> ${tagsFormatted}</td>
+                  <td colspan="2" style="padding: 2px 0; color: #666666;"><strong>TOPICS:</strong> ${safeTagsFormatted}</td>
                 </tr>`
               : ''
           }
@@ -149,7 +172,7 @@ ${unsubscribeUrl}
 
         <!-- Primary Call to Action Button (0px brutalist) -->
         <div style="margin: 32px 0 20px 0; text-align: center;">
-          <a href="${postUrl}" style="display: inline-block; background-color: #111111; color: #ffffff; text-decoration: none; padding: 12px 24px; font-family: ui-monospace, monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; border: 1px solid #111111;">
+          <a href="${safePostUrl}" style="display: inline-block; background-color: #111111; color: #ffffff; text-decoration: none; padding: 12px 24px; font-family: ui-monospace, monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; border: 1px solid #111111;">
             [ ↘ READ FULL DEEP DIVE &amp; LIVE BLUEPRINTS ]
           </a>
         </div>
@@ -167,7 +190,7 @@ ${unsubscribeUrl}
         </p>
         <p style="margin: 0; font-size: 10px;">
           To stop receiving these technical briefs, click here to 
-          <a href="${unsubscribeUrl}" style="color: #111111; text-decoration: underline; font-weight: 600;">1-click unsubscribe</a>.
+          <a href="${safeUnsubscribeUrl}" style="color: #111111; text-decoration: underline; font-weight: 600;">1-click unsubscribe</a>.
         </p>
       </td>
     </tr>
@@ -200,6 +223,7 @@ export async function sendNewsletterDispatch(
   options: {
     siteUrl: string
     fromEmail?: string
+    buildUnsubscribeUrl?: (email: string) => string
   }
 ): Promise<DispatchResult> {
   const apiKey = process.env.RESEND_API_KEY
@@ -238,7 +262,9 @@ export async function sendNewsletterDispatch(
       const batch = subscriberEmails.slice(i, i + BATCH_SIZE)
 
       const emailPayloads = batch.map((email) => {
-        const unsubscribeUrl = `${options.siteUrl}/api/newsletter/unsubscribe?email=${encodeURIComponent(email)}`
+        const unsubscribeUrl = options.buildUnsubscribeUrl
+          ? options.buildUnsubscribeUrl(email)
+          : `${options.siteUrl}/api/newsletter/unsubscribe?email=${encodeURIComponent(email)}`
         const compiled = compilePostToMonospaceEmail(post, {
           siteUrl: options.siteUrl,
           unsubscribeUrl

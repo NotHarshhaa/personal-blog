@@ -57,17 +57,22 @@ const SettingsForm = (props: SettingsFormProps) => {
   const router = useRouter()
   const { setTheme } = useTheme()
   const action = useAction(updateUserAction, {
-    onSuccess: () => {
+    onSuccess: ({ input }) => {
+      form.reset(input)
       toast.success('Settings saved')
       router.refresh()
     },
     onError: ({ error }) => {
-      toast.error(
-        error.serverError ??
-          error.validationErrors?.name?.[0] ??
-          error.validationErrors?.image?.[0] ??
-          error.validationErrors?.bio?.[0]
-      )
+      const validationMessage =
+        error.validationErrors?.name?.[0] ??
+        error.validationErrors?.image?.[0] ??
+        error.validationErrors?.bio?.[0] ??
+        error.validationErrors?.github?.[0] ??
+        error.validationErrors?.twitter?.[0] ??
+        error.validationErrors?.linkedin?.[0] ??
+        error.validationErrors?.theme?.[0]
+
+      toast.error(error.serverError ?? validationMessage ?? 'Failed to save settings')
     }
   })
 
@@ -108,7 +113,7 @@ const SettingsForm = (props: SettingsFormProps) => {
       />
 
       {/* Sticky save bar */}
-      <div className='border-border bg-card/95 sticky bottom-0 z-10 flex items-center justify-between gap-3 border-b px-4 py-2.5 backdrop-blur-md'>
+      <div className='border-border bg-card/95 sticky top-0 z-10 flex items-center justify-between gap-3 border-b px-4 py-2.5 backdrop-blur-md'>
         <p className='text-muted-foreground inline-flex items-center gap-1.5 font-mono text-[10px] tracking-widest uppercase'>
           {isDirty ? (
             <>

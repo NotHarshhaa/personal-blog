@@ -1,4 +1,4 @@
-import { and, desc, eq } from 'drizzle-orm'
+import { and, desc, eq, sql } from 'drizzle-orm'
 
 import { db } from '@/db'
 import { posts } from '@/db/schema'
@@ -36,8 +36,8 @@ export const getTrendingPosts = async (limit = 5) => {
         }
       }
     },
-    orderBy: desc(posts.views),
-    limit: limit * 2 // Fetch extra to sort by engagement
+    orderBy: desc(sql`${posts.views} + ${posts.baselineViews}`),
+    limit: Math.max(limit * 4, 20)
   })
 
   // Sort by combined engagement score (views + likes * 5) and take top N

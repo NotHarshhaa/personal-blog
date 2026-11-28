@@ -56,11 +56,12 @@ export const TableOfContents = ({ content, className }: TableOfContentsProps) =>
         let id = heading.id
 
         if (!id) {
-          id = text
-            .toLowerCase()
-            .replaceAll(/[^a-z0-9]+/g, '-')
-            .replaceAll(/^-|-$/g, '')
-            .slice(0, 50)
+          id =
+            text
+              .toLowerCase()
+              .replaceAll(/[^a-z0-9]+/g, '-')
+              .replaceAll(/^-|-$/g, '')
+              .slice(0, 50) || 'section'
 
           let uniqueId = id
           let counter = 1
@@ -278,7 +279,7 @@ export const TableOfContents = ({ content, className }: TableOfContentsProps) =>
       </aside>
 
       {/* Mobile Floating Blueprint Button & Drawer */}
-      <div className='fixed right-5 bottom-6 z-40 lg:hidden'>
+      <div className='fixed right-4 bottom-32 z-40 sm:right-6 sm:bottom-28 lg:hidden'>
         <Dialog open={isMobileOpen} onOpenChange={setIsMobileOpen}>
           <DialogTrigger asChild>
             <Button

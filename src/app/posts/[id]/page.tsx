@@ -108,6 +108,7 @@ const PostPage = async (props: PostPageProps) => {
     description,
     content,
     createdAt,
+    updatedAt,
     user: author,
     likes,
     bookmarks,
@@ -133,7 +134,7 @@ const PostPage = async (props: PostPageProps) => {
     description: description,
     image: `${SITE_URL}/api/og?title=${encodeURIComponent(title)}`,
     datePublished: createdAt.toISOString(),
-    dateModified: createdAt.toISOString(),
+    dateModified: updatedAt.toISOString(),
     author: {
       '@type': 'Person',
       name: author.name,

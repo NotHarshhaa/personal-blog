@@ -200,7 +200,7 @@ const RoadmapsPage = async () => {
 
             return (
               <Frame key={track.id} className='relative'>
-                <FrameHeader label={`TRACK // 0${trackIdx + 1}`}>
+                <FrameHeader label={`TRACK // ${String(trackIdx + 1).padStart(2, '0')}`}>
                   <div className='text-muted-foreground flex flex-wrap items-center gap-2 font-mono text-xs sm:gap-3'>
                     <span className='border-border/80 bg-muted/40 text-foreground border px-2 py-0.5 text-[10px] font-semibold'>
                       {track.difficulty}
@@ -259,8 +259,9 @@ const RoadmapsPage = async () => {
 
                       {track.posts.map((post, stepIdx) => {
                         const readStats = readingTime(post.description ?? post.title).text
+                        const stepNum = String(stepIdx + 1).padStart(2, '0')
                         const phaseName =
-                          PHASE_NAMES[stepIdx] ?? `PHASE 0${stepIdx + 1} // ADVANCED TOPIC`
+                          PHASE_NAMES[stepIdx] ?? `PHASE ${stepNum} // ADVANCED TOPIC`
 
                         return (
                           <HoverMark
@@ -272,7 +273,7 @@ const RoadmapsPage = async () => {
                               <div className='flex min-w-0 flex-1 items-start gap-3.5'>
                                 {/* Step number badge with connector node */}
                                 <div className='border-border bg-background text-foreground relative z-10 flex size-9 shrink-0 items-center justify-center border font-mono text-xs font-bold'>
-                                  0{stepIdx + 1}
+                                  {stepNum}
                                 </div>
 
                                 <div className='min-w-0 flex-1 space-y-1'>

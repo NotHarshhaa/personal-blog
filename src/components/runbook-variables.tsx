@@ -28,8 +28,9 @@ import { cn } from '@/lib/utils'
 type RunbookContextType = {
   variables: Record<string, string>
   defaults: Record<string, string>
+  customKeys: string[]
   setVariable: (key: string, value: string) => void
-  addVariable: (key: string, defaultValue?: string) => void
+  addVariable: (key: string, defaultValue?: string) => string | null
   removeVariable: (key: string) => void
   resetVariables: () => void
   substitute: (text: string) => string
@@ -122,6 +123,7 @@ export const RunbookProvider = ({
 
   const [defaults, setDefaults] = useState<Record<string, string>>(scannedDefaults)
   const [variables, setVariables] = useState<Record<string, string>>(scannedDefaults)
+  const [customKeys, setCustomKeys] = useState<string[]>([])
 
   // Sync if content changes
   useEffect(() => {
@@ -141,17 +143,29 @@ export const RunbookProvider = ({
     setVariables((prev) => ({ ...prev, [key]: value }))
   }, [])
 
-  const addVariable = useCallback((key: string, defaultValue = '') => {
-    const cleanKey = key.replace(/^\$+/, '').trim().toUpperCase()
-    if (!cleanKey) return
+  const addVariable = useCallback((key: string, defaultValue = ''): string | null => {
+    const normalized = key
+      .replace(/^\$+/, '')
+      .trim()
+      .toUpperCase()
+      .replaceAll(/[^A-Z0-9_]/g, '_')
+    let start = 0
+    while (start < normalized.length && normalized[start] === '_') start++
+    let end = normalized.length
+    while (end > start && normalized[end - 1] === '_') end--
+    const cleanKey = normalized.slice(start, end)
+    if (!cleanKey || !/^[A-Z][A-Z0-9_]*$/.test(cleanKey)) return null
     const initialVal = defaultValue || cleanKey.toLowerCase()
     setDefaults((prev) => ({ ...prev, [cleanKey]: initialVal }))
     setVariables((prev) => ({ ...prev, [cleanKey]: initialVal }))
+    setCustomKeys((prev) => (prev.includes(cleanKey) ? prev : [...prev, cleanKey]))
+    return cleanKey
   }, [])
 
   const removeVariable = useCallback((key: string) => {
     setVariables((prev) => Object.fromEntries(Object.entries(prev).filter(([k]) => k !== key)))
     setDefaults((prev) => Object.fromEntries(Object.entries(prev).filter(([k]) => k !== key)))
+    setCustomKeys((prev) => prev.filter((k) => k !== key))
   }, [])
 
   const resetVariables = useCallback(() => {
@@ -174,11 +188,11 @@ export const RunbookProvider = ({
 
       let result = text
       for (const [key, val] of Object.entries(variables)) {
-        if (!val) continue
+        if (!val || !/^[A-Z0-9_]+$/.test(key)) continue
         // Replace ${KEY} first, then $KEY (with word boundary / non-alphanumeric trailing check)
         const bracedRegex = new RegExp(`\\$\\{${key}\\}`, 'g')
         const bareRegex = new RegExp(`\\$${key}(?![A-Za-z0-9_])`, 'g')
-        result = result.replace(bracedRegex, val).replace(bareRegex, val)
+        result = result.replace(bracedRegex, () => val).replace(bareRegex, () => val)
       }
       return result
     },
@@ -189,6 +203,7 @@ export const RunbookProvider = ({
     () => ({
       variables,
       defaults,
+      customKeys,
       setVariable,
       addVariable,
       removeVariable,
@@ -200,6 +215,7 @@ export const RunbookProvider = ({
     [
       variables,
       defaults,
+      customKeys,
       setVariable,
       addVariable,
       removeVariable,
@@ -217,6 +233,8 @@ const noop = () => {
   // no-op fallback when used outside provider
 }
 
+const noopAddVariable = (): string | null => null
+
 /** Hook to consume runbook environment parameters anywhere inside the article */
 export const useRunbookVariables = () => {
   const context = use(RunbookContext)
@@ -225,8 +243,9 @@ export const useRunbookVariables = () => {
     return {
       variables: {},
       defaults: {},
+      customKeys: [],
       setVariable: noop,
-      addVariable: noop,
+      addVariable: noopAddVariable,
       removeVariable: noop,
       resetVariables: noop,
       substitute: (t: string) => t,
@@ -245,6 +264,7 @@ export const RunbookVariablesBar = ({ className }: { className?: string }) => {
   const {
     variables,
     defaults,
+    customKeys,
     setVariable,
     addVariable,
     removeVariable,
@@ -277,11 +297,15 @@ export const RunbookVariablesBar = ({ className }: { className?: string }) => {
   const handleAddNewSubmit = (e: SyntheticEvent) => {
     e.preventDefault()
     if (!newKey.trim()) return
-    addVariable(newKey, newVal)
+    const addedKey = addVariable(newKey, newVal)
+    if (!addedKey) {
+      toast.error('Parameter name must start with a letter (A-Z, 0-9, _)')
+      return
+    }
     setNewKey('')
     setNewVal('')
     setIsAddingNew(false)
-    toast.success(`Parameter $${newKey.trim().toUpperCase()} added`)
+    toast.success(`Parameter $${addedKey} added`)
   }
 
   return (
@@ -370,13 +394,14 @@ export const RunbookVariablesBar = ({ className }: { className?: string }) => {
                     className="w-full min-w-0 bg-transparent px-2 py-1.5 font-mono text-[11px] text-foreground placeholder:text-muted-foreground/40 focus:outline-none"
                   />
 
-                  {/* Remove custom param if not in original defaults */}
-                  {!(key in defaults) && (
+                  {/* Remove custom param if user-added */}
+                  {customKeys.includes(key) && (
                     <button
                       type="button"
                       onClick={() => removeVariable(key)}
                       title="Remove parameter"
-                      className="px-1.5 text-muted-foreground hover:text-foreground"
+                      aria-label={`Remove parameter ${key}`}
+                      className="cursor-pointer px-1.5 text-muted-foreground hover:text-foreground"
                     >
                       <X className="size-3" />
                     </button>

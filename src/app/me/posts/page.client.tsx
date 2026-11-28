@@ -26,7 +26,6 @@ import NewPostButton from '@/components/new-post-button'
 import PostCard, { type PostCardProps } from '@/components/post-card'
 import {
   AlertDialog,
-  AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
@@ -34,7 +33,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   Button,
-  buttonVariants,
   toast
 } from '@/components/ui'
 import { cn } from '@/utils'
@@ -563,13 +561,12 @@ export const PostsClient = ({ posts, user }: ContentProps) => {
             >
               Cancel
             </AlertDialogCancel>
-            <AlertDialogAction
+            <Button
+              type='button'
+              variant='destructive'
               onClick={handleDeleteAllDrafts}
               disabled={deleteDraftsAction.isExecuting}
-              className={buttonVariants({
-                variant: 'destructive',
-                className: 'gap-1.5 font-mono text-xs uppercase'
-              })}
+              className='gap-1.5 font-mono text-xs uppercase'
             >
               {deleteDraftsAction.isExecuting ? (
                 <Loader2Icon className='size-3.5 animate-spin' />
@@ -577,7 +574,7 @@ export const PostsClient = ({ posts, user }: ContentProps) => {
                 <Trash2Icon className='size-3.5' />
               )}
               Delete all {draftPosts.length} drafts
-            </AlertDialogAction>
+            </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>

@@ -910,13 +910,31 @@ export function AudioDispatchTopBar() {
   // Only render on deep dive articles with a working synthesis engine
   if (!isDeepDive || !audioAvailable) return null
 
+  if (isCollapsed) {
+    return (
+      <aside
+        aria-label='Audio dispatch briefing player (collapsed)'
+        className='fixed top-[3px] right-3 z-40 sm:right-6'
+      >
+        <button
+          type='button'
+          onClick={() => setIsCollapsed(false)}
+          className='border-border bg-background/95 text-foreground hover:border-foreground flex cursor-pointer items-center gap-1.5 border border-t-0 px-2.5 py-1 font-mono text-[10px] tracking-wider uppercase shadow-sm backdrop-blur-md transition-colors'
+          title='Expand audio player'
+          aria-label='Expand audio player'
+        >
+          <HeadphonesIcon className='size-3' />
+          <span>{playbackStatus}</span>
+          <ChevronDownIcon className='size-3' />
+        </button>
+      </aside>
+    )
+  }
+
   return (
     <aside
       aria-label='Audio dispatch briefing player'
-      className={cn(
-        'border-border bg-background/95 fixed inset-x-0 top-[3px] z-40 border-b font-mono backdrop-blur-md transition-transform duration-200 select-none',
-        isCollapsed ? '-translate-y-[calc(100%-8px)]' : 'translate-y-0'
-      )}
+      className='border-border bg-background/95 fixed inset-x-0 top-[3px] z-40 border-b font-mono backdrop-blur-md transition-transform duration-200 select-none'
     >
       <div className='mx-auto flex h-9 max-w-7xl items-center justify-between gap-3 px-3 text-xs sm:px-6'>
         {/* Left: Play/Pause & Telemetry Tag */}
@@ -1007,18 +1025,15 @@ export function AudioDispatchTopBar() {
             {playbackRate}x
           </button>
 
-          {/* Collapse/Expand Toggle */}
+          {/* Collapse Toggle */}
           <button
             type='button'
-            onClick={() => setIsCollapsed(!isCollapsed)}
+            onClick={() => setIsCollapsed(true)}
             className='text-muted-foreground hover:text-foreground cursor-pointer p-1 transition-colors'
-            title={isCollapsed ? 'Expand audio player' : 'Collapse audio player'}
+            title='Collapse audio player'
+            aria-label='Collapse audio player'
           >
-            {isCollapsed ? (
-              <ChevronDownIcon className='size-3' />
-            ) : (
-              <ChevronUpIcon className='size-3' />
-            )}
+            <ChevronUpIcon className='size-3' />
           </button>
         </div>
       </div>

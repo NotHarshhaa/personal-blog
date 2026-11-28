@@ -10,6 +10,16 @@ import { getCurrentUser } from '@/lib/auth'
 import { SITE_URL } from '@/lib/constants'
 import { getUserById } from '@/queries/get-user-by-id'
 
+const isSafeExternalUrl = (url: string | null | undefined): url is string => {
+  if (!url) return false
+  try {
+    const parsed = new URL(url)
+    return parsed.protocol === 'https:' || parsed.protocol === 'http:'
+  } catch {
+    return false
+  }
+}
+
 type UserPageProps = {
   params: Promise<{
     id: string
@@ -70,7 +80,9 @@ const UserPage = async (props: UserPageProps) => {
     { href: user.github, label: 'GitHub', icon: GitBranchIcon },
     { href: user.twitter, label: 'Twitter', icon: XIcon },
     { href: user.linkedin, label: 'LinkedIn', icon: LinkIcon }
-  ].filter((link) => Boolean(link.href))
+  ].filter((link): link is { href: string; label: string; icon: typeof GitBranchIcon } =>
+    isSafeExternalUrl(link.href)
+  )
 
   return (
     <div className='relative z-10 w-full space-y-6'>
@@ -112,7 +124,7 @@ const UserPage = async (props: UserPageProps) => {
                 {socialLinks.map((link) => (
                   <a
                     key={link.label}
-                    href={link.href ?? '#'}
+                    href={link.href}
                     target='_blank'
                     rel='noopener noreferrer'
                     className='hover-fill border-border bg-background text-muted-foreground hover:border-foreground hover:text-foreground inline-flex items-center gap-1.5 border px-2.5 py-1.5 font-mono text-[11px] tracking-wider uppercase transition-colors'
@@ -131,7 +143,7 @@ const UserPage = async (props: UserPageProps) => {
 
           {/* Stats row — telemetry style, divided cells */}
           <div className='border-border grid grid-cols-2 border'>
-            <div className='border-border flex items-center justify-between p-3.5 sm:border-r'>
+            <div className='border-border flex items-center justify-between border-r p-3.5'>
               <span className='text-muted-foreground inline-flex items-center gap-1.5 font-mono text-[10px] tracking-widest uppercase'>
                 <FileIcon className='size-3.5' aria-hidden />
                 Articles

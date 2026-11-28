@@ -11,7 +11,9 @@ import { Button } from '@/components/ui'
 const LoginButton = () => {
   const [loading, setLoading] = useState(false)
   const searchParams = useSearchParams()
-  const callbackUrl = searchParams.get('redirect') ?? '/'
+  const rawRedirect = searchParams.get('redirect')
+  const callbackUrl =
+    rawRedirect && rawRedirect.startsWith('/') && !rawRedirect.startsWith('//') ? rawRedirect : '/'
 
   return (
     <Button

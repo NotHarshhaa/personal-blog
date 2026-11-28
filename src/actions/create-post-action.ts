@@ -5,7 +5,7 @@ import { flattenValidationErrors } from 'next-safe-action'
 
 import { db } from '@/db'
 import { posts } from '@/db/schema'
-import { authenticatedActionClient } from '@/lib/safe-action'
+import { ActionError, authenticatedActionClient } from '@/lib/safe-action'
 
 import { createPostSchema } from './schema'
 
@@ -16,7 +16,7 @@ export const createPostAction = authenticatedActionClient
   })
   .action(async ({ parsedInput: { title }, ctx: { user } }) => {
     if (user.role !== 'admin') {
-      throw new Error('Not authorized')
+      throw new ActionError('Not authorized')
     }
 
     const [post] = await db

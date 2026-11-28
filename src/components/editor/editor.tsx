@@ -77,7 +77,7 @@ export const Editor = (props: EditorProps) => {
     <div
       ref={editorRef}
       className={cn(
-        'group relative flex w-full flex-col overflow-hidden transition-all duration-200',
+        'group relative flex w-full flex-col overflow-x-clip transition-all duration-200',
         isEditable && 'border-border bg-background border',
         isFocused && isEditable && 'border-foreground/50',
         className

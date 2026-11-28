@@ -4,6 +4,7 @@ import type { Like, Post, User } from '@/db/schema'
 
 import { ArrowUpRightIcon, ClockIcon, EyeIcon, FlameIcon, HeartIcon } from 'lucide-react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { memo } from 'react'
 import readingTime from 'reading-time'
 
@@ -32,6 +33,7 @@ export type PostCardProps = {
 const PostCard = memo((props: PostCardProps) => {
   const { post, user, showAuthor = true, activeTag } = props
   const { id, title, description, published, createdAt, likeCount, views, user: author } = post
+  const router = useRouter()
 
   const href = `/${published ? 'posts' : 'editor'}/${id}`
   const actionLabel = published ? 'Read article' : 'Edit draft'
@@ -103,7 +105,7 @@ const PostCard = memo((props: PostCardProps) => {
         </Link>
 
         {/* Author Row */}
-        {showAuthor && (
+        {showAuthor ? (
           <div className='border-border/60 mt-4 flex items-center justify-between gap-3 border-t pt-3'>
             <Link
               href={`/users/${author.id}`}
@@ -134,6 +136,18 @@ const PostCard = memo((props: PostCardProps) => {
               <Controls id={id} user={user} authorId={author.id} postTitle={title} />
             </div>
           </div>
+        ) : (
+          <div className='border-border/60 mt-4 flex items-center justify-between gap-3 border-t pt-3'>
+            <time
+              dateTime={createdAt.toISOString()}
+              className='text-muted-foreground font-mono text-[11px] whitespace-nowrap'
+            >
+              {formatPostDate(createdAt, { relative: true })}
+            </time>
+            <div className='relative z-20 ml-2 shrink-0'>
+              <Controls id={id} user={user} authorId={author.id} postTitle={title} />
+            </div>
+          </div>
         )}
 
         {/* Tags + Engagement Footer (pinned to card bottom for even grid rows) */}
@@ -154,7 +168,7 @@ const PostCard = memo((props: PostCardProps) => {
                       if (props.onTagClick) {
                         props.onTagClick(tag)
                       } else {
-                        globalThis.location.href = `/?tag=${encodeURIComponent(tag)}`
+                        router.push(`/?tag=${encodeURIComponent(tag)}`)
                       }
                     }}
                     className={cn(

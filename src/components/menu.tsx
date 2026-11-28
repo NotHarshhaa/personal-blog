@@ -41,7 +41,7 @@ const Menu = ({ user }: MenuProps) => {
   if (!user) {
     return (
       <Link
-        href={`/login?redirect=${pathname}`}
+        href={`/login?redirect=${encodeURIComponent(pathname)}`}
         className={cn(
           buttonVariants({ variant: 'outline', size: 'sm' }),
           'hover-hatch px-2.5 text-xs'

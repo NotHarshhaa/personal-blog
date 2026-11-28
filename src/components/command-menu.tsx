@@ -604,7 +604,7 @@ const NavItems = ({
     {matches('rss feed xml atom syndicate subscribe') && (
       <CommandItem
         value='rss feed xml atom syndicate subscribe'
-        onSelect={() => runCommand(() => router.push('/feed.xml'))}
+        onSelect={() => runCommand(() => globalThis.open('/feed.xml', '_blank', 'noopener,noreferrer'))}
         className='cursor-pointer'
       >
         <RssIcon className='text-foreground size-4 shrink-0' />

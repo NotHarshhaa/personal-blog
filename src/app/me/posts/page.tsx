@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 
 import { redirect } from 'next/navigation'
+import { Suspense } from 'react'
 
 import { getCurrentUser } from '@/lib/auth'
 import { getPostsByUserId } from '@/queries/get-posts-by-user-id'
@@ -36,7 +37,9 @@ const PostsPage = async () => {
 
   return (
     <div className="relative z-10 w-full space-y-6 sm:space-y-8">
-      <PostsClient posts={postsWithDates} user={formattedUser} />
+      <Suspense fallback={null}>
+        <PostsClient posts={postsWithDates} user={formattedUser} />
+      </Suspense>
     </div>
   )
 }

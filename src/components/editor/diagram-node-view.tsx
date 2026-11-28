@@ -83,7 +83,10 @@ export const DiagramNodeView = ({ node, updateAttributes, editor }: ReactNodeVie
   // Pan and zoom states
   const [scale, setScale] = useState(1)
   const [pan, setPan] = useState({ x: 0, y: 0 })
+  const panRef = useRef({ x: 0, y: 0 })
+  panRef.current = pan
   const [isDragging, setIsDragging] = useState(false)
+  const isDraggingRef = useRef(false)
   const dragStartRef = useRef({ x: 0, y: 0 })
   const viewportRef = useRef<HTMLDivElement>(null)
 
@@ -136,7 +139,7 @@ export const DiagramNodeView = ({ node, updateAttributes, editor }: ReactNodeVie
 
         mermaid.initialize({
           startOnLoad: false,
-          securityLevel: 'loose',
+          securityLevel: 'strict',
           theme: 'base',
           themeVariables: isDark ? darkColors : lightColors
         })
@@ -181,12 +184,13 @@ export const DiagramNodeView = ({ node, updateAttributes, editor }: ReactNodeVie
 
     const handleMouseDown = (e: MouseEvent) => {
       if (e.button !== 0) return
+      isDraggingRef.current = true
       setIsDragging(true)
-      dragStartRef.current = { x: e.clientX - pan.x, y: e.clientY - pan.y }
+      dragStartRef.current = { x: e.clientX - panRef.current.x, y: e.clientY - panRef.current.y }
     }
 
     const handleMouseMove = (e: MouseEvent) => {
-      if (!isDragging) return
+      if (!isDraggingRef.current) return
       setPan({
         x: e.clientX - dragStartRef.current.x,
         y: e.clientY - dragStartRef.current.y
@@ -194,6 +198,8 @@ export const DiagramNodeView = ({ node, updateAttributes, editor }: ReactNodeVie
     }
 
     const handleMouseUp = () => {
+      if (!isDraggingRef.current) return
+      isDraggingRef.current = false
       setIsDragging(false)
     }
 
@@ -206,7 +212,7 @@ export const DiagramNodeView = ({ node, updateAttributes, editor }: ReactNodeVie
       globalThis.window.removeEventListener('mousemove', handleMouseMove)
       globalThis.window.removeEventListener('mouseup', handleMouseUp)
     }
-  }, [activeTab, isDragging, pan.x, pan.y])
+  }, [activeTab])
 
   // Zoom controls
   const zoomIn = () => setScale((s) => Math.min(3, Math.round((s + 0.25) * 100) / 100))

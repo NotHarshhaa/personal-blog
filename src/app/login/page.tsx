@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { LockIcon, ShieldCheckIcon } from 'lucide-react'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
+import { Suspense } from 'react'
 
 import { Frame, FrameBody, FrameHeader } from '@/components/frame'
 import { getCurrentUser } from '@/lib/auth'
@@ -49,7 +50,9 @@ const LoginPage = async () => {
 
           {/* Google Login Action */}
           <div className="w-full pt-1">
-            <LoginButton />
+            <Suspense fallback={<div className="h-12 w-full animate-pulse border border-border bg-muted/40" />}>
+              <LoginButton />
+            </Suspense>
           </div>
 
           {/* Security Badge */}

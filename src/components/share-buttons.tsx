@@ -51,7 +51,7 @@ const ShareButtons = ({ title, description, postId, className }: ShareButtonsPro
   }
 
   return (
-    <div className={`flex flex-wrap items-center gap-2 ${className}`}>
+    <div className={cn('flex flex-wrap items-center gap-2', className)}>
       <Button
         variant='outline'
         size='sm'
